@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KeyBlocker</string>
+    <string name="attention">Please open Settings-AccessibilityService-KeyBlocker to use it.</string>
+	<string name="introduce">This application can help you block all your physical keys.\nYou can close it by Notification!</string>
+	<string name="click_button">Click Here to Start</string>
+	<string name="notify_mes">Click Here to Close or Open Physical Keys</string>
+	<string name="author">Made By XFY9326\nGithub:https://github.com/XFY9326/KeyBlocker</string>
+</resources>

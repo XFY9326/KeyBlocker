@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="@string/app_name"
+		android:layout_marginTop="50dp"
+		android:layout_centerHorizontal="true"
+		android:textSize="32sp"
+		android:id="@+id/activityguidelayoutTextView1"/>
+
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="vertical"
+		android:layout_centerInParent="true"
+		android:layout_below="@id/activityguidelayoutTextView1"
+		android:layout_marginTop="35dp">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/introduce"
+			android:padding="10dp"
+			android:gravity="center"
+			android:layout_marginBottom="10dp"/>
+
+		<TextView
+			android:text="@string/attention"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:padding="10dp"
+			android:gravity="center"/>
+
+	</LinearLayout>
+
+	<Button
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="@string/click_button"
+		android:id="@+id/button_start"
+		android:layout_marginBottom="100dp"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:text="@string/author"
+		android:layout_marginBottom="10dp"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:gravity="center"/>
+
+</RelativeLayout>
+
