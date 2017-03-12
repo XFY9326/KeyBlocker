@@ -13,6 +13,8 @@ public class KeyBlockService extends AccessibilityService
 {
 	private boolean KeyBlocked = true;
 	private ButtonBroadcastReceiver bbr;
+	private static final int Notify_ID = 5000;
+	private Notification.Builder notification;
 	private String Notify_Action = "tool.xfy9326.keyblocker.Notification.OnClick";
 
 	@Override
@@ -21,7 +23,7 @@ public class KeyBlockService extends AccessibilityService
 		ShowNotification();
 		super.onServiceConnected();
 	}
-	
+
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent p1)
 	{}
@@ -49,13 +51,13 @@ public class KeyBlockService extends AccessibilityService
 		intent.setAction(Notify_Action);
 		PendingIntent pendingintent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Notification.Builder notification = new Notification.Builder(this);
+		notification = new Notification.Builder(this);
 		notification.setOngoing(true);
 		notification.setSmallIcon(R.drawable.ic_notification);
 		notification.setContentTitle(getString(R.string.app_name));
-		notification.setContentText(getString(R.string.notify_mes));
+		notification.setContentText(getString(R.string.notify_mes_off));
 		notification.setContentIntent(pendingintent);
-		startForeground(1, notification.build());
+		startForeground(Notify_ID, notification.build());
 	}
 
 	private void CloseNotification()
@@ -97,6 +99,16 @@ public class KeyBlockService extends AccessibilityService
 			if (p2.getAction() == Notify_Action)
 			{
 				KeyBlocked = !KeyBlocked;
+				if (KeyBlocked)
+				{
+					notification.setContentText(getString(R.string.notify_mes_off));
+				}
+				else
+				{
+					notification.setContentText(getString(R.string.notify_mes_on));
+				}
+				NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				nm.notify(Notify_ID, notification.build());
 				collapseStatusBar(p1);
 			}
 		}
