@@ -5,22 +5,38 @@ import android.content.*;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
-import java.lang.reflect.Method;
 
 public class KeyBlockService extends AccessibilityService
 {
-	private boolean KeyBlocked = true;
-	private ButtonBroadcastReceiver bbr;
-	private static final int Notify_ID = 5000;
-	private Notification.Builder notification;
-	private String Notify_Action = "tool.xfy9326.keyblocker.Notification.OnClick";
+	private boolean KeyBlocked = false;
+	private ButtonBroadcastReceiver bbr = null;
+	private Notification.Builder notification = null;
+	private SharedPreferences sp = null;
+	private SharedPreferences.Editor sped = null;
+	private boolean QuickSettingControl = false;
+
+	@Override
+	public void onCreate()
+	{
+		sp = PreferenceManager.getDefaultSharedPreferences(this);
+		sped = sp.edit();
+		super.onCreate();
+	}
 
 	@Override
 	protected void onServiceConnected()
 	{
-		ShowNotification();
+		ControlModeSet();
+		ReceiverRegister();
+		if (!QuickSettingControl)
+		{
+			ShowNotification();
+		}
+		sped.putBoolean("KeyBlocked", KeyBlocked);
+		sped.commit();
 		super.onServiceConnected();
 	}
 
@@ -31,64 +47,72 @@ public class KeyBlockService extends AccessibilityService
 	@Override
 	public void onInterrupt()
 	{
-		CloseNotification();
+		ReceiverUnregister();
+		if (!QuickSettingControl)
+		{
+			CloseNotification();
+		}
 		KeyBlocked = false;
 	}
 
 	@Override
 	protected boolean onKeyEvent(KeyEvent event)
 	{
+		int keycode = event.getKeyCode();
+		if (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)
+		{
+			if (!sp.getBoolean("VolumeButton_Block", false))
+			{
+				return false;
+			}
+		}
 		return KeyBlocked;
 	}
 
-	private void ShowNotification()
+	private void ControlModeSet()
 	{
-		IntentFilter filter = new IntentFilter(Notify_Action);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+		{
+			if (!sp.getBoolean("ForceNotify", false))
+			{
+				QuickSettingControl = true;
+			}
+		}
+	}
+	
+	private void ReceiverRegister()
+	{
+		IntentFilter filter = new IntentFilter(Methods.Notify_Action);
 		bbr = new ButtonBroadcastReceiver();
 		registerReceiver(bbr, filter);
-
-		Intent intent = new Intent();
-		intent.setAction(Notify_Action);
-		PendingIntent pendingintent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		notification = new Notification.Builder(this);
-		notification.setOngoing(true);
-		notification.setSmallIcon(R.drawable.ic_notification);
-		notification.setContentTitle(getString(R.string.app_name));
-		notification.setContentText(getString(R.string.notify_mes_off));
-		notification.setContentIntent(pendingintent);
-		startForeground(Notify_ID, notification.build());
 	}
-
-	private void CloseNotification()
+	
+	private void ReceiverUnregister()
 	{
-		stopForeground(true);
 		if (bbr != null)
 		{
 			unregisterReceiver(bbr);
 		}
 	}
 
-	private static void collapseStatusBar(Context context)
+	private void ShowNotification()
 	{
-		try
-		{
-			Object statusBarManager = context.getSystemService("statusbar");
-			Method collapse;
-			if (Build.VERSION.SDK_INT <= 16)
-			{
-				collapse = statusBarManager.getClass().getMethod("collapse");
-			}
-			else
-			{
-				collapse = statusBarManager.getClass().getMethod("collapsePanels");
-			}
-			collapse.invoke(statusBarManager);
-		}
-		catch (Exception localException)
-		{
-			localException.printStackTrace();
-		}
+		Intent intent = new Intent();
+		intent.setAction(Methods.Notify_Action);
+		PendingIntent pendingintent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		notification = new Notification.Builder(this);
+		notification.setOngoing(true);
+		notification.setSmallIcon(R.drawable.ic_notification);
+		notification.setContentTitle(getString(R.string.app_name));
+		notification.setContentText(getString(R.string.notify_mes_on));
+		notification.setContentIntent(pendingintent);
+		startForeground(Methods.Notify_ID, notification.build());
+	}
+
+	private void CloseNotification()
+	{
+		stopForeground(true);
 	}
 
 	private class ButtonBroadcastReceiver extends BroadcastReceiver
@@ -96,20 +120,25 @@ public class KeyBlockService extends AccessibilityService
 		@Override
 		public void onReceive(Context p1, Intent p2)
 		{
-			if (p2.getAction() == Notify_Action)
+			if (p2.getAction().equals(Methods.Notify_Action))
 			{
 				KeyBlocked = !KeyBlocked;
-				if (KeyBlocked)
+				sped.putBoolean("KeyBlocked", KeyBlocked);
+				sped.commit();
+				if (!QuickSettingControl)
 				{
-					notification.setContentText(getString(R.string.notify_mes_off));
+					if (KeyBlocked)
+					{
+						notification.setContentText(getString(R.string.notify_mes_off));
+					}
+					else
+					{
+						notification.setContentText(getString(R.string.notify_mes_on));
+					}
+					NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+					nm.notify(Methods.Notify_ID, notification.build());
+					Methods.collapseStatusBar(p1);
 				}
-				else
-				{
-					notification.setContentText(getString(R.string.notify_mes_on));
-				}
-				NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-				nm.notify(Notify_ID, notification.build());
-				collapseStatusBar(p1);
 			}
 		}
 	}

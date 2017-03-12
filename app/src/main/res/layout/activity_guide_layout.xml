@@ -10,18 +10,18 @@
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:text="@string/app_name"
-		android:layout_marginTop="50dp"
+		android:layout_marginTop="35dp"
 		android:layout_centerHorizontal="true"
 		android:textSize="32sp"
-		android:id="@+id/activityguidelayoutTextView1"/>
+		android:id="@+id/textview_title"/>
 
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:orientation="vertical"
 		android:layout_centerInParent="true"
-		android:layout_below="@id/activityguidelayoutTextView1"
-		android:layout_marginTop="35dp">
+		android:layout_below="@id/textview_title"
+		android:layout_marginTop="30dp">
 
 		<TextView
 			android:layout_width="match_parent"
@@ -30,13 +30,25 @@
 			android:text="@string/introduce"
 			android:padding="10dp"
 			android:gravity="center"
-			android:layout_marginBottom="10dp"/>
+			android:layout_marginBottom="5dp"
+			android:textSize="16sp"/>
 
 		<TextView
 			android:text="@string/attention"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:padding="10dp"
+			android:gravity="center"
+			android:layout_marginBottom="5dp"
+			android:textSize="16sp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/tile_set"
+			android:textSize="16sp"
 			android:padding="10dp"
 			android:gravity="center"/>
 
@@ -47,7 +59,7 @@
 		android:layout_width="wrap_content"
 		android:text="@string/click_button"
 		android:id="@+id/button_start"
-		android:layout_marginBottom="100dp"
+		android:layout_marginBottom="70dp"
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"/>
 
@@ -60,6 +72,53 @@
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
 		android:gravity="center"/>
+
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="horizontal"
+		android:layout_above="@id/button_start"
+		android:layout_centerHorizontal="true"
+		android:gravity="center"
+		android:layout_marginBottom="10dp"
+		android:id="@+id/layout_volumeset">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="@string/volumebutton_block"
+			android:layout_marginRight="20dp"/>
+
+		<CheckBox
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/checkbox_volumebutton_blocked"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="horizontal"
+		android:layout_above="@id/layout_volumeset"
+		android:layout_centerHorizontal="true"
+		android:gravity="center"
+		android:layout_marginBottom="5dp">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="@string/force_notification_control"
+			android:layout_marginRight="20dp"/>
+
+		<CheckBox
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/checkbox_force_notification_control"/>
+
+	</LinearLayout>
 
 </RelativeLayout>
 
