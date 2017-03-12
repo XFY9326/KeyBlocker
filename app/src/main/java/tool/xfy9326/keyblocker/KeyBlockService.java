@@ -20,7 +20,7 @@ import java.util.Arrays;
 import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
-    private boolean KeyBlocked = false;
+    private boolean KeyBlocked = true;
     private ButtonBroadcastReceiver bbr = null;
     private Notification.Builder notification = null;
     private SharedPreferences sp = null;
@@ -42,7 +42,7 @@ public class KeyBlockService extends AccessibilityService {
         if (!QuickSettingControl) {
             ShowNotification();
         }
-        sped.putBoolean("KeyBlocked", KeyBlocked);
+        sped.putBoolean("KeyBlocked", true);
         sped.commit();
         super.onServiceConnected();
     }
