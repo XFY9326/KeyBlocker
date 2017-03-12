@@ -1,113 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="5dp">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="5dp">
 
-    <LinearLayout
-        android:id="@+id/layout_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+	<LinearLayout
+		android:id="@+id/layout_desc"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:gravity="start"
-            android:padding="10dp"
-            android:text="@string/introduce"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp" />
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="5dp"
+			android:gravity="start"
+			android:padding="10dp"
+			android:text="@string/introduce"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:textSize="16sp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:gravity="start"
-            android:padding="10dp"
-            android:text="@string/attention"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp" />
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="5dp"
+			android:gravity="start"
+			android:padding="10dp"
+			android:text="@string/attention"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:textSize="16sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:padding="10dp"
-            android:text="@string/tile_set"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp" />
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="start"
+			android:padding="10dp"
+			android:text="@string/tile_set"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:textSize="16sp"/>
 
-    </LinearLayout>
+	</LinearLayout>
 
-    <Button
-        android:id="@+id/button_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="70dp"
-        android:text="@string/click_button" />
+	<Button
+		android:id="@+id/button_start"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginBottom="70dp"
+		android:text="@string/click_button"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:text="@string/author"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginBottom="10dp"
+		android:gravity="center"
+		android:text="@string/author"
+		android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-    <Button
-        android:id="@+id/btn_setting_custom"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/checkbox_enabled_custom"
-        android:layout_alignTop="@+id/checkbox_enabled_custom"
-        android:layout_toEndOf="@+id/checkbox_enabled_custom"
-        android:layout_toRightOf="@+id/checkbox_enabled_custom"
-        android:padding="0dp"
-        android:text="@string/custom_setting"
-        android:textSize="12sp"
-        android:theme="@android:style/Widget.Button.Small" />
+	<Button
+		android:id="@+id/btn_setting_custom"
+		android:layout_width="wrap_content"
+		android:layout_height="50dp"
+		android:layout_alignBottom="@+id/checkbox_enabled_custom"
+		android:layout_alignTop="@+id/checkbox_enabled_custom"
+		android:layout_toEndOf="@+id/checkbox_enabled_custom"
+		android:layout_toRightOf="@+id/checkbox_enabled_custom"
+		android:padding="0dp"
+		android:text="@string/custom_setting"
+		android:textSize="12sp"
+		android:theme="@android:style/Widget.Button.Small"
+		android:layout_marginLeft="10dp"/>
 
-    <CheckBox
-        android:id="@+id/checkbox_enabled_custom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/checkbox_testKeycode"
-        android:text="@string/enabled_custom" />
+	<CheckBox
+		android:id="@+id/checkbox_enabled_custom"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/checkbox_testKeycode"
+		android:text="@string/enabled_custom"
+		android:layout_marginLeft="5dp"/>
 
+	<CheckBox
+		android:id="@+id/checkbox_volume_button_blocked"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/checkbox_force_notification_control"
+		android:text="@string/volumebutton_block"
+		android:layout_marginLeft="5dp"/>
 
-    <CheckBox
-        android:id="@+id/checkbox_volume_button_blocked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/checkbox_force_notification_control"
-        android:text="@string/volumebutton_block" />
+	<CheckBox
+		android:id="@+id/checkbox_force_notification_control"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/layout_desc"
+		android:text="@string/force_notification_control"
+		android:layout_marginLeft="5dp"/>
 
-    <CheckBox
-        android:id="@+id/checkbox_force_notification_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/layout_desc"
-        android:text="@string/force_notification_control" />
+	<CheckBox
+		android:id="@+id/checkbox_testKeycode"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/checkbox_volume_button_blocked"
+		android:text="@string/test_keycode"
+		android:layout_marginLeft="5dp"/>
 
-    <CheckBox
-        android:id="@+id/checkbox_testKeycode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/checkbox_volume_button_blocked"
-        android:text="@string/test_keycode" />
 </RelativeLayout>
+
