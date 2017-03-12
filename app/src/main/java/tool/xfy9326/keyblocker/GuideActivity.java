@@ -39,7 +39,8 @@ public class GuideActivity extends Activity {
                 startActivity(intent);
             }
         });
-        CheckBox volume = (CheckBox) findViewById(R.id.checkbox_volume_button_blocked);
+        final CheckBox volume = (CheckBox) findViewById(R.id.checkbox_volume_button_blocked);
+        volume.setEnabled(sp.getBoolean("EnabledCustomKeycode", false));
         volume.setChecked(sp.getBoolean("VolumeButton_Block", false));
         volume.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton cb, boolean b) {
@@ -79,6 +80,7 @@ public class GuideActivity extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 sped.putBoolean("EnabledCustomKeycode", isChecked);
                 sped.commit();
+                volume.setEnabled(isChecked);
                 showToast(isChecked);
             }
         });

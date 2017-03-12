@@ -70,13 +70,12 @@ public class KeyBlockService extends AccessibilityService {
             }
         }
 
-        if (sp.getBoolean("VolumeButton_Block", false)) {
-            if (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                return true;
-            }
-        }
-
         if (sp.getBoolean("EnabledCustomKeycode", false)) {
+            if (sp.getBoolean("VolumeButton_Block", false)) {
+                if (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    return true;
+                }
+            }
             String[] sourceStrArray = sp.getString("CustomKeycode", "").split(" ");
             Arrays.sort(sourceStrArray);
             int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
