@@ -26,13 +26,14 @@ public class MainActivity extends Activity {
     private SharedPreferences mSp;
     private SharedPreferences.Editor mSpEditor;
     private Button
-            mBtnStart,
-            mBtnSettingCustomKeycode;
+	mBtnStart,
+	mBtnSettingCustomKeycode,
+	mBtnAccessEntry;
     private CheckBox
-            mCbDisabledVolumeKey,
-            mCbDisplayNotification,
-            mCbDisplayKeycode,
-            mCbEnabledCustomKeycode;
+	mCbDisabledVolumeKey,
+	mCbDisplayNotification,
+	mCbDisplayKeycode,
+	mCbEnabledCustomKeycode;
     private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
 
     @Override
@@ -48,111 +49,122 @@ public class MainActivity extends Activity {
 
     private void initHandle() {
         mBtnStart.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivity(intent);
-            }
-        });
+				public void onClick(View v) {
+					Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+					startActivity(intent);
+				}
+			});
 
         mCbDisabledVolumeKey.setEnabled(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
         mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false));
         mCbDisabledVolumeKey.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSpEditor.putBoolean(Config.DISABLED_VOLUME_KEY, displayToast(isChecked) == isChecked);
-                mSpEditor.commit();
-                mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false));
-            }
-        });
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.DISABLED_VOLUME_KEY, displayToast(isChecked) == isChecked);
+					mSpEditor.commit();
+					mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false));
+				}
+			});
 
         mCbDisplayNotification.setChecked(mSp.getBoolean(Config.DISPLAY_NOTIFICATION, false));
         mCbDisplayNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSpEditor.putBoolean(Config.DISPLAY_NOTIFICATION, isChecked);
-                mSpEditor.commit();
-                Toast.makeText(MainActivity.this, R.string.restart_service, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivity(intent);
-            }
-        });
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.DISPLAY_NOTIFICATION, isChecked);
+					mSpEditor.commit();
+					Toast.makeText(MainActivity.this, R.string.restart_service, Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+					startActivity(intent);
+				}
+			});
 
         mCbDisplayKeycode.setChecked(mSp.getBoolean(Config.DISPLAY_KEYCODE, false));
         mCbDisplayKeycode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSpEditor.putBoolean(Config.DISPLAY_KEYCODE, displayToast(isChecked) == isChecked);
-                mSpEditor.commit();
-                mCbDisplayKeycode.setChecked(mSp.getBoolean(Config.DISPLAY_KEYCODE, false));
-            }
-        });
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.DISPLAY_KEYCODE, displayToast(isChecked) == isChecked);
+					mSpEditor.commit();
+					mCbDisplayKeycode.setChecked(mSp.getBoolean(Config.DISPLAY_KEYCODE, false));
+				}
+			});
 
         mCbEnabledCustomKeycode.setChecked(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
         mCbEnabledCustomKeycode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSpEditor.putBoolean(Config.ENABLED_CUSTOM_KEYCODE, displayToast(isChecked) == isChecked);
-                mSpEditor.commit();
-                mCbDisabledVolumeKey.setEnabled(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
-                mCbEnabledCustomKeycode.setChecked(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
-            }
-        });
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.ENABLED_CUSTOM_KEYCODE, displayToast(isChecked) == isChecked);
+					mSpEditor.commit();
+					mCbDisabledVolumeKey.setEnabled(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
+					mCbEnabledCustomKeycode.setChecked(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
+				}
+			});
+
+		mBtnAccessEntry.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
+						.setTitle(R.string.access_entry)
+						.setMessage(R.string.access_entry_use)
+						.setNegativeButton(R.string.cancel, null);
+					dialog.show();
+				}
+			});
 
         mBtnSettingCustomKeycode.setOnClickListener(new OnClickListener() {
-            View mSubView;
-            EditText mEtCustomKeycode;
-            AlertDialog mAdCustomKeycode;
-            AlertDialog.Builder mAdBuilderCustomKeycode;
-            Button mBtnCancel, mBtnSubmit;
+				View mSubView;
+				EditText mEtCustomKeycode;
+				AlertDialog mAdCustomKeycode;
+				AlertDialog.Builder mAdBuilderCustomKeycode;
+				Button mBtnCancel, mBtnSubmit;
 
-            @Override
-            public void onClick(View v) {
-                LayoutInflater mLiContent = LayoutInflater.from(MainActivity.this);
-                mSubView = mLiContent.inflate(R.layout.v_custom_keycode, null);
-                mEtCustomKeycode = (EditText) mSubView.findViewById(R.id.et_custom_keycode);
-                mBtnCancel = (Button) mSubView.findViewById(R.id.btn_cancel);
-                mBtnSubmit = (Button) mSubView.findViewById(R.id.btn_submit);
+				@Override
+				public void onClick(View v) {
+					LayoutInflater mLiContent = LayoutInflater.from(MainActivity.this);
+					mSubView = mLiContent.inflate(R.layout.v_custom_keycode, null);
+					mEtCustomKeycode = (EditText) mSubView.findViewById(R.id.et_custom_keycode);
+					mBtnCancel = (Button) mSubView.findViewById(R.id.btn_cancel);
+					mBtnSubmit = (Button) mSubView.findViewById(R.id.btn_submit);
 
-                mAdBuilderCustomKeycode = new AlertDialog.Builder(MainActivity.this)
+					mAdBuilderCustomKeycode = new AlertDialog.Builder(MainActivity.this)
                         .setTitle(R.string.custom_setting)
                         .setView(mSubView)
                         .setCancelable(false);
 
-                mEtCustomKeycode.setText(mSp.getString(Config.CUSTOM_KEYCODE, ""));
-                mEtCustomKeycode.setSelection(mEtCustomKeycode.length());
+					mEtCustomKeycode.setText(mSp.getString(Config.CUSTOM_KEYCODE, ""));
+					mEtCustomKeycode.setSelection(mEtCustomKeycode.length());
 
-                mBtnCancel.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mAdCustomKeycode.cancel();
-                    }
-                });
+					mBtnCancel.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								mAdCustomKeycode.cancel();
+							}
+						});
 
-                mBtnSubmit.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mEtCustomKeycode.length() == 0) {
-                            mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
-                            mSpEditor.commit();
-                            if (mAdCustomKeycode != null) {
-                                mAdCustomKeycode.dismiss();
-                            }
-                        } else {
-                            String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
-                            if (mStringCustomKeycode.matches(mCustomKeycodeRegEx)) {
-                                mSpEditor.putString(Config.CUSTOM_KEYCODE, mStringCustomKeycode);
-                                mSpEditor.commit();
-                                if (mAdCustomKeycode != null) {
-                                    mAdCustomKeycode.dismiss();
-                                }
-                            } else {
-                                Toast.makeText(MainActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
+					mBtnSubmit.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								if (mEtCustomKeycode.length() == 0) {
+									mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
+									mSpEditor.commit();
+									if (mAdCustomKeycode != null) {
+										mAdCustomKeycode.dismiss();
+									}
+								} else {
+									String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
+									if (mStringCustomKeycode.matches(mCustomKeycodeRegEx)) {
+										mSpEditor.putString(Config.CUSTOM_KEYCODE, mStringCustomKeycode);
+										mSpEditor.commit();
+										if (mAdCustomKeycode != null) {
+											mAdCustomKeycode.dismiss();
+										}
+									} else {
+										Toast.makeText(MainActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
+									}
+								}
+							}
+						});
 
-                mAdCustomKeycode = mAdBuilderCustomKeycode.show();
-            }
-        });
+					mAdCustomKeycode = mAdBuilderCustomKeycode.show();
+				}
+			});
     }
 
     @SuppressLint("InflateParams")
@@ -163,6 +175,7 @@ public class MainActivity extends Activity {
         mCbDisplayKeycode = (CheckBox) findViewById(R.id.cb_display_keycode);
         mCbEnabledCustomKeycode = (CheckBox) findViewById(R.id.cb_enabled_custom_keycode);
         mBtnSettingCustomKeycode = (Button) findViewById(R.id.btn_setting_custom);
+		mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             if (!mSp.getBoolean(Config.DISPLAY_NOTIFICATION, false)) {

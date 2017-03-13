@@ -36,6 +36,13 @@
 				<action android:name="android.service.quicksettings.action.QS_TILE" />
 			</intent-filter>
 		</service>
+		<receiver 
+            android:name=".receiver.RemoteReceiver">
+			android:exported="true"
+            <intent-filter>
+				<action android:name="tool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -19,6 +19,8 @@
     <string name="has_disabled">已禁用</string>
     <string name="input_keycode">键入Keycode:</string>
     <string name="spaces_separate">使用空格分隔</string>
+	<string name="access_entry">接入口</string>
+	<string name="access_entry_use">远程调用广播：\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\n可用参数：\n布尔值RESPOND\n无障碍服务未开启时是否提示(默认 true)</string>
     <string name="cancel">取消</string>
     <string name="submit">确认</string>
     <string name="wrong_format">格式错误</string>

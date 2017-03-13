@@ -19,6 +19,8 @@
     <string name="has_disabled">Has Disabled</string>
     <string name="input_keycode">Input Keycode:</string>
     <string name="spaces_separate">Use spaces to separate them</string>
+	<string name="access_entry">Access Entry</string>
+	<string name="access_entry_use">Remote call broadcast:\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\nAvailable parameters:\nBoolean value RESPOND\nPrompte when AccessibilityService is not open.(Default true)</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
     <string name="wrong_format">Wrong Format</string>

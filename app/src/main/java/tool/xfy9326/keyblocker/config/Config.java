@@ -6,6 +6,7 @@ package tool.xfy9326.keyblocker.config;
 
 public class Config {
     public static int NOTIFICATION_ID = 5000;
+	public static String REMOTE_CONTROL_ACTION = "tool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION";
     public static String NOTIFICATION_ACTION = "tool.xfy9326.keyblocker.Notification.OnClick";
     public static String ENABLED_CUSTOM_KEYCODE = "EnabledCustomKeycode";
     public static String DISABLED_VOLUME_KEY = "DisabledVolumeKey";
