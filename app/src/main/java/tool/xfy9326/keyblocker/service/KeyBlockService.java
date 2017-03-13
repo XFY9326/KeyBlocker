@@ -28,9 +28,7 @@ public class KeyBlockService extends AccessibilityService {
     private Notification.Builder mNBuilder;
     private SharedPreferences mSp;
     private SharedPreferences.Editor mSpEditor;
-    private boolean
-            mIsKeyBlocked = true,
-            mIsQuickSetting = false;
+    private boolean mIsQuickSetting = false;
 
     @Override
     public void onCreate() {
@@ -48,12 +46,10 @@ public class KeyBlockService extends AccessibilityService {
         if (!mIsQuickSetting) {
             ShowNotification();
         }
-        mSpEditor.putBoolean(Config.DISPLAY_KEYCODE, true);
-        mSpEditor.commit();
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent p1) {
+    public void onAccessibilityEvent(AccessibilityEvent event) {
     }
 
     @Override
@@ -62,37 +58,37 @@ public class KeyBlockService extends AccessibilityService {
         if (!mIsQuickSetting) {
             CloseNotification();
         }
-        mIsKeyBlocked = false;
     }
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
         int keycode = event.getKeyCode();
 
-        if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
-            if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-                return true;
-            }
-            String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
-            Arrays.sort(sourceStrArray);
-            int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
-
-            boolean isDisabled = index >= 0;
-
-            if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
-                if (isDisabled) {
-                    Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+        if (mSp.getBoolean(Config.DISPLAY_KEYCODE, true)) {
+            if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
+                if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+                    return true;
                 }
+                String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
+                Arrays.sort(sourceStrArray);
+                int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
+
+                boolean isDisabled = index >= 0;
+
+                if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
+                    if (isDisabled) {
+                        Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return isDisabled;
             }
-            return isDisabled;
-        } else {
-            if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
-                Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
-            }
-            return mIsKeyBlocked;
         }
+        if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
+            Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+        }
+        return mSp.getBoolean(Config.DISPLAY_KEYCODE, true);
     }
 
     private void ControlModeSet() {
@@ -129,7 +125,11 @@ public class KeyBlockService extends AccessibilityService {
         mNBuilder.setOngoing(true);
         mNBuilder.setSmallIcon(R.drawable.ic_notification);
         mNBuilder.setContentTitle(getString(R.string.app_name));
-        mNBuilder.setContentText(getString(R.string.notify_mes_off));
+        if (mSp.getBoolean(Config.DISPLAY_KEYCODE, true)) {
+            mNBuilder.setContentText(getString(R.string.notify_mes_off));
+        } else {
+            mNBuilder.setContentText(getString(R.string.notify_mes_on));
+        }
         mNBuilder.setContentIntent(pendingIntent);
         mNBuilder.setPriority(Notification.PRIORITY_MIN);
         startForeground(Config.NOTIFICATION_ID, mNBuilder.build());
@@ -140,10 +140,12 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     private class ButtonBroadcastReceiver extends BroadcastReceiver {
+        private boolean mIsKeyBlocked;
+
         @Override
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_ACTION)) {
-                mIsKeyBlocked = !mIsKeyBlocked;
+                mIsKeyBlocked = !mSp.getBoolean(Config.DISPLAY_KEYCODE, true);
                 mSpEditor.putBoolean(Config.DISPLAY_KEYCODE, mIsKeyBlocked);
                 mSpEditor.commit();
                 if (!mIsQuickSetting) {
