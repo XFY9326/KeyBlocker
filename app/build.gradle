@@ -5,10 +5,10 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "tool.xfy9326.keyblocker"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 25
-        versionCode 3
-        versionName '1.2'
+        versionCode 7
+        versionName '1.6'
     }
     buildTypes {
         release {

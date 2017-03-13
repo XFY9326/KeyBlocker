@@ -20,7 +20,7 @@ import java.util.Arrays;
 import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
-    private boolean KeyBlocked = false;
+    private boolean KeyBlocked = true;
     private ButtonBroadcastReceiver bbr = null;
     private Notification.Builder notification = null;
     private SharedPreferences sp = null;
@@ -42,7 +42,7 @@ public class KeyBlockService extends AccessibilityService {
         if (!QuickSettingControl) {
             ShowNotification();
         }
-        sped.putBoolean("KeyBlocked", KeyBlocked);
+        sped.putBoolean("KeyBlocked", true);
         sped.commit();
         super.onServiceConnected();
     }
@@ -64,24 +64,28 @@ public class KeyBlockService extends AccessibilityService {
     protected boolean onKeyEvent(KeyEvent event) {
         int keycode = event.getKeyCode();
 
-        if (event.getAction() == ACTION_UP) {
-            if (sp.getBoolean("TestKeycode", false)) {
-                Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        if (sp.getBoolean("VolumeButton_Block", false)) {
-            if (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+        if (sp.getBoolean("EnabledCustomKeycode", false)) {
+            if (sp.getBoolean("VolumeButton_Block", false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
                 return true;
             }
-        }
-
-        if (sp.getBoolean("EnabledCustomKeycode", false)) {
             String[] sourceStrArray = sp.getString("CustomKeycode", "").split(" ");
             Arrays.sort(sourceStrArray);
             int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
-            return (index != -1);
+
+            boolean isDisabled = index >= 0;
+
+            if (event.getAction() == ACTION_UP && sp.getBoolean("TestKeycode", false)) {
+                if (isDisabled) {
+                    Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+                }
+            }
+            return isDisabled;
         } else {
+            if (event.getAction() == ACTION_UP && sp.getBoolean("TestKeycode", false)) {
+                Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+            }
             return KeyBlocked;
         }
     }
@@ -121,7 +125,7 @@ public class KeyBlockService extends AccessibilityService {
         notification.setOngoing(true);
         notification.setSmallIcon(R.drawable.ic_notification);
         notification.setContentTitle(getString(R.string.app_name));
-        notification.setContentText(getString(R.string.notify_mes_on));
+        notification.setContentText(getString(R.string.notify_mes_off));
         notification.setContentIntent(pendingintent);
         startForeground(Methods.Notify_ID, notification.build());
     }

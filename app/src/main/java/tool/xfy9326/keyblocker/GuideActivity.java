@@ -39,13 +39,14 @@ public class GuideActivity extends Activity {
                 startActivity(intent);
             }
         });
-        CheckBox volume = (CheckBox) findViewById(R.id.checkbox_volume_button_blocked);
+        final CheckBox volume = (CheckBox) findViewById(R.id.checkbox_volume_button_blocked);
+        volume.setEnabled(sp.getBoolean("EnabledCustomKeycode", false));
         volume.setChecked(sp.getBoolean("VolumeButton_Block", false));
         volume.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton cb, boolean b) {
-                sped.putBoolean("VolumeButton_Block", b);
+                sped.putBoolean("VolumeButton_Block", showToast(b) == b);
                 sped.commit();
-                showToast(b);
+                volume.setChecked(sp.getBoolean("VolumeButton_Block", false));
             }
         });
         CheckBox force_notify = (CheckBox) findViewById(R.id.checkbox_force_notification_control);
@@ -61,25 +62,26 @@ public class GuideActivity extends Activity {
         });
 
 
-        CheckBox mCbTestKeycode = (CheckBox) findViewById(R.id.checkbox_testKeycode);
+        final CheckBox mCbTestKeycode = (CheckBox) findViewById(R.id.checkbox_testKeycode);
         mCbTestKeycode.setChecked(sp.getBoolean("TestKeycode", false));
         mCbTestKeycode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sped.putBoolean("TestKeycode", isChecked);
+                sped.putBoolean("TestKeycode", showToast(isChecked) == isChecked);
                 sped.commit();
-                showToast(isChecked);
+                mCbTestKeycode.setChecked(sp.getBoolean("TestKeycode", false));
             }
         });
 
-        CheckBox mCbEnabledCustom = (CheckBox) findViewById(R.id.checkbox_enabled_custom);
+        final CheckBox mCbEnabledCustom = (CheckBox) findViewById(R.id.checkbox_enabled_custom);
         mCbEnabledCustom.setChecked(sp.getBoolean("EnabledCustomKeycode", false));
         mCbEnabledCustom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sped.putBoolean("EnabledCustomKeycode", isChecked);
+                sped.putBoolean("EnabledCustomKeycode", showToast(isChecked) == isChecked);
                 sped.commit();
-                showToast(isChecked);
+                volume.setEnabled(sp.getBoolean("EnabledCustomKeycode", false));
+                mCbEnabledCustom.setChecked(sp.getBoolean("EnabledCustomKeycode", false));
             }
         });
 
@@ -114,13 +116,19 @@ public class GuideActivity extends Activity {
                 mBtnSubmit.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
-                        if (mStringCustomKeycode.matches(customKeycodeRegEx)) {
-                            sped.putString("CustomKeycode", mStringCustomKeycode);
+                        if (mEtCustomKeycode.length() == 0) {
+                            sped.putString("CustomKeycode", "");
                             sped.commit();
                             mAdCustomKeycode.dismiss();
                         } else {
-                            Toast.makeText(GuideActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                            String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
+                            if (mStringCustomKeycode.matches(customKeycodeRegEx)) {
+                                sped.putString("CustomKeycode", mStringCustomKeycode);
+                                sped.commit();
+                                mAdCustomKeycode.dismiss();
+                            } else {
+                                Toast.makeText(GuideActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
@@ -128,13 +136,21 @@ public class GuideActivity extends Activity {
         });
     }
 
-    private void showToast(boolean enabled) {
-        String toastString;
-        if (enabled) {
-            toastString = getString(R.string.has_enabled);
+    private boolean showToast(boolean enabled) {
+        if (Methods.isAccessibilitySettingsOn(this)) {
+            String toastString;
+            if (enabled) {
+                toastString = getString(R.string.has_enabled);
+            } else {
+                toastString = getString(R.string.has_disabled);
+            }
+            Toast.makeText(this, toastString, Toast.LENGTH_SHORT).show();
+            return true;
         } else {
-            toastString = getString(R.string.has_disabled);
+            Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivity(intent);
+            return false;
         }
-        Toast.makeText(this, toastString, Toast.LENGTH_SHORT).show();
     }
 }
