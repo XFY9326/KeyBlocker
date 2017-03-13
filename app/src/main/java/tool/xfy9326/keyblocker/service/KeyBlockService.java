@@ -131,6 +131,7 @@ public class KeyBlockService extends AccessibilityService {
         mNBuilder.setContentTitle(getString(R.string.app_name));
         mNBuilder.setContentText(getString(R.string.notify_mes_off));
         mNBuilder.setContentIntent(pendingIntent);
+        mNBuilder.setPriority(Notification.PRIORITY_MIN);
         startForeground(Config.NOTIFICATION_ID, mNBuilder.build());
     }
 
