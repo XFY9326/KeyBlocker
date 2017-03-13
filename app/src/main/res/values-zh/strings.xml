@@ -11,7 +11,7 @@
     <string name="notify_mes_off">点击这里关闭按键屏蔽</string>
     <string name="restart_service">重启辅助服务应用更改</string>
     <string name="start_service_first">请先启动辅助服务！</string>
-    <string name="author">制作者 XFY9326,frowhy\nOpenSource:https://github.com/XFY9326/KeyBlocker</string>
+    <string name="author">制作者 XFY9326,frowhy\n开源地址:https://github.com/XFY9326/KeyBlocker</string>
     <string name="test_keycode">测试 Keycode</string>
     <string name="enabled_custom">启用自定义 Keycode</string>
     <string name="custom_setting">自定义设置</string>

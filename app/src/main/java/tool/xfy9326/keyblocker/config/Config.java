@@ -11,5 +11,6 @@ public class Config {
     public static String DISABLED_VOLUME_KEY = "DisabledVolumeKey";
     public static String CUSTOM_KEYCODE = "CustomKeycode";
     public static String DISPLAY_KEYCODE = "DisplayKeycode";
+	public static String ENABLED_KEYBLOCK = "EnabledKeyBlock";
     public static String DISPLAY_NOTIFICATION = "DisplayNotification";
 }

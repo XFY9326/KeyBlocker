@@ -64,7 +64,7 @@ public class KeyBlockService extends AccessibilityService {
     protected boolean onKeyEvent(KeyEvent event) {
         int keycode = event.getKeyCode();
 
-        if (mSp.getBoolean(Config.DISPLAY_KEYCODE, true)) {
+        if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
             if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
                 if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
                     return true;
@@ -88,7 +88,7 @@ public class KeyBlockService extends AccessibilityService {
         if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
             Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
         }
-        return mSp.getBoolean(Config.DISPLAY_KEYCODE, true);
+        return mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
     }
 
     private void ControlModeSet() {
@@ -125,7 +125,7 @@ public class KeyBlockService extends AccessibilityService {
         mNBuilder.setOngoing(true);
         mNBuilder.setSmallIcon(R.drawable.ic_notification);
         mNBuilder.setContentTitle(getString(R.string.app_name));
-        if (mSp.getBoolean(Config.DISPLAY_KEYCODE, true)) {
+        if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
             mNBuilder.setContentText(getString(R.string.notify_mes_off));
         } else {
             mNBuilder.setContentText(getString(R.string.notify_mes_on));
@@ -145,8 +145,8 @@ public class KeyBlockService extends AccessibilityService {
         @Override
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_ACTION)) {
-                mIsKeyBlocked = !mSp.getBoolean(Config.DISPLAY_KEYCODE, true);
-                mSpEditor.putBoolean(Config.DISPLAY_KEYCODE, mIsKeyBlocked);
+                mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
+                mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
                 mSpEditor.commit();
                 if (!mIsQuickSetting) {
                     if (mIsKeyBlocked) {
