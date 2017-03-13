@@ -44,9 +44,9 @@ public class GuideActivity extends Activity {
         volume.setChecked(sp.getBoolean("VolumeButton_Block", false));
         volume.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton cb, boolean b) {
-                sped.putBoolean("VolumeButton_Block", b);
+                sped.putBoolean("VolumeButton_Block", showToast(b) == b);
                 sped.commit();
-                showToast(b);
+                volume.setChecked(sp.getBoolean("VolumeButton_Block", false));
             }
         });
         CheckBox force_notify = (CheckBox) findViewById(R.id.checkbox_force_notification_control);
@@ -62,26 +62,26 @@ public class GuideActivity extends Activity {
         });
 
 
-        CheckBox mCbTestKeycode = (CheckBox) findViewById(R.id.checkbox_testKeycode);
+        final CheckBox mCbTestKeycode = (CheckBox) findViewById(R.id.checkbox_testKeycode);
         mCbTestKeycode.setChecked(sp.getBoolean("TestKeycode", false));
         mCbTestKeycode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sped.putBoolean("TestKeycode", isChecked);
+                sped.putBoolean("TestKeycode", showToast(isChecked) == isChecked);
                 sped.commit();
-                showToast(isChecked);
+                mCbTestKeycode.setChecked(sp.getBoolean("TestKeycode", false));
             }
         });
 
-        CheckBox mCbEnabledCustom = (CheckBox) findViewById(R.id.checkbox_enabled_custom);
+        final CheckBox mCbEnabledCustom = (CheckBox) findViewById(R.id.checkbox_enabled_custom);
         mCbEnabledCustom.setChecked(sp.getBoolean("EnabledCustomKeycode", false));
         mCbEnabledCustom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sped.putBoolean("EnabledCustomKeycode", isChecked);
+                sped.putBoolean("EnabledCustomKeycode", showToast(isChecked) == isChecked);
                 sped.commit();
-                volume.setEnabled(isChecked);
-                showToast(isChecked);
+                volume.setEnabled(sp.getBoolean("EnabledCustomKeycode", false));
+                mCbEnabledCustom.setChecked(sp.getBoolean("EnabledCustomKeycode", false));
             }
         });
 
@@ -136,7 +136,7 @@ public class GuideActivity extends Activity {
         });
     }
 
-    private void showToast(boolean enabled) {
+    private boolean showToast(boolean enabled) {
         if (Methods.isAccessibilitySettingsOn(this)) {
             String toastString;
             if (enabled) {
@@ -145,10 +145,12 @@ public class GuideActivity extends Activity {
                 toastString = getString(R.string.has_disabled);
             }
             Toast.makeText(this, toastString, Toast.LENGTH_SHORT).show();
+            return true;
         } else {
             Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             startActivity(intent);
+            return false;
         }
     }
 }
