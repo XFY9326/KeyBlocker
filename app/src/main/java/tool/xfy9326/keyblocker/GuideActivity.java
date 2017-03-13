@@ -116,13 +116,19 @@ public class GuideActivity extends Activity {
                 mBtnSubmit.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
-                        if (mStringCustomKeycode.matches(customKeycodeRegEx)) {
-                            sped.putString("CustomKeycode", mStringCustomKeycode);
+                        if (mEtCustomKeycode.length() == 0) {
+                            sped.putString("CustomKeycode", "");
                             sped.commit();
                             mAdCustomKeycode.dismiss();
                         } else {
-                            Toast.makeText(GuideActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                            String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
+                            if (mStringCustomKeycode.matches(customKeycodeRegEx)) {
+                                sped.putString("CustomKeycode", mStringCustomKeycode);
+                                sped.commit();
+                                mAdCustomKeycode.dismiss();
+                            } else {
+                                Toast.makeText(GuideActivity.this, R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
@@ -131,12 +137,18 @@ public class GuideActivity extends Activity {
     }
 
     private void showToast(boolean enabled) {
-        String toastString;
-        if (enabled) {
-            toastString = getString(R.string.has_enabled);
+        if (Methods.isAccessibilitySettingsOn(this)) {
+            String toastString;
+            if (enabled) {
+                toastString = getString(R.string.has_enabled);
+            } else {
+                toastString = getString(R.string.has_disabled);
+            }
+            Toast.makeText(this, toastString, Toast.LENGTH_SHORT).show();
         } else {
-            toastString = getString(R.string.has_disabled);
+            Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivity(intent);
         }
-        Toast.makeText(this, toastString, Toast.LENGTH_SHORT).show();
     }
 }
