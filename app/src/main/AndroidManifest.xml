@@ -8,7 +8,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
         <activity
-            android:name=".GuideActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
 		<service
-			android:name=".KeyBlockService"
+			android:name=".service.KeyBlockService"
 			android:label="@string/app_name"
 			android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
 			<intent-filter>
@@ -28,7 +28,7 @@
 			</meta-data>
 		</service>
 		<service
-			android:name=".QuickSettingService"
+			android:name=".service.QuickSettingService"
 			android:label="@string/app_name"
 			android:icon="@drawable/ic_notification"
 			android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

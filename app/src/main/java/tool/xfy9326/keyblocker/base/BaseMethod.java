@@ -1,15 +1,11 @@
-package tool.xfy9326.keyblocker;
+package tool.xfy9326.keyblocker.base;
 
 import android.content.Context;
-import android.os.Build;
 import android.provider.Settings;
 
 import java.lang.reflect.Method;
 
-public class Methods {
-    public static final int Notify_ID = 5000;
-    public static final String Notify_Action = "tool.xfy9326.keyblocker.Notification.OnClick";
-
+public class BaseMethod {
     public static boolean isAccessibilitySettingsOn(Context context) {
         int accessibilityEnabled = 0;
         try {
@@ -31,11 +27,7 @@ public class Methods {
             //noinspection WrongConstant
             Object statusBarManager = context.getSystemService("statusbar");
             Method collapse;
-            if (Build.VERSION.SDK_INT <= 16) {
-                collapse = statusBarManager.getClass().getMethod("collapse");
-            } else {
-                collapse = statusBarManager.getClass().getMethod("collapsePanels");
-            }
+            collapse = statusBarManager.getClass().getMethod("collapsePanels");
             collapse.invoke(statusBarManager);
         } catch (Exception localException) {
             localException.printStackTrace();

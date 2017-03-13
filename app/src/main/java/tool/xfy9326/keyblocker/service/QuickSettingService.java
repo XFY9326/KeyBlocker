@@ -1,4 +1,4 @@
-package tool.xfy9326.keyblocker;
+package tool.xfy9326.keyblocker.service;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -10,43 +10,47 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.widget.Toast;
 
+import tool.xfy9326.keyblocker.R;
+import tool.xfy9326.keyblocker.base.BaseMethod;
+import tool.xfy9326.keyblocker.config.Config;
+
 @TargetApi(Build.VERSION_CODES.N)
 public class QuickSettingService extends TileService {
-    private SharedPreferences sp = null;
+    private SharedPreferences mSp = null;
 
     @Override
     public void onCreate() {
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate();
+        mSp = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
     public void onStartListening() {
-        UpdateView(false);
         super.onStartListening();
+        updateView(false);
     }
 
     @Override
     public void onClick() {
-        Intent intent = new Intent();
-        intent.setAction(Methods.Notify_Action);
-        sendBroadcast(intent);
-        UpdateView(true);
-        Methods.collapseStatusBar(this);
         super.onClick();
+        Intent intent = new Intent();
+        intent.setAction(Config.NOTIFICATION_ACTION);
+        sendBroadcast(intent);
+        updateView(true);
+        BaseMethod.collapseStatusBar(this);
     }
 
-    private void UpdateView(boolean showtoast) {
+    private void updateView(boolean displayToast) {
         Tile tile = getQsTile();
-        if (Methods.isAccessibilitySettingsOn(this)) {
-            if (sp.getBoolean("KeyBlocked", false)) {
+        if (BaseMethod.isAccessibilitySettingsOn(this)) {
+            if (mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
                 tile.setState(Tile.STATE_ACTIVE);
             } else {
                 tile.setState(Tile.STATE_INACTIVE);
             }
         } else {
             tile.setState(Tile.STATE_INACTIVE);
-            if (showtoast) {
+            if (displayToast) {
                 Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                 startActivity(intent);
