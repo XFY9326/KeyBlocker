@@ -113,7 +113,8 @@
 		android:id="@+id/btn_access_entry"
 		android:layout_toEndOf="@id/btn_setting_custom"
 		android:layout_marginLeft="5dp"
-		android:layout_alignBaseline="@id/cb_enabled_custom_keycode"/>
+		android:layout_alignBaseline="@id/cb_enabled_custom_keycode"
+		android:textSize="12sp"/>
 
 </RelativeLayout>
 

@@ -33,9 +33,7 @@ public class QuickSettingService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        Intent intent = new Intent();
-        intent.setAction(Config.NOTIFICATION_ACTION);
-        sendBroadcast(intent);
+        BaseMethod.KeyLockBroadcast(this);
         updateView(true);
         BaseMethod.collapseStatusBar(this);
     }
