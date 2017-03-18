@@ -7,8 +7,8 @@ android {
         applicationId "tool.xfy9326.keyblocker"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 13
-        versionName '2.2'
+        versionCode 14
+        versionName '2.2.1'
     }
     buildTypes {
         release {
