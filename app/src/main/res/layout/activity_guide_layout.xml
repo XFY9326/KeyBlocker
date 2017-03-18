@@ -58,13 +58,30 @@
 		android:layout_alignParentStart="true"
 		android:layout_below="@+id/cb_display_notification"
 		android:text="@string/test_keycode"/>
-
+	
+	<CheckBox
+		android:id="@+id/cb_rootfunction"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@id/cb_display_keycode"
+		android:text="@string/root"/>
+	
+	<CheckBox
+		android:id="@+id/cb_buttonvibrate"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@id/cb_rootfunction"
+		android:enabled="false"
+		android:text="@string/button_vibrate"/>
+	
 	<CheckBox
 		android:id="@+id/cb_enabled_custom_keycode"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentStart="true"
-		android:layout_below="@id/cb_display_keycode"
+		android:layout_below="@id/cb_buttonvibrate"
 		android:text="@string/enabled_custom"/>
 
 	<Button

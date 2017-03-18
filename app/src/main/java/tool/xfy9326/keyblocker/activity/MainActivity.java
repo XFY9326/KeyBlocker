@@ -3,6 +3,7 @@ package tool.xfy9326.keyblocker.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -17,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
@@ -30,11 +30,14 @@ public class MainActivity extends Activity {
 	mBtnSettingCustomKeycode,
 	mBtnAccessEntry;
     private CheckBox
+	mCbRootFunction,
+	mCbButtonVibrate,
 	mCbDisabledVolumeKey,
 	mCbDisplayNotification,
 	mCbDisplayKeycode,
 	mCbEnabledCustomKeycode;
     private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
+	private boolean ButtonVibrateCancle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +73,73 @@ public class MainActivity extends Activity {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					mSpEditor.putBoolean(Config.DISPLAY_NOTIFICATION, isChecked);
 					mSpEditor.commit();
-					Toast.makeText(MainActivity.this, R.string.restart_service, Toast.LENGTH_SHORT).show();
-					Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-					startActivity(intent);
+					BaseMethod.RestartAccessbilityService(MainActivity.this);
+				}
+			});
+
+		mCbRootFunction.setChecked(mSp.getBoolean(Config.ROOTFUNCTION, false));
+		mCbRootFunction.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+					if (isChecked) {
+						if (BaseMethod.isRoot()) {
+							mSpEditor.putBoolean(Config.ROOTFUNCTION, true);
+							mCbButtonVibrate.setEnabled(true);
+							if (displayToast(isChecked)) {
+								BaseMethod.RestartAccessbilityService(MainActivity.this);
+							}
+						} else {
+							buttonview.setChecked(false);
+							mCbButtonVibrate.setEnabled(false);
+							mSpEditor.putBoolean(Config.ROOTFUNCTION, false);
+						}
+					} else {
+						mCbButtonVibrate.setEnabled(false);
+						mSpEditor.putBoolean(Config.ROOTFUNCTION, false);
+						if (BaseMethod.isRoot()) {
+							displayToast(isChecked);
+							if (displayToast(isChecked)) {
+								BaseMethod.RestartAccessbilityService(MainActivity.this);
+							}
+						}
+					}
+					mSpEditor.commit();
+				}
+			});
+
+		mCbButtonVibrate.setEnabled(mSp.getBoolean(Config.ROOTFUNCTION, false));
+		mCbButtonVibrate.setChecked(mSp.getBoolean(Config.BUTTONVIBRATE, false));
+        mCbButtonVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+					if (isChecked) {
+						AlertDialog.Builder vibrate_warn = new AlertDialog.Builder(MainActivity.this)
+							.setTitle(R.string.button_vibrate)
+							.setMessage(R.string.vibrate_warn)
+							.setCancelable(false)
+							.setPositiveButton(R.string.continuedo, new DialogInterface.OnClickListener(){
+								@Override
+								public void onClick(DialogInterface di, int i) {
+									mSpEditor.putBoolean(Config.BUTTONVIBRATE, true);
+									mSpEditor.commit();
+									BaseMethod.RestartAccessbilityService(MainActivity.this);
+								}
+							})
+							.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+								@Override
+								public void onClick(DialogInterface di, int i) {
+									ButtonVibrateCancle = true;
+									buttonView.setChecked(false);
+								}
+							});
+						vibrate_warn.show();
+					} else {
+						if (!ButtonVibrateCancle) {
+							mSpEditor.putBoolean(Config.BUTTONVIBRATE, false);
+							mSpEditor.commit();
+							BaseMethod.RestartAccessbilityService(MainActivity.this);
+						}
+						ButtonVibrateCancle = false;
+					}
 				}
 			});
 
@@ -174,6 +241,8 @@ public class MainActivity extends Activity {
         mCbDisplayNotification = (CheckBox) findViewById(R.id.cb_display_notification);
         mCbDisplayKeycode = (CheckBox) findViewById(R.id.cb_display_keycode);
         mCbEnabledCustomKeycode = (CheckBox) findViewById(R.id.cb_enabled_custom_keycode);
+		mCbRootFunction = (CheckBox) findViewById(R.id.cb_rootfunction);
+		mCbButtonVibrate = (CheckBox) findViewById(R.id.cb_buttonvibrate);
         mBtnSettingCustomKeycode = (Button) findViewById(R.id.btn_setting_custom);
 		mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
 
@@ -195,9 +264,7 @@ public class MainActivity extends Activity {
             Toast.makeText(this, mStrToast, Toast.LENGTH_SHORT).show();
             return true;
         } else {
-            Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivity(intent);
+            BaseMethod.RunAccessbilityService(this);
             return false;
         }
     }

@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
+import java.io.DataOutputStream;
 import java.util.Arrays;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
@@ -28,6 +29,11 @@ public class KeyBlockService extends AccessibilityService {
     private SharedPreferences.Editor mSpEditor;
     private boolean mIsQuickSetting = false;
 	private NotificationManager mNM;
+	private Runtime mRuntime;
+	private Process mProcess;
+	private DataOutputStream mRuntimeStream;
+	private boolean inRootMode = false;
+	private boolean allowBlockVibrator = false;
 
     @Override
     public void onCreate() {
@@ -36,11 +42,14 @@ public class KeyBlockService extends AccessibilityService {
         mSp = PreferenceManager.getDefaultSharedPreferences(this);
         mSpEditor = mSp.edit();
         mSpEditor.apply();
+		inRootMode = mSp.getBoolean(Config.ROOTFUNCTION, false);
+		allowBlockVibrator = mSp.getBoolean(Config.BUTTONVIBRATE, false);
     }
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+		getRoot();
         ControlModeSet();
         ReceiverRegister();
         if (!mIsQuickSetting) {
@@ -55,15 +64,19 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         ReceiverUnregister();
+		ButtonLightControl(false);
+		ButtonVibrateControl(false);
         if (!mIsQuickSetting) {
             CloseNotification();
         }
+		if (inRootMode) {
+			BaseMethod.closeRuntime(mProcess, mRuntimeStream);
+		}
     }
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
         int keycode = event.getKeyCode();
-
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
             if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
                 if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
@@ -99,6 +112,55 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
+	private void getRoot() {
+		if (inRootMode) {
+			mRuntime = Runtime.getRuntime();
+			mProcess = BaseMethod.getRootProcess(mRuntime);
+			mRuntimeStream = BaseMethod.getStream(mProcess);
+		}
+	}
+
+	private void ButtonLightControl(final boolean close) {
+		if (inRootMode && mRuntime != null && mProcess != null && mRuntimeStream != null) {
+			new Thread(new Runnable(){
+					@Override
+					public void run() {
+						try {
+							if (close) {
+								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
+							} else {
+								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
+							}
+							mRuntimeStream.flush();
+							mProcess.waitFor();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+		}
+	}
+
+	private void ButtonVibrateControl(final boolean close) {
+		if (inRootMode && allowBlockVibrator && mRuntime != null && mProcess != null && mRuntimeStream != null) {
+			new Thread(new Runnable(){
+					public void run() {
+						try {
+							if (close) {
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
+							} else {
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
+							}
+							mRuntimeStream.flush();
+							mProcess.waitFor();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+		}
+	}
+
     private void ReceiverRegister() {
         IntentFilter filter = new IntentFilter();
 		filter.addAction(Config.NOTIFICATION_CLICK_ACTION);
@@ -130,9 +192,13 @@ public class KeyBlockService extends AccessibilityService {
         mNBuilder.setSmallIcon(R.drawable.ic_notification);
         mNBuilder.setContentTitle(getString(R.string.app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+			ButtonLightControl(true);
+			ButtonVibrateControl(true);
 			mNBuilder.setOngoing(true);
             mNBuilder.setContentText(getString(R.string.notify_mes_off));
         } else {
+			ButtonLightControl(false);
+			ButtonVibrateControl(false);
 			mNBuilder.setOngoing(false);
             mNBuilder.setContentText(getString(R.string.notify_mes_on));
         }
@@ -153,6 +219,8 @@ public class KeyBlockService extends AccessibilityService {
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
                 mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
+				ButtonLightControl(mIsKeyBlocked);
+				ButtonVibrateControl(mIsKeyBlocked);
                 mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
                 mSpEditor.commit();
                 if (!mIsQuickSetting) {
