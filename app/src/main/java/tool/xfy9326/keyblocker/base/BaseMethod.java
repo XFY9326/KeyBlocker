@@ -9,7 +9,7 @@ import tool.xfy9326.keyblocker.config.Config;
 public class BaseMethod {
 	public static void KeyLockBroadcast(Context mContext) {
 		Intent intent = new Intent();
-        intent.setAction(Config.NOTIFICATION_ACTION);
+        intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
         mContext.sendBroadcast(intent);
 	}
 

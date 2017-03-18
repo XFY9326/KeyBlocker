@@ -18,7 +18,7 @@ public class RemoteReceiver extends BroadcastReceiver {
 			displayToast = intent.getBooleanExtra("RESPOND", true);
 			if (BaseMethod.isAccessibilitySettingsOn(context)) {
 				Intent notify_intent = new Intent();
-				notify_intent.setAction(Config.NOTIFICATION_ACTION);
+				notify_intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
 				context.sendBroadcast(notify_intent);
 			} else {
 				if (displayToast) {

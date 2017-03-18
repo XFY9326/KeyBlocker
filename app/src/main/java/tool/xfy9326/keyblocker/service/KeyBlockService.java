@@ -14,9 +14,7 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
-
 import java.util.Arrays;
-
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
@@ -29,10 +27,12 @@ public class KeyBlockService extends AccessibilityService {
     private SharedPreferences mSp;
     private SharedPreferences.Editor mSpEditor;
     private boolean mIsQuickSetting = false;
+	private NotificationManager mNM;
 
     @Override
     public void onCreate() {
         super.onCreate();
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mSp = PreferenceManager.getDefaultSharedPreferences(this);
         mSpEditor = mSp.edit();
         mSpEditor.apply();
@@ -100,7 +100,9 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     private void ReceiverRegister() {
-        IntentFilter filter = new IntentFilter(Config.NOTIFICATION_ACTION);
+        IntentFilter filter = new IntentFilter();
+		filter.addAction(Config.NOTIFICATION_CLICK_ACTION);
+		filter.addAction(Config.NOTIFICATION_DELETE_ACTION);
         mBbr = new ButtonBroadcastReceiver();
         registerReceiver(mBbr, filter);
     }
@@ -118,25 +120,29 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     private void ShowNotification() {
-        Intent intent = new Intent(Config.NOTIFICATION_ACTION);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent click_intent = new Intent(Config.NOTIFICATION_CLICK_ACTION);
+        PendingIntent click_pendingIntent = PendingIntent.getBroadcast(this, 0, click_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Intent delete_intent = new Intent(Config.NOTIFICATION_DELETE_ACTION);
+		PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mNBuilder = new Notification.Builder(this);
-        mNBuilder.setOngoing(true);
         mNBuilder.setSmallIcon(R.drawable.ic_notification);
         mNBuilder.setContentTitle(getString(R.string.app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+			mNBuilder.setOngoing(true);
             mNBuilder.setContentText(getString(R.string.notify_mes_off));
         } else {
+			mNBuilder.setOngoing(false);
             mNBuilder.setContentText(getString(R.string.notify_mes_on));
         }
-        mNBuilder.setContentIntent(pendingIntent);
+		mNBuilder.setDeleteIntent(delete_pendingintent);
+        mNBuilder.setContentIntent(click_pendingIntent);
         mNBuilder.setPriority(Notification.PRIORITY_MIN);
-        startForeground(Config.NOTIFICATION_ID, mNBuilder.build());
+        mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
     }
 
     private void CloseNotification() {
-        stopForeground(true);
+        mNM.cancel(Config.NOTIFICATION_ID);
     }
 
     private class ButtonBroadcastReceiver extends BroadcastReceiver {
@@ -144,21 +150,25 @@ public class KeyBlockService extends AccessibilityService {
 
         @Override
         public void onReceive(Context content, Intent intent) {
-            if (intent.getAction().equals(Config.NOTIFICATION_ACTION)) {
+            if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
                 mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
                 mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
                 mSpEditor.commit();
                 if (!mIsQuickSetting) {
                     if (mIsKeyBlocked) {
+						mNBuilder.setOngoing(true);
                         mNBuilder.setContentText(getString(R.string.notify_mes_off));
                     } else {
+						mNBuilder.setOngoing(false);
                         mNBuilder.setContentText(getString(R.string.notify_mes_on));
                     }
-                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    nm.notify(Config.NOTIFICATION_ID, mNBuilder.build());
+                    mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
                     BaseMethod.collapseStatusBar(content);
                 }
-            }
+            } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
+				disableSelf();
+				stopSelf();
+			}
         }
     }
 }
