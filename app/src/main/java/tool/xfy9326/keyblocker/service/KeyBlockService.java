@@ -238,7 +238,7 @@ public class KeyBlockService extends AccessibilityService {
                     BaseMethod.collapseStatusBar(content);
                 }
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
-				if (Build.VERSION.SDK_INT >= 24) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 					disableSelf();
 					stopSelf();
 				}

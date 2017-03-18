@@ -26,7 +26,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="5dp"
-			android:layout_marginTop="10dp"
+			android:layout_marginTop="5dp"
 			android:gravity="start"
 			android:text="@string/attention"
 			android:textAppearance="?android:attr/textAppearanceMedium"
@@ -35,7 +35,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
+			android:layout_marginTop="5dp"
 			android:gravity="start"
 			android:text="@string/tile_set"
 			android:textAppearance="?android:attr/textAppearanceMedium"
@@ -58,7 +58,7 @@
 		android:layout_alignParentStart="true"
 		android:layout_below="@+id/cb_display_notification"
 		android:text="@string/test_keycode"/>
-	
+
 	<CheckBox
 		android:id="@+id/cb_rootfunction"
 		android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
 		android:layout_alignParentStart="true"
 		android:layout_below="@id/cb_display_keycode"
 		android:text="@string/root"/>
-	
+
 	<CheckBox
 		android:id="@+id/cb_buttonvibrate"
 		android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
 		android:layout_below="@id/cb_rootfunction"
 		android:enabled="false"
 		android:text="@string/button_vibrate"/>
-	
+
 	<CheckBox
 		android:id="@+id/cb_enabled_custom_keycode"
 		android:layout_width="wrap_content"
@@ -93,7 +93,8 @@
 		android:padding="0dp"
 		android:text="@string/custom_setting"
 		android:textSize="12sp"
-		android:gravity="center"/>
+		android:gravity="center"
+		android:layout_marginLeft="5dp"/>
 
 	<CheckBox
 		android:id="@+id/cb_disabled_volume_key"
