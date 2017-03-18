@@ -49,9 +49,7 @@ public class QuickSettingService extends TileService {
         } else {
             tile.setState(Tile.STATE_INACTIVE);
             if (displayToast) {
-                Toast.makeText(this, R.string.start_service_first, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivity(intent);
+                BaseMethod.RunAccessbilityService(this);
             }
         }
         tile.updateTile();

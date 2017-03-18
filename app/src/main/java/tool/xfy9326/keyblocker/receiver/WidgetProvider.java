@@ -35,10 +35,15 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	private void updateView(Context context) {
-		ComponentName mCN = new ComponentName(context, WidgetProvider.class);
-		AppWidgetManager mAWM = AppWidgetManager.getInstance(context);
-		ViewSet(context, false);
-		mAWM.updateAppWidget(mCN, mRv);
+		if (BaseMethod.isAccessibilitySettingsOn(context)) {
+			ComponentName mCN = new ComponentName(context, WidgetProvider.class);
+			AppWidgetManager mAWM = AppWidgetManager.getInstance(context);
+			ViewSet(context, false);
+			mAWM.updateAppWidget(mCN, mRv);
+		} else {
+			BaseMethod.RunAccessbilityService(context);
+		}
+
 	}
 
 	private void ViewSet(Context context, boolean init) {
@@ -48,6 +53,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		boolean key = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Config.ENABLED_KEYBLOCK, true);
 		if (init) {
 			key = !key;
+			if (!BaseMethod.isAccessibilitySettingsOn(context)) {
+				key = true;
+			}
 		}
 		if (key) {
 			mRv.setImageViewResource(R.id.btn_appwidget, R.drawable.ic_appwidget_off);
