@@ -30,20 +30,25 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (intent.getAction().equals(Config.APPWIDGET_CLICK_ACTION)) {
 			BaseMethod.KeyLockBroadcast(context);
 			updateView(context);
+		} else if (intent.getAction().equals(Config.APPWIDGET_UPDATE_ACTION)) {
+			reloadView(context, true);
 		}
 		super.onReceive(context, intent);
 	}
 
 	private void updateView(Context context) {
 		if (BaseMethod.isAccessibilitySettingsOn(context)) {
-			ComponentName mCN = new ComponentName(context, WidgetProvider.class);
-			AppWidgetManager mAWM = AppWidgetManager.getInstance(context);
-			ViewSet(context, false);
-			mAWM.updateAppWidget(mCN, mRv);
+			reloadView(context, false);
 		} else {
 			BaseMethod.RunAccessbilityService(context);
 		}
+	}
 
+	private void reloadView(Context context, boolean init) {
+		ComponentName mCN = new ComponentName(context, WidgetProvider.class);
+		AppWidgetManager mAWM = AppWidgetManager.getInstance(context);
+		ViewSet(context, init);
+		mAWM.updateAppWidget(mCN, mRv);
 	}
 
 	private void ViewSet(Context context, boolean init) {

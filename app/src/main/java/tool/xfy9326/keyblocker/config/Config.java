@@ -7,6 +7,7 @@ package tool.xfy9326.keyblocker.config;
 public class Config {
     public static int NOTIFICATION_ID = 5000;
 	public static String APPWIDGET_CLICK_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_CLICK_ACTION";
+	public static String APPWIDGET_UPDATE_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_UPDATE_ACTION";
 	public static String REMOTE_CONTROL_ACTION = "tool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION";
     public static String NOTIFICATION_CLICK_ACTION = "tool.xfy9326.keyblocker.Notification.OnClick";
 	public static String NOTIFICATION_DELETE_ACTION = "tool.xfy9326.keyblocker.Notification.OnDelete";
@@ -15,5 +16,6 @@ public class Config {
     public static String CUSTOM_KEYCODE = "CustomKeycode";
     public static String DISPLAY_KEYCODE = "DisplayKeycode";
 	public static String ENABLED_KEYBLOCK = "EnabledKeyBlock";
+	public static String DISPLAY_APPWIDGET = "DiaplayAppWidget";
     public static String DISPLAY_NOTIFICATION = "DisplayNotification";
 }

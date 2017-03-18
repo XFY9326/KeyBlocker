@@ -121,6 +121,7 @@ public class KeyBlockService extends AccessibilityService {
 
     private void ShowNotification() {
         Intent click_intent = new Intent(Config.NOTIFICATION_CLICK_ACTION);
+		click_intent.putExtra(Config.DISPLAY_APPWIDGET, true);
         PendingIntent click_pendingIntent = PendingIntent.getBroadcast(this, 0, click_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Intent delete_intent = new Intent(Config.NOTIFICATION_DELETE_ACTION);
 		PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -162,6 +163,9 @@ public class KeyBlockService extends AccessibilityService {
 						mNBuilder.setOngoing(false);
                         mNBuilder.setContentText(getString(R.string.notify_mes_on));
                     }
+					if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
+						sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
+					}
                     mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
                     BaseMethod.collapseStatusBar(content);
                 }

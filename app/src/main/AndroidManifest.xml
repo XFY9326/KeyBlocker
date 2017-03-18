@@ -49,6 +49,7 @@
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 				<action android:name="tool.xfy9326.keyblocker.action.APPWIDGET_CLICK_ACTION" />
+				<action android:name="tool.xfy9326.keyblocker.action.APPWIDGET_UPDATE_ACTION" />
 			</intent-filter>
 			<meta-data 
 				android:name="android.appwidget.provider"
