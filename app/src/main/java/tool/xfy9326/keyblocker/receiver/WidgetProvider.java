@@ -40,7 +40,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (BaseMethod.isAccessibilitySettingsOn(context)) {
 			reloadView(context, false);
 		} else {
-			BaseMethod.RunAccessbilityService(context);
+			BaseMethod.RunAccessibilityService(context);
 		}
 	}
 

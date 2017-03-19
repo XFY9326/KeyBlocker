@@ -1,16 +1,12 @@
 package tool.xfy9326.keyblocker.service;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.widget.Toast;
 
-import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
 
@@ -49,7 +45,7 @@ public class QuickSettingService extends TileService {
         } else {
             tile.setState(Tile.STATE_INACTIVE);
             if (displayToast) {
-                BaseMethod.RunAccessbilityService(this);
+                BaseMethod.RunAccessibilityService(this);
             }
         }
         tile.updateTile();
