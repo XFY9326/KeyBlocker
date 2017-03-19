@@ -84,28 +84,26 @@ public class KeyBlockService extends AccessibilityService {
         if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
             Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
         }
-        if (!mSp.getBoolean(Config.ENABLED_XPOSED, false)) {
-            if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
-                if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
-                    if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-                        return true;
-                    }
-                    String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
-                    Arrays.sort(sourceStrArray);
-                    int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
+		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+			if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
+				if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+					return true;
+				}
+				String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
+				Arrays.sort(sourceStrArray);
+				int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
 
-                    boolean isDisabled = index >= 0;
+				boolean isDisabled = index >= 0;
 
-                    if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
-                        if (isDisabled) {
-                            Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    return isDisabled;
-                }
-            }
+				if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
+					if (isDisabled) {
+						Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+					}
+				}
+				return isDisabled;
+			}
             return mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
         } else {
             return false;
@@ -131,45 +129,45 @@ public class KeyBlockService extends AccessibilityService {
     private void ButtonLightControl(final boolean close) {
         if (inRootMode && mRuntime != null && mProcess != null && mRuntimeStream != null) {
             new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-						mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
-                        if (close) {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
-							mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
-                        } else {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
-                        }
-                        mRuntimeStream.flush();
-                        mProcess.waitFor();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+					@Override
+					public void run() {
+						try {
+							mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
+							if (close) {
+								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
+								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
+							} else {
+								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
+							}
+							mRuntimeStream.flush();
+							mProcess.waitFor();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
         }
     }
 
     private void ButtonVibrateControl(final boolean close) {
         if (inRootMode && allowBlockVibrator && mRuntime != null && mProcess != null && mRuntimeStream != null) {
             new Thread(new Runnable() {
-                public void run() {
-                    try {
-						mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
-                        if (close) {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
-							mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
-                        } else {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
-                        }
-                        mRuntimeStream.flush();
-                        mProcess.waitFor();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+					public void run() {
+						try {
+							mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
+							if (close) {
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
+							} else {
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
+							}
+							mRuntimeStream.flush();
+							mProcess.waitFor();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
         }
     }
 
