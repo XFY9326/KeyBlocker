@@ -27,9 +27,13 @@ public class Config {
 	public static String NOTIFICATION_ICON = "NotificationIcon";
 	public static String REMOVE_NOTIFICATION = "RemoveNotification";
 
-    public static String RUNTIME_BUTTONLIGHT_ON = "cp -R /sys/class/leds/button-backlight/brightness.bak /sys/class/leds/button-backlight/brightness";
-    public static String RUNTIME_BUTTONLIGHT_OFF = "[ ! -f \"/sys/class/leds/button-backlight/brightness.bak\" ] && cp /sys/class/leds/button-backlight/brightness /sys/class/leds/button-backlight/brightness.bak \necho 0 > /sys/class/leds/button-backlight/brightness";
+    public static String RUNTIME_BUTTONLIGHT_ON = "echo 100 > /sys/class/leds/button-backlight/brightness";
+	public static String RUNTIME_BUTTONLIGHT_OFF = "echo 0 > /sys/class/leds/button-backlight/brightness";
+	public static String RUNTIME_BUTTONLIGHT_CHMOD_STICK = "chmod 444 /sys/class/leds/button-backlight/brightness";
+	public static String RUNTIME_BUTTONLIGHT_CHMOD_CHANGE = "chmod 644 /sys/class/leds/button-backlight/brightness";
     public static String RUNTIME_VIBRATE_ON = "echo 100 > /sys/class/timed_output/vibrator/vtg_level";
-    public static String RUNTIME_VIBRATE_OFF = "[ ! -f \"/sys/class/timed_output/vibrator/vtg_level.bak\" ] && cp /sys/class/timed_output/vibrator/vtg_level /sys/class/timed_output/vibrator/vtg_level.bak \necho 0 > /sys/class/timed_output/vibrator/vtg_level";
+    public static String RUNTIME_VIBRATE_OFF = "echo 0 > /sys/class/timed_output/vibrator/vtg_level";
+	public static String RUNTIME_VIBRATE_CHMOD_STICK = "chmod 444 /sys/class/timed_output/vibrator/vtg_level";
+	public static String RUNTIME_VIBRATE_CHMOD_CHANGE = "chmod 644 /sys/class/timed_output/vibrator/vtg_level";
 
 }

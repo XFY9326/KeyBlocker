@@ -134,8 +134,10 @@ public class KeyBlockService extends AccessibilityService {
                 @Override
                 public void run() {
                     try {
+						mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
                         if (close) {
                             mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
+							mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
                         } else {
                             mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
                         }
@@ -154,8 +156,10 @@ public class KeyBlockService extends AccessibilityService {
             new Thread(new Runnable() {
                 public void run() {
                     try {
+						mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
                         if (close) {
                             mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
+							mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
                         } else {
                             mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
                         }
