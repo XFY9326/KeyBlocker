@@ -34,6 +34,8 @@ public class KeyBlockService extends AccessibilityService {
     private Runtime mRuntime;
     private Process mProcess;
     private DataOutputStream mRuntimeStream;
+	private boolean isReceiverRegistered = false;
+	private boolean isNotificationClosed = true;
     private boolean inRootMode = false;
     private boolean allowBlockVibrator = false;
 	private boolean allowRemoveNotification = false;
@@ -45,16 +47,16 @@ public class KeyBlockService extends AccessibilityService {
         mSp = PreferenceManager.getDefaultSharedPreferences(this);
         mSpEditor = mSp.edit();
         mSpEditor.apply();
-        inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
-        allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
-		allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
     }
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+		inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
+        allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
+		allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
         getRoot();
-        ControlModeSet();
+		ControlModeSet();
         ReceiverRegister();
         if (!mIsQuickSetting) {
             ShowNotification();
@@ -67,7 +69,22 @@ public class KeyBlockService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
-        ReceiverUnregister();
+		ReceiverUnregister();
+		ButtonLightControl(false);
+        ButtonVibrateControl(false);
+    }
+
+	@Override
+	public void onDestroy() {
+		ReceiverUnregister();
+		ButtonLightControl(false);
+        ButtonVibrateControl(false);
+		super.onDestroy();
+	}
+
+	@Override
+	public boolean onUnbind(Intent intent) {
+		ReceiverUnregister();
         ButtonLightControl(false);
         ButtonVibrateControl(false);
         if (!mIsQuickSetting) {
@@ -76,7 +93,8 @@ public class KeyBlockService extends AccessibilityService {
         if (inRootMode) {
             BaseMethod.closeRuntime(mProcess, mRuntimeStream);
         }
-    }
+		return super.onUnbind(intent);
+	}
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
@@ -176,19 +194,15 @@ public class KeyBlockService extends AccessibilityService {
         filter.addAction(Config.NOTIFICATION_CLICK_ACTION);
         filter.addAction(Config.NOTIFICATION_DELETE_ACTION);
         mBbr = new ButtonBroadcastReceiver();
+		isReceiverRegistered = true;
         registerReceiver(mBbr, filter);
     }
 
     private void ReceiverUnregister() {
-        if (mBbr != null) {
+        if (mBbr != null && isReceiverRegistered) {
+			isReceiverRegistered = false;
             unregisterReceiver(mBbr);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        ReceiverUnregister();
-        super.onDestroy();
     }
 
     private void ShowNotification() {
@@ -222,11 +236,15 @@ public class KeyBlockService extends AccessibilityService {
 		if (!mSp.getBoolean(Config.NOTIFICATION_ICON, false)) {
         	mNBuilder.setPriority(Notification.PRIORITY_MIN);
 		}
+		isNotificationClosed = false;
         mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
     }
 
     private void CloseNotification() {
-        mNM.cancel(Config.NOTIFICATION_ID);
+		if (!isNotificationClosed) {
+			isNotificationClosed = true;
+			mNM.cancel(Config.NOTIFICATION_ID);
+		}
     }
 
     private class ButtonBroadcastReceiver extends BroadcastReceiver {
@@ -255,6 +273,7 @@ public class KeyBlockService extends AccessibilityService {
                     if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
                         sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
                     }
+					isNotificationClosed = false;
                     mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
                     BaseMethod.collapseStatusBar(content);
                 }
