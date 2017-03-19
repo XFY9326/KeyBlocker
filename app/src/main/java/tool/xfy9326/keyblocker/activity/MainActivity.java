@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
             mCbDisplayKeycode,
             mCbEnabledCustomKeycode;
     private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
-    private boolean ButtonVibrateCancle = false;
+    private boolean ButtonVibrateCancel = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +78,13 @@ public class MainActivity extends Activity {
             }
         });
 
-        mCbRootFunction.setChecked(mSp.getBoolean(Config.ROOTFUNCTION, false));
+        mCbRootFunction.setChecked(mSp.getBoolean(Config.ROOT_FUNCTION, false));
         mCbRootFunction.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (BaseMethod.isRoot()) {
-                        mSpEditor.putBoolean(Config.ROOTFUNCTION, true);
+                        mSpEditor.putBoolean(Config.ROOT_FUNCTION, true);
                         mCbButtonVibrate.setEnabled(true);
                         if (displayToast(true)) {
                             BaseMethod.RestartAccessibilityService(MainActivity.this);
@@ -92,11 +92,11 @@ public class MainActivity extends Activity {
                     } else {
                         buttonView.setChecked(false);
                         mCbButtonVibrate.setEnabled(false);
-                        mSpEditor.putBoolean(Config.ROOTFUNCTION, false);
+                        mSpEditor.putBoolean(Config.ROOT_FUNCTION, false);
                     }
                 } else {
                     mCbButtonVibrate.setEnabled(false);
-                    mSpEditor.putBoolean(Config.ROOTFUNCTION, false);
+                    mSpEditor.putBoolean(Config.ROOT_FUNCTION, false);
                     if (BaseMethod.isRoot()) {
                         displayToast(false);
                         if (displayToast(false)) {
@@ -108,8 +108,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        mCbButtonVibrate.setEnabled(mSp.getBoolean(Config.ROOTFUNCTION, false));
-        mCbButtonVibrate.setChecked(mSp.getBoolean(Config.BUTTONVIBRATE, false));
+        mCbButtonVibrate.setEnabled(mSp.getBoolean(Config.ROOT_FUNCTION, false));
+        mCbButtonVibrate.setChecked(mSp.getBoolean(Config.BUTTON_VIBRATE, false));
         mCbButtonVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 if (isChecked) {
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
                             .setPositiveButton(R.string.continuedo, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface di, int i) {
-                                    mSpEditor.putBoolean(Config.BUTTONVIBRATE, true);
+                                    mSpEditor.putBoolean(Config.BUTTON_VIBRATE, true);
                                     mSpEditor.commit();
                                     BaseMethod.RestartAccessibilityService(MainActivity.this);
                                 }
@@ -128,18 +128,18 @@ public class MainActivity extends Activity {
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface di, int i) {
-                                    ButtonVibrateCancle = true;
+                                    ButtonVibrateCancel = true;
                                     buttonView.setChecked(false);
                                 }
                             });
                     vibrate_warn.show();
                 } else {
-                    if (!ButtonVibrateCancle) {
-                        mSpEditor.putBoolean(Config.BUTTONVIBRATE, false);
+                    if (!ButtonVibrateCancel) {
+                        mSpEditor.putBoolean(Config.BUTTON_VIBRATE, false);
                         mSpEditor.commit();
                         BaseMethod.RestartAccessibilityService(MainActivity.this);
                     }
-                    ButtonVibrateCancle = false;
+                    ButtonVibrateCancel = false;
                 }
             }
         });

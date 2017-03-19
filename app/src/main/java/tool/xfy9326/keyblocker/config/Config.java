@@ -19,9 +19,10 @@ public class Config {
     public static String CUSTOM_KEYCODE = "CustomKeycode";
     public static String DISPLAY_KEYCODE = "DisplayKeycode";
     public static String ENABLED_KEYBLOCK = "EnabledKeyBlock";
+    public static String ENABLED_XPOSED = "EnabledXposed";
     public static String DISPLAY_APPWIDGET = "DiaplayAppWidget";
-    public static String ROOTFUNCTION = "RootFunction";
-    public static String BUTTONVIBRATE = "ButtonVibrate";
+    public static String ROOT_FUNCTION = "RootFunction";
+    public static String BUTTON_VIBRATE = "ButtonVibrate";
     public static String DISPLAY_NOTIFICATION = "DisplayNotification";
 
     public static String RUNTIME_BUTTONLIGHT_ON = "cp -R /sys/class/leds/button-backlight/brightness.bak /sys/class/leds/button-backlight/brightness";
