@@ -21,6 +21,8 @@
     <string name="spaces_separate">使用空格分隔</string>
 	<string name="access_entry">接入口</string>
 	<string name="root">使用Root功能(按键灯与震动控制)</string>
+	<string name="show_notification_icon">显示通知栏图标</string>
+	<string name="allow_remove_notification">不屏蔽时允许移除通知栏信息</string>
 	<string name="button_vibrate">按键震动屏蔽</string>
 	<string name="vibrate_warn">如果使用了此功能，所有震动都会被屏蔽！除非你不再屏蔽按键！\n\n我们建议你在系统设置中对按键震动进行设置代替这个方法！</string>
 	<string name="access_entry_use">远程调用广播：\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\n可用参数：\n布尔值RESPOND\n无障碍服务未开启时是否提示(默认 true)</string>

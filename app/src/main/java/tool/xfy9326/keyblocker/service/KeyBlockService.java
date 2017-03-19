@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
@@ -35,16 +36,18 @@ public class KeyBlockService extends AccessibilityService {
     private DataOutputStream mRuntimeStream;
     private boolean inRootMode = false;
     private boolean allowBlockVibrator = false;
+	private boolean allowRemoveNotification = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mSp = getSharedPreferences(getPackageName() + "_preferences", MODE_WORLD_READABLE);
+        mSp = PreferenceManager.getDefaultSharedPreferences(this);
         mSpEditor = mSp.edit();
         mSpEditor.apply();
         inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
         allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
+		allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
     }
 
     @Override
@@ -194,22 +197,29 @@ public class KeyBlockService extends AccessibilityService {
         PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mNBuilder = new Notification.Builder(this);
+		mNBuilder.setOngoing(true);
         mNBuilder.setSmallIcon(R.drawable.ic_notification);
         mNBuilder.setContentTitle(getString(R.string.app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
             ButtonLightControl(true);
             ButtonVibrateControl(true);
-            mNBuilder.setOngoing(true);
+			if (allowRemoveNotification) {
+            	mNBuilder.setOngoing(true);
+			}
             mNBuilder.setContentText(getString(R.string.notify_mes_off));
         } else {
             ButtonLightControl(false);
             ButtonVibrateControl(false);
-            mNBuilder.setOngoing(false);
+			if (allowRemoveNotification) {
+            	mNBuilder.setOngoing(false);
+			}
             mNBuilder.setContentText(getString(R.string.notify_mes_on));
         }
         mNBuilder.setDeleteIntent(delete_pendingintent);
         mNBuilder.setContentIntent(click_pendingIntent);
-        mNBuilder.setPriority(Notification.PRIORITY_MIN);
+		if (!mSp.getBoolean(Config.NOTIFICATION_ICON, false)) {
+        	mNBuilder.setPriority(Notification.PRIORITY_MIN);
+		}
         mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
     }
 
@@ -230,10 +240,14 @@ public class KeyBlockService extends AccessibilityService {
                 mSpEditor.commit();
                 if (!mIsQuickSetting) {
                     if (mIsKeyBlocked) {
-                        mNBuilder.setOngoing(true);
+						if (allowRemoveNotification) {
+                        	mNBuilder.setOngoing(true);
+						}
                         mNBuilder.setContentText(getString(R.string.notify_mes_off));
                     } else {
-                        mNBuilder.setOngoing(false);
+						if (allowRemoveNotification) {
+                        	mNBuilder.setOngoing(false);
+						}
                         mNBuilder.setContentText(getString(R.string.notify_mes_on));
                     }
                     if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
@@ -243,7 +257,7 @@ public class KeyBlockService extends AccessibilityService {
                     BaseMethod.collapseStatusBar(content);
                 }
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (allowRemoveNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
                     stopSelf();
                 }

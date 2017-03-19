@@ -104,6 +104,22 @@
         android:enabled="false"
         android:text="@string/disabled_volume_key" />
 
+	<CheckBox
+        android:id="@+id/cb_notification_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/cb_disabled_volume_key"
+        android:text="@string/show_notification_icon" />
+	
+	<CheckBox
+        android:id="@+id/cb_remove_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/cb_notification_icon"
+        android:text="@string/allow_remove_notification" />
+	
     <Button
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"

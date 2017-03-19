@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
             mBtnSettingCustomKeycode,
             mBtnAccessEntry;
     private CheckBox
+			mCbRemoveNotification,
+			mCbNotificationIcon,
             mCbRootFunction,
             mCbButtonVibrate,
             mCbDisabledVolumeKey,
@@ -164,6 +166,26 @@ public class MainActivity extends Activity {
                 mCbEnabledCustomKeycode.setChecked(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
             }
         });
+		
+		mCbNotificationIcon.setChecked(mSp.getBoolean(Config.NOTIFICATION_ICON, false));
+        mCbNotificationIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.NOTIFICATION_ICON, isChecked);
+					mSpEditor.commit();
+					BaseMethod.RestartAccessibilityService(MainActivity.this);
+				}
+			});
+			
+		mCbRemoveNotification.setChecked(mSp.getBoolean(Config.REMOVE_NOTIFICATION, false));
+        mCbRemoveNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mSpEditor.putBoolean(Config.REMOVE_NOTIFICATION, isChecked);
+					mSpEditor.commit();
+					BaseMethod.RestartAccessibilityService(MainActivity.this);
+				}
+			});
 
         mBtnAccessEntry.setOnClickListener(new OnClickListener() {
             @Override
@@ -244,6 +266,8 @@ public class MainActivity extends Activity {
         mCbEnabledCustomKeycode = (CheckBox) findViewById(R.id.cb_enabled_custom_keycode);
         mCbRootFunction = (CheckBox) findViewById(R.id.cb_rootfunction);
         mCbButtonVibrate = (CheckBox) findViewById(R.id.cb_buttonvibrate);
+		mCbNotificationIcon = (CheckBox) findViewById(R.id.cb_notification_icon);
+		mCbRemoveNotification = (CheckBox) findViewById(R.id.cb_remove_notification);
         mBtnSettingCustomKeycode = (Button) findViewById(R.id.btn_setting_custom);
         mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
 

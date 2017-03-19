@@ -24,6 +24,8 @@ public class Config {
     public static String ROOT_FUNCTION = "RootFunction";
     public static String BUTTON_VIBRATE = "ButtonVibrate";
     public static String DISPLAY_NOTIFICATION = "DisplayNotification";
+	public static String NOTIFICATION_ICON = "NotificationIcon";
+	public static String REMOVE_NOTIFICATION = "RemoveNotification";
 
     public static String RUNTIME_BUTTONLIGHT_ON = "cp -R /sys/class/leds/button-backlight/brightness.bak /sys/class/leds/button-backlight/brightness";
     public static String RUNTIME_BUTTONLIGHT_OFF = "[ ! -f \"/sys/class/leds/button-backlight/brightness.bak\" ] && cp /sys/class/leds/button-backlight/brightness /sys/class/leds/button-backlight/brightness.bak \necho 0 > /sys/class/leds/button-backlight/brightness";
