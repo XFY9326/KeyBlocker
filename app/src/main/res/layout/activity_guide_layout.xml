@@ -42,12 +42,21 @@
 
     </LinearLayout>
 
+	<CheckBox
+        android:id="@+id/cb_disabled_volume_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/layout_content"
+        android:enabled="false"
+        android:text="@string/disabled_volume_key" />
+	
     <CheckBox
         android:id="@+id/cb_display_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/layout_content"
+        android:layout_below="@id/cb_disabled_volume_key"
         android:text="@string/force_notification_control" />
 
     <CheckBox
@@ -95,21 +104,12 @@
         android:text="@string/custom_setting"
         android:textSize="12sp" />
 
-    <CheckBox
-        android:id="@+id/cb_disabled_volume_key"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/cb_enabled_custom_keycode"
-        android:enabled="false"
-        android:text="@string/disabled_volume_key" />
-
 	<CheckBox
         android:id="@+id/cb_notification_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/cb_disabled_volume_key"
+        android:layout_below="@id/cb_enabled_custom_keycode"
         android:text="@string/show_notification_icon" />
 	
 	<CheckBox

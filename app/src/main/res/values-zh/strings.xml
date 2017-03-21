@@ -5,7 +5,7 @@
     <string name="introduce">这个应用可以帮助你屏蔽所有的物理按键。\n电源按键除外！\n你可以通过通知或磁贴快捷设置(安卓 N)关闭它！</string>
     <string name="tile_set">在安卓N设备上默认需要打开状态栏的磁贴设置添加磁贴来控制按键屏蔽！</string>
     <string name="go_start">点击这里，开始运行</string>
-    <string name="disabled_volume_key">屏蔽音量按键</string>
+    <string name="disabled_volume_key">不屏蔽音量按键</string>
     <string name="force_notification_control">强制使用通知栏控制(安卓 N)</string>
     <string name="notify_mes_on">点击这里开启按键屏蔽</string>
     <string name="notify_mes_off">点击这里关闭按键屏蔽</string>
@@ -29,5 +29,6 @@
     <string name="cancel">取消</string>
     <string name="submit">确认</string>
 	<string name="continuedo">继续</string>
+	<string name="help">帮助</string>
     <string name="wrong_format">格式错误</string>
 </resources>

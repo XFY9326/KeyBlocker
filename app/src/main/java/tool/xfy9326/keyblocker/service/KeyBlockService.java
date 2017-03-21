@@ -14,8 +14,8 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
-
 import java.io.DataOutputStream;
+
 import java.util.Arrays;
 
 import tool.xfy9326.keyblocker.R;
@@ -104,9 +104,6 @@ public class KeyBlockService extends AccessibilityService {
         }
 		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
 			if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
-				if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-					return true;
-				}
 				String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
 				Arrays.sort(sourceStrArray);
 				int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
@@ -121,6 +118,10 @@ public class KeyBlockService extends AccessibilityService {
 					}
 				}
 				return isDisabled;
+			} else {
+				 if (mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+					  return true;
+				 }
 			}
             return mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
         } else {

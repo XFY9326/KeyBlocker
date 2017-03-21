@@ -5,7 +5,7 @@
     <string name="introduce">This application can help you block all your physical keys.\nExcept the power button!\nYou can close it by Notification or TileQuickSetting(Android N)!</string>
     <string name="tile_set">Above Android N Devices default open your Status Bar and enable the Tile to control KeyBlocker!</string>
     <string name="go_start">Click Here to Start</string>
-    <string name="disabled_volume_key">Volume Button Block</string>
+    <string name="disabled_volume_key">Not Block Volume Button</string>
     <string name="force_notification_control">Force Notification Control (Android N)</string>
     <string name="notify_mes_on">Click Here to Open Physical Keys</string>
     <string name="notify_mes_off">Click Here to Close Physical Keys</string>
@@ -29,5 +29,6 @@
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
 	<string name="continuedo">Continue</string>
+	<string name="help">Help</string>
     <string name="wrong_format">Wrong Format</string>
 </resources>
