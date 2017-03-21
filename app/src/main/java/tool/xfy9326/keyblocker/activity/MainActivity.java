@@ -63,12 +63,12 @@ public class MainActivity extends Activity {
 			   });
 
 		  mCbDisabledVolumeKey.setEnabled(!mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
-		  mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false));
+		  mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
 		  mCbDisabledVolumeKey.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						 mSpEditor.putBoolean(Config.DISABLED_VOLUME_KEY, displayToast(isChecked) == isChecked);
+						 mSpEditor.putBoolean(Config.ENABLED_VOLUME_KEY, displayToast(isChecked) == isChecked);
 						 mSpEditor.commit();
-						 mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.DISABLED_VOLUME_KEY, false));
+						 mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
 					}
 			   });
 
