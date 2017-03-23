@@ -25,6 +25,7 @@ public class Config {
     public static String DISPLAY_NOTIFICATION = "DisplayNotification";
 	public static String NOTIFICATION_ICON = "NotificationIcon";
 	public static String REMOVE_NOTIFICATION = "RemoveNotification";
+	public static String AUTO_CLOSE_STATUSBAR = "AutoCloseStatusBar";
 
     public static String RUNTIME_BUTTONLIGHT_ON = "echo 100 > /sys/class/leds/button-backlight/brightness";
 	public static String RUNTIME_BUTTONLIGHT_OFF = "echo 0 > /sys/class/leds/button-backlight/brightness";

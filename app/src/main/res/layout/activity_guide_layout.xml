@@ -59,12 +59,21 @@
         android:layout_below="@id/cb_disabled_volume_key"
         android:text="@string/force_notification_control" />
 
+	<CheckBox
+        android:id="@+id/cb_auto_close_statusbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/cb_display_notification"
+        android:text="@string/auto_close_statusbar" />
+	
+	
     <CheckBox
         android:id="@+id/cb_display_keycode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/cb_display_notification"
+        android:layout_below="@+id/cb_auto_close_statusbar"
         android:text="@string/test_keycode" />
 
     <CheckBox

@@ -32,11 +32,12 @@ public class MainActivity extends Activity {
 	 mBtnSettingCustomKeycode,
 	 mBtnAccessEntry;
 	 private CheckBox
+	 mCbAutoCloseStatusBar,
 	 mCbRemoveNotification,
 	 mCbNotificationIcon,
 	 mCbRootFunction,
 	 mCbButtonVibrate,
-	 mCbDisabledVolumeKey,
+	 mCbEnabledVolumeKey,
 	 mCbDisplayNotification,
 	 mCbDisplayKeycode,
 	 mCbEnabledCustomKeycode;
@@ -62,13 +63,13 @@ public class MainActivity extends Activity {
 					}
 			   });
 
-		  mCbDisabledVolumeKey.setEnabled(!mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
-		  mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
-		  mCbDisabledVolumeKey.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		  mCbEnabledVolumeKey.setEnabled(!mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
+		  mCbEnabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
+		  mCbEnabledVolumeKey.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						 mSpEditor.putBoolean(Config.ENABLED_VOLUME_KEY, displayToast(isChecked) == isChecked);
 						 mSpEditor.commit();
-						 mCbDisabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
+						 mCbEnabledVolumeKey.setChecked(mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false));
 					}
 			   });
 
@@ -78,6 +79,14 @@ public class MainActivity extends Activity {
 						 mSpEditor.putBoolean(Config.DISPLAY_NOTIFICATION, isChecked);
 						 mSpEditor.commit();
 						 BaseMethod.RestartAccessibilityService(MainActivity.this);
+					}
+			   });
+
+		  mCbAutoCloseStatusBar.setChecked(mSp.getBoolean(Config.AUTO_CLOSE_STATUSBAR, true));
+		  mCbAutoCloseStatusBar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						 mSpEditor.putBoolean(Config.AUTO_CLOSE_STATUSBAR, displayToast(isChecked) == isChecked);
+						 mSpEditor.commit();
 					}
 			   });
 
@@ -163,7 +172,7 @@ public class MainActivity extends Activity {
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						 mSpEditor.putBoolean(Config.ENABLED_CUSTOM_KEYCODE, displayToast(isChecked) == isChecked);
 						 mSpEditor.commit();
-						 mCbDisabledVolumeKey.setEnabled(!mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
+						 mCbEnabledVolumeKey.setEnabled(!mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
 						 mCbEnabledCustomKeycode.setChecked(mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false));
 					}
 			   });
@@ -273,7 +282,7 @@ public class MainActivity extends Activity {
 	 @SuppressLint("InflateParams")
 	 private void initView() {
 		  mBtnStart = (Button) findViewById(R.id.btn_start);
-		  mCbDisabledVolumeKey = (CheckBox) findViewById(R.id.cb_disabled_volume_key);
+		  mCbEnabledVolumeKey = (CheckBox) findViewById(R.id.cb_disabled_volume_key);
 		  mCbDisplayNotification = (CheckBox) findViewById(R.id.cb_display_notification);
 		  mCbDisplayKeycode = (CheckBox) findViewById(R.id.cb_display_keycode);
 		  mCbEnabledCustomKeycode = (CheckBox) findViewById(R.id.cb_enabled_custom_keycode);
@@ -281,13 +290,13 @@ public class MainActivity extends Activity {
 		  mCbButtonVibrate = (CheckBox) findViewById(R.id.cb_buttonvibrate);
 		  mCbNotificationIcon = (CheckBox) findViewById(R.id.cb_notification_icon);
 		  mCbRemoveNotification = (CheckBox) findViewById(R.id.cb_remove_notification);
+		  mCbAutoCloseStatusBar = (CheckBox) findViewById(R.id.cb_auto_close_statusbar);
 		  mBtnSettingCustomKeycode = (Button) findViewById(R.id.btn_setting_custom);
 		  mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
 
 		  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-			   if (!mSp.getBoolean(Config.DISPLAY_NOTIFICATION, false)) {
-					mCbDisplayNotification.setVisibility(View.GONE);
-			   }
+			   mCbDisplayNotification.setVisibility(View.GONE);
+			   mCbAutoCloseStatusBar.setVisibility(View.GONE);
 		  }
 	 }
 
