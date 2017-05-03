@@ -24,14 +24,6 @@ import tool.xfy9326.keyblocker.config.Config;
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences mSp;
 	private SharedPreferences.Editor mSpEditor;
-	private CheckBoxPreference
-	mCbAutoCloseStatusBar,
-	mCbRemoveNotification,
-	mCbNotificationIcon,
-	mCbRootFunction,
-	mCbButtonVibrate,
-	mCbEnabledVolumeKey,
-	mCbDisplayNotification;
 	private boolean ButtonVibrateCancel = false;
 	private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
 
@@ -46,7 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	private void Settings() {
-		mCbEnabledVolumeKey = (CheckBoxPreference) findPreference(Config.ENABLED_VOLUME_KEY);
+		CheckBoxPreference mCbEnabledVolumeKey = (CheckBoxPreference) findPreference(Config.ENABLED_VOLUME_KEY);
 		mCbEnabledVolumeKey.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference p, Object o) {
 					displayToast((boolean)o);
@@ -55,7 +47,7 @@ public class SettingsActivity extends PreferenceActivity {
 			});
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
+			CheckBoxPreference mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
 			mCbDisplayNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference p, Object o) {
 						BaseMethod.RestartAccessibilityService(SettingsActivity.this);
@@ -63,7 +55,7 @@ public class SettingsActivity extends PreferenceActivity {
 					}
 				});
 
-			mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
+			CheckBoxPreference mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
 			mCbAutoCloseStatusBar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference p, Object o) {
 						displayToast((boolean)o);
@@ -72,36 +64,29 @@ public class SettingsActivity extends PreferenceActivity {
 				});
 		}
 
-		mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
+		CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
 		mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
 						if (BaseMethod.isRoot()) {
-							mCbButtonVibrate.setEnabled(true);
 							if (displayToast(true)) {
 								BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 							}
-						} else {
-							mCbButtonVibrate.setEnabled(false);
-							return false;
 						}
 					} else {
-						mCbButtonVibrate.setEnabled(false);
 						if (BaseMethod.isRoot()) {
 							displayToast(false);
 							if (displayToast(false)) {
 								BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 							}
-						} else {
-							return false;
 						}
 					}
 					return true;
 				}
 			});
 
-		mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
+		CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
 		mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
@@ -133,7 +118,7 @@ public class SettingsActivity extends PreferenceActivity {
 				}
 			});
 
-		mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
+		CheckBoxPreference mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
 		mCbNotificationIcon.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference p, Object o) {
 					BaseMethod.RestartAccessibilityService(SettingsActivity.this);
@@ -141,7 +126,7 @@ public class SettingsActivity extends PreferenceActivity {
 				}
 			});
 
-		mCbRemoveNotification = (CheckBoxPreference) findPreference(Config.REMOVE_NOTIFICATION);
+		CheckBoxPreference mCbRemoveNotification = (CheckBoxPreference) findPreference(Config.REMOVE_NOTIFICATION);
 		mCbRemoveNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference p, Object o) {
 					BaseMethod.RestartAccessibilityService(SettingsActivity.this);
