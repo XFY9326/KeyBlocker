@@ -15,6 +15,7 @@ public class Config {
     public static String NOTIFICATION_DELETE_ACTION = "tool.xfy9326.keyblocker.Notification.OnDelete";
 
     public static String ENABLED_CUSTOM_KEYCODE = "EnabledCustomKeycode";
+	public static String CUSTOM_SETTINGS="CustomSettings";
     public static String ENABLED_VOLUME_KEY = "EnabledVolumeKey";
     public static String CUSTOM_KEYCODE = "CustomKeycode";
     public static String DISPLAY_KEYCODE = "DisplayKeycode";

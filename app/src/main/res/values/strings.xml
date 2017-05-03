@@ -25,6 +25,8 @@
 	<string name="allow_remove_notification">Allow to remove notification block is off</string>
 	<string name="button_vibrate">Block Button Vibrate</string>
 	<string name="auto_close_statusbar">Auto close Status Bar when using Tile</string>
+	<string name="button_blocked">Button is blocked</string>
+	<string name="button_unblocked">Button is unblocked</string>
 	<string name="vibrate_warn">If you use this funtion, all vibrate will be blocked unless you do not block your keys!\n\nWe suggest you setting button vibrate in System Settings instead of using this!</string>
 	<string name="access_entry_use">Remote call broadcast:\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\nAvailable parameters:\nBoolean value RESPOND\nPrompte when AccessibilityService is not open.(Default true)</string>
     <string name="cancel">Cancel</string>
@@ -32,4 +34,5 @@
 	<string name="continuedo">Continue</string>
 	<string name="help">Help</string>
     <string name="wrong_format">Wrong Format</string>
+	<string name="setting">KeyBlock Settings</string>
 </resources>

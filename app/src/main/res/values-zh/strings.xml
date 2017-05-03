@@ -25,6 +25,8 @@
 	<string name="allow_remove_notification">不屏蔽时允许移除通知栏信息</string>
 	<string name="button_vibrate">按键震动屏蔽</string>
 	<string name="auto_close_statusbar">使用磁贴(瓦片)时自动关闭状态栏</string>
+	<string name="button_blocked">按键已屏蔽</string>
+	<string name="button_unblocked">按键未屏蔽</string>
 	<string name="vibrate_warn">如果使用了此功能，所有震动都会被屏蔽！除非你不再屏蔽按键！\n\n我们建议你在系统设置中对按键震动进行设置代替这个方法！</string>
 	<string name="access_entry_use">远程调用广播：\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\n可用参数：\n布尔值RESPOND\n无障碍服务未开启时是否提示(默认 true)</string>
     <string name="cancel">取消</string>
@@ -32,4 +34,5 @@
 	<string name="continuedo">继续</string>
 	<string name="help">帮助</string>
     <string name="wrong_format">格式错误</string>
+	<string name="setting">按键屏蔽设置</string>
 </resources>
