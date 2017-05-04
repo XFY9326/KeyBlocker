@@ -35,4 +35,10 @@
 	<string name="help">帮助</string>
     <string name="wrong_format">格式错误</string>
 	<string name="setting">按键屏蔽设置</string>
+	
+	<string name="xml_general_settings">通用设置</string>
+	<string name="xml_notify_settings">通知设置</string>
+	<string name="xml_custom_settings">自定义设置</string>
+	<string name="xml_root_settings">Root设置</string>
+	<string name="xml_tile_settings">磁贴设置</string>
 </resources>

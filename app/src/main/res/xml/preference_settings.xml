@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen 
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/setting"> 
-		<CheckBoxPreference 
-            android:key="EnabledVolumeKey" 
-            android:title="@string/disabled_volume_key" 
-            android:defaultValue="false"
-			android:dependency="EnabledCustomKeycode"
-			android:disableDependentsState="true"
-        />
-		<CheckBoxPreference 
-            android:key="RootFunction" 
-            android:title="@string/root" 
-            android:defaultValue="false"
-        />
+    <PreferenceCategory android:title="@string/xml_general_settings"> 
 		<CheckBoxPreference 
             android:key="DisplayKeycode" 
             android:title="@string/test_keycode" 
+            android:defaultValue="false"
+        />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/xml_notify_settings">
+		<CheckBoxPreference 
+			android:key="NotificationIcon" 
+			android:title="@string/show_notification_icon" 
+			android:defaultValue="false"
+		/>
+		<CheckBoxPreference 
+			android:key="RemoveNotification" 
+			android:title="@string/allow_remove_notification" 
+			android:defaultValue="false"
+		/>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/xml_root_settings">
+		<CheckBoxPreference 
+            android:key="RootFunction" 
+            android:title="@string/root" 
             android:defaultValue="false"
         />
 		<CheckBoxPreference 
@@ -25,24 +32,24 @@
             android:defaultValue="false"
 			android:dependency="RootFunction"
         />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/xml_custom_settings">
 		<CheckBoxPreference 
-            android:key="EnabledCustomKeycode" 
-            android:title="@string/enabled_custom" 
-            android:defaultValue="false"
-        />
+			android:key="EnabledCustomKeycode" 
+			android:title="@string/enabled_custom" 
+			android:defaultValue="false"
+		/>
 		<Preference 
-            android:key="CustomSettings" 
-            android:title="@string/custom_setting" 
-        />
+			android:key="CustomSettings" 
+			android:title="@string/custom_setting" 
+			android:dependency="EnabledCustomKeycode"
+		/>
 		<CheckBoxPreference 
-            android:key="NotificationIcon" 
-            android:title="@string/show_notification_icon" 
-            android:defaultValue="false"
-        />
-		<CheckBoxPreference 
-            android:key="RemoveNotification" 
-            android:title="@string/allow_remove_notification" 
-            android:defaultValue="false"
-        />
-    </PreferenceCategory>
+			android:key="EnabledVolumeKey" 
+			android:title="@string/disabled_volume_key" 
+			android:defaultValue="false"
+			android:dependency="EnabledCustomKeycode"
+			android:disableDependentsState="true"
+		/>
+	</PreferenceCategory>
 </PreferenceScreen>

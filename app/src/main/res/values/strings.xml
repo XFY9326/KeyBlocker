@@ -35,4 +35,10 @@
 	<string name="help">Help</string>
     <string name="wrong_format">Wrong Format</string>
 	<string name="setting">KeyBlock Settings</string>
+	
+	<string name="xml_general_settings">General Settings</string>
+	<string name="xml_notify_settings">Notification Settings</string>
+	<string name="xml_custom_settings">Custom Settings</string>
+	<string name="xml_root_settings">Root Settings</string>
+	<string name="xml_tile_settings">Tile Settings</string>
 </resources>
