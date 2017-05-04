@@ -7,6 +7,11 @@
             android:title="@string/test_keycode" 
             android:defaultValue="false"
         />
+		<CheckBoxPreference 
+            android:key="EnabledVolumeKey" 
+            android:title="@string/disabled_volume_key" 
+            android:defaultValue="false"
+        />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_notify_settings">
 		<CheckBoxPreference 
@@ -37,6 +42,7 @@
             android:key="RootFunction" 
             android:title="@string/root" 
             android:defaultValue="false"
+			android:summary="@string/root_describe"
         />
 		<CheckBoxPreference 
             android:key="ButtonVibrate" 
@@ -50,18 +56,12 @@
             android:key="EnabledCustomKeycode" 
             android:title="@string/enabled_custom" 
             android:defaultValue="false"
+			android:summary="@string/enabled_custom_describe" 
         />
 		<Preference 
             android:key="CustomSettings" 
             android:title="@string/custom_setting"
 			android:dependency="EnabledCustomKeycode"
-        />
-		<CheckBoxPreference 
-            android:key="EnabledVolumeKey" 
-            android:title="@string/disabled_volume_key" 
-            android:defaultValue="false"
-			android:dependency="EnabledCustomKeycode"
-			android:disableDependentsState="true"
         />
 	</PreferenceCategory>
 </PreferenceScreen>

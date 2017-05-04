@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">按键屏蔽</string>
-    <string name="attention">请打开 设置-无障碍服务-按键屏蔽 来使用。</string>
-    <string name="introduce">这个应用可以帮助你屏蔽所有的物理按键。\n电源按键除外！\n你可以通过通知或磁贴快捷设置(安卓 N)关闭它！</string>
+    <string name="attention">请打开 设置-无障碍服务-按键屏蔽 来使用。\n控制面板出现错误时，重启该服务可以解决一些问题。</string>
+    <string name="introduce">这个应用可以帮助你屏蔽所有的物理按键。\n电源按键将不会被屏蔽！\n你可以通过通知或磁贴快捷设置(安卓 N)关闭它！</string>
     <string name="tile_set">在安卓N设备上默认需要打开状态栏的磁贴设置添加磁贴来控制按键屏蔽！</string>
     <string name="go_start">点击这里，开始运行</string>
     <string name="disabled_volume_key">不屏蔽音量按键</string>
@@ -12,15 +12,17 @@
     <string name="restart_service">重启辅助服务应用更改</string>
     <string name="start_service_first">请先启动辅助服务！</string>
     <string name="author">制作者 XFY9326,frowhy\n开源地址:https://github.com/XFY9326/KeyBlocker</string>
-    <string name="test_keycode">测试 Keycode</string>
-    <string name="enabled_custom">启用自定义 Keycode</string>
+    <string name="test_keycode">测试 KeyCode</string>
+    <string name="enabled_custom">启用自定义 KeyCode</string>
+	<string name="enabled_custom_describe">只屏蔽特殊的自定义按键</string>
     <string name="custom_setting">自定义设置</string>
     <string name="has_enabled">已启用</string>
     <string name="has_disabled">已禁用</string>
     <string name="input_keycode">键入Keycode:</string>
     <string name="spaces_separate">使用空格分隔</string>
 	<string name="access_entry">接入口</string>
-	<string name="root">使用Root功能(按键灯与震动控制)</string>
+	<string name="root">使用Root功能</string>
+	<string name="root_describe">按键灯与震动控制\n该功能并不稳定，重启可以解决大多问题</string>
 	<string name="show_notification_icon">显示通知栏图标</string>
 	<string name="allow_remove_notification">不屏蔽时允许移除通知栏信息</string>
 	<string name="button_vibrate">按键震动屏蔽</string>

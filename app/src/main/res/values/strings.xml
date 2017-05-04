@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">KeyBlocker</string>
-    <string name="attention">Please open Settings-AccessibilityService-KeyBlocker to use it.</string>
+    <string name="attention">Please open Settings-AccessibilityService-KeyBlocker to use it.\nRestart this Service may solve problems when control panel can not work.</string>
     <string name="introduce">This application can help you block all your physical keys.\nExcept the power button!\nYou can close it by Notification or TileQuickSetting(Android N)!</string>
     <string name="tile_set">Above Android N Devices default open your Status Bar and enable the Tile to control KeyBlocker!</string>
     <string name="go_start">Click Here to Start</string>
@@ -12,15 +12,17 @@
     <string name="restart_service">Restart AccessibilityService to apply</string>
     <string name="start_service_first">Please Run AccessbilityService First!</string>
     <string name="author">Made By XFY9326,frowhy\nOpenSource:https://github.com/XFY9326/KeyBlocker</string>
-    <string name="test_keycode">Test Keycode</string>
-    <string name="enabled_custom">Enabled CustomKeycode</string>
+    <string name="test_keycode">Test KeyCode</string>
+    <string name="enabled_custom">Enabled cstom KeyCode</string>
+	<string name="enabled_custom_describe">Only block special custom buttons</string>
     <string name="custom_setting">Setting Custom</string>
     <string name="has_enabled">Has Enabled</string>
     <string name="has_disabled">Has Disabled</string>
     <string name="input_keycode">Input Keycode:</string>
     <string name="spaces_separate">Use spaces to separate them</string>
 	<string name="access_entry">Access Entry</string>
-	<string name="root">Use Root Function (Button Light and Vibrate Control)</string>
+	<string name="root">Use Root Function</string>
+	<string name="root_describe">Button Light and Vibrate Control\nIt is unstable and reboot may fix problems</string>
 	<string name="show_notification_icon">Show Notification Icon</string>
 	<string name="allow_remove_notification">Allow to remove notification block is off</string>
 	<string name="button_vibrate">Block Button Vibrate</string>

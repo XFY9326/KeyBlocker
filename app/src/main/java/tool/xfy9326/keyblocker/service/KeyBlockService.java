@@ -102,13 +102,14 @@ public class KeyBlockService extends AccessibilityService {
 			Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
 		}
 		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+			if (mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+				return false;
+			}
 			if (mSp.getBoolean(Config.ENABLED_CUSTOM_KEYCODE, false)) {
 				String[] sourceStrArray = mSp.getString(Config.CUSTOM_KEYCODE, "").split(" ");
 				Arrays.sort(sourceStrArray);
 				int index = Arrays.binarySearch(sourceStrArray, String.valueOf(keycode));
-
 				boolean isDisabled = index >= 0;
-
 				if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
 					if (isDisabled) {
 						Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
@@ -117,10 +118,8 @@ public class KeyBlockService extends AccessibilityService {
 					}
 				}
 				return isDisabled;
-			} else if (mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-				return false;
 			}
-			return mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
+			return true;
 		} else {
 			return false;
 		}
