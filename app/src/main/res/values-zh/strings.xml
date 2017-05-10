@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">按键屏蔽</string>
     <string name="attention">请打开 设置-无障碍服务-按键屏蔽 来使用。\n控制面板出现错误时，重启该服务可以解决一些问题。</string>
-    <string name="introduce">这个应用可以帮助你屏蔽所有的物理按键。\n电源按键将不会被屏蔽！\n你可以通过通知或磁贴快捷设置(安卓 N)关闭它！</string>
+    <string name="introduce">这个应用可以帮助你屏蔽所有的物理按键。\n电源按键将不会被屏蔽！\n你可以通过通知，桌面小部件或磁贴快捷设置(安卓 N)关闭它！</string>
     <string name="tile_set">在安卓N设备上默认需要打开状态栏的磁贴设置添加磁贴来控制按键屏蔽！</string>
     <string name="go_start">点击这里，开始运行</string>
     <string name="disabled_volume_key">不屏蔽音量按键</string>
@@ -33,10 +33,15 @@
 	<string name="access_entry_use">远程调用广播：\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\n可用参数：\n布尔值RESPOND\n无障碍服务未开启时是否提示(默认 true)</string>
     <string name="cancel">取消</string>
     <string name="submit">确认</string>
+	<string name="loading">正在加载中。。。</string>
 	<string name="continuedo">继续</string>
 	<string name="help">帮助</string>
     <string name="wrong_format">格式错误</string>
 	<string name="setting">按键屏蔽设置</string>
+	<string name="keyblock_activity">自定义屏蔽按键应用</string>
+	<string name="keyblock_activity_describe">在指定的应用内自动屏蔽按键，手动操作后会自动关闭</string>
+	<string name="keyblock_activity_settings">按键屏蔽应用设置</string>
+	<string name="keyblock_custom_closed">自定义按键屏蔽应用已关闭</string>
 	
 	<string name="xml_general_settings">通用设置</string>
 	<string name="xml_notify_settings">通知设置</string>

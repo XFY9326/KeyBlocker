@@ -28,7 +28,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(Config.APPWIDGET_CLICK_ACTION)) {
-			BaseMethod.KeyLockBroadcast(context);
+			BaseMethod.KeyLockBroadcast(context, true);
 			updateView(context);
 		} else if (intent.getAction().equals(Config.APPWIDGET_UPDATE_ACTION)) {
 			reloadView(context, true);

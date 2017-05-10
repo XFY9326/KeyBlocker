@@ -12,6 +12,17 @@
             android:title="@string/disabled_volume_key" 
             android:defaultValue="false"
         />
+		<CheckBoxPreference 
+            android:key="KeyBlockActivity" 
+            android:title="@string/keyblock_activity" 
+            android:defaultValue="false"
+			android:summary="@string/keyblock_activity_describe"
+        />
+		<Preference 
+            android:key="KeyBlockActivitySet" 
+            android:title="@string/keyblock_activity_settings" 
+			android:dependency="KeyBlockActivity"
+        />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_notify_settings">
 		<CheckBoxPreference 

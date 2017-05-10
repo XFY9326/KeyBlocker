@@ -1,9 +1,12 @@
 package tool.xfy9326.keyblocker.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,13 +20,19 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
+import android.content.pm.ApplicationInfo;
+import java.util.Iterator;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences mSp;
 	private SharedPreferences.Editor mSpEditor;
+	private String[] AppNames, PkgNames;
+	private boolean[] AppState;
 	private boolean ButtonVibrateCancel = false;
 	private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
 
@@ -40,6 +49,7 @@ public class SettingsActivity extends PreferenceActivity {
 	private void Settings() {
 		CheckBoxPreference mCbEnabledVolumeKey = (CheckBoxPreference) findPreference(Config.ENABLED_VOLUME_KEY);
 		mCbEnabledVolumeKey.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					displayToast((boolean)o);
 					return true;
@@ -49,6 +59,7 @@ public class SettingsActivity extends PreferenceActivity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			CheckBoxPreference mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
 			mCbDisplayNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+					@Override
 					public boolean onPreferenceChange(Preference p, Object o) {
 						BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 						return true;
@@ -57,6 +68,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 			CheckBoxPreference mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
 			mCbAutoCloseStatusBar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+					@Override
 					public boolean onPreferenceChange(Preference p, Object o) {
 						displayToast((boolean)o);
 						return true;
@@ -66,6 +78,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
 		mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
@@ -88,6 +101,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
 		mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
@@ -120,6 +134,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		CheckBoxPreference mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
 		mCbNotificationIcon.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 					return true;
@@ -206,6 +221,76 @@ public class SettingsActivity extends PreferenceActivity {
 					return true;
 				}
 			});
+		Preference mKeyBlockActivitySet = findPreference(Config.KEYBLOCK_ACTIVITY_SET);
+		mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+				@Override
+				public boolean onPreferenceClick(Preference p) {
+					Toast.makeText(SettingsActivity.this, R.string.loading, Toast.LENGTH_SHORT).show();
+					final ArrayList<String> FilterApplication = BaseMethod.StringToStringArrayList(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY));
+					Thread thread = new Thread(new Runnable() {
+							public void run() {
+								getAppInfo(SettingsActivity.this, FilterApplication);
+							}
+						});
+					thread.start();
+					try {
+						thread.join();
+
+						AlertDialog.Builder KeyBlockActivityAlert = new AlertDialog.Builder(SettingsActivity.this)
+							.setTitle(R.string.keyblock_activity_settings)
+							.setMultiChoiceItems(AppNames, AppState, new DialogInterface.OnMultiChoiceClickListener(){
+								public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+									AppState[position] = isChecked;
+								}
+							})
+							.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener(){
+								public void onClick(DialogInterface dialog, int i) {
+									FilterApplication.clear();
+									for (int a = 0; a < AppState.length; a ++) {
+										if (AppState[a]) {
+											FilterApplication.add(PkgNames[a]);
+										}
+									}
+									mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
+									mSpEditor.commit();
+								}
+							})
+							.setNegativeButton(R.string.cancel, null);
+						KeyBlockActivityAlert.show();
+					} catch (InterruptedException e) {}
+					return true;
+				}
+			});
+	}
+
+	private void getAppInfo(Context ctx, ArrayList<String> PkgHave) {
+		PackageManager pm = ctx.getPackageManager();
+		List<PackageInfo> info = pm.getInstalledPackages(0);
+		Iterator<PackageInfo> it = info.iterator();
+		while (it.hasNext()) {
+			PackageInfo pinfo = it.next();
+			if ((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+				it.remove();
+			}
+		}
+		BaseMethod.orderPackageList(ctx, info);
+		AppNames = new String[info.size() - 1];
+		PkgNames = new String[info.size() - 1];
+		AppState = new boolean[info.size() - 1];
+		int countnum = 0;
+		for (int i = 0; i < info.size();i++) {
+			String pkgname = info.get(i).packageName;
+			if (!pkgname.equalsIgnoreCase(ctx.getPackageName())) {
+				AppNames[countnum] = info.get(i).applicationInfo.loadLabel(ctx.getPackageManager()).toString();
+				PkgNames[countnum] = pkgname;
+				if (PkgHave.contains(pkgname)) {
+					AppState[countnum] = true;
+				} else {
+					AppState[countnum] = false;
+				}
+				countnum++;
+			}
+		}
 	}
 
 	private boolean displayToast(boolean enabled) {

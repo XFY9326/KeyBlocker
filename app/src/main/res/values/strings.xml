@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">KeyBlocker</string>
     <string name="attention">Please open Settings-AccessibilityService-KeyBlocker to use it.\nRestart this Service may solve problems when control panel can not work.</string>
-    <string name="introduce">This application can help you block all your physical keys.\nExcept the power button!\nYou can close it by Notification or TileQuickSetting(Android N)!</string>
+    <string name="introduce">This application can help you block all your physical keys.\nExcept the power button!\nYou can close it by Notification, Widget or TileQuickSetting(Android N)!</string>
     <string name="tile_set">Above Android N Devices default open your Status Bar and enable the Tile to control KeyBlocker!</string>
     <string name="go_start">Click Here to Start</string>
     <string name="disabled_volume_key">Not Block Volume Button</string>
@@ -33,10 +33,15 @@
 	<string name="access_entry_use">Remote call broadcast:\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\nAvailable parameters:\nBoolean value RESPOND\nPrompte when AccessibilityService is not open.(Default true)</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
+	<string name="loading">Loading...</string>
 	<string name="continuedo">Continue</string>
 	<string name="help">Help</string>
     <string name="wrong_format">Wrong Format</string>
 	<string name="setting">KeyBlock Settings</string>
+	<string name="keyblock_activity">Custom KeyBlock Applications</string>
+	<string name="keyblock_activity_describe">Block keys automatically in custom applications, it will be disabled if you control it manually.</string>
+	<string name="keyblock_activity_settings">KeyBlock Applications set</string>
+	<string name="keyblock_custom_closed">Custom KeyBlock Application is closed</string>
 	
 	<string name="xml_general_settings">General Settings</string>
 	<string name="xml_notify_settings">Notification Settings</string>

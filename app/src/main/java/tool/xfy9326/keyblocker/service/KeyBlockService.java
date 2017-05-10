@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
@@ -23,6 +24,7 @@ import tool.xfy9326.keyblocker.config.Config;
 import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
+	private String mCurrentActivity;
 	private ButtonBroadcastReceiver mBbr;
 	private Notification.Builder mNBuilder;
 	private SharedPreferences mSp;
@@ -64,6 +66,20 @@ public class KeyBlockService extends AccessibilityService {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
+		int eventType = event.getEventType();
+		if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+			if (event.getClassName() != null) {
+				String currentactivity = event.getClassName().toString();
+				if (currentactivity.length() >= 7) {
+					if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
+						mCurrentActivity = currentactivity;
+					}
+				} else {
+					mCurrentActivity = currentactivity;
+				}
+			}
+			currentActivityCheck();
+		}
 	}
 
 	@Override
@@ -98,6 +114,9 @@ public class KeyBlockService extends AccessibilityService {
 	@Override
 	protected boolean onKeyEvent(KeyEvent event) {
 		int keycode = event.getKeyCode();
+		if (keycode == KeyEvent.KEYCODE_POWER) {
+			return false;
+		}
 		if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
 			Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
 		}
@@ -122,6 +141,33 @@ public class KeyBlockService extends AccessibilityService {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	private void currentActivityCheck() {
+		if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
+			if (!mCurrentActivity.contains(getPackageName())) {
+				String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
+				ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
+				if (!ActivityArray.isEmpty() && ActivityArray.size() != 0) {
+					boolean ActivityFound = false;
+					for (String FilterActivity : ActivityArray) {
+						if (mCurrentActivity.contains(FilterActivity.toString())) {
+							ActivityFound = true;
+							break;
+						}
+					}
+					if (ActivityFound) {
+						if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+							BaseMethod.KeyLockBroadcast(this, false);
+						}
+					} else {
+						if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+							BaseMethod.KeyLockBroadcast(this, false);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -205,6 +251,7 @@ public class KeyBlockService extends AccessibilityService {
 	private void ShowNotification() {
 		Intent click_intent = new Intent(Config.NOTIFICATION_CLICK_ACTION);
 		click_intent.putExtra(Config.DISPLAY_APPWIDGET, true);
+		click_intent.putExtra(Config.CONTROL_MANUAL, true);
 		PendingIntent click_pendingIntent = PendingIntent.getBroadcast(this, 0, click_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Intent delete_intent = new Intent(Config.NOTIFICATION_DELETE_ACTION);
 		PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -256,6 +303,11 @@ public class KeyBlockService extends AccessibilityService {
 				ButtonVibrateControl(mIsKeyBlocked);
 				mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
 				mSpEditor.commit();
+				if (intent.getBooleanExtra(Config.CONTROL_MANUAL, false) && mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
+					mSpEditor.putBoolean(Config.KEYBLOCK_ACTIVITY, false);
+					mSpEditor.commit();
+					Toast.makeText(content, R.string.keyblock_custom_closed, Toast.LENGTH_SHORT).show();
+				}
 				if (!mIsQuickSetting) {
 					if (mIsKeyBlocked) {
 						if (allowRemoveNotification) {

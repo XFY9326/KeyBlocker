@@ -2,16 +2,52 @@ package tool.xfy9326.keyblocker.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.widget.Toast;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
+	public static List<PackageInfo> orderPackageList(final Context ctx, List<PackageInfo> list) {
+		Collections.sort(list, new Comparator<PackageInfo>() {
+                @Override
+                public int compare(PackageInfo o1, PackageInfo o2) {
+					String str1 = o1.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
+					String str2 = o2.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
+                    return str1.compareTo(str2);
+                }
+            });
+		return list;
+	}
+	
+	public final static ArrayList<String> StringToStringArrayList(String str) {
+        ArrayList<String> arr = new ArrayList<String>();
+        if (str.contains("[") && str.length() >= 3) {
+            str = str.substring(1, str.length() - 1);
+            if (str.contains(",")) {
+                String[] temp = str.split(",");
+                for (int i = 0;i < temp.length;i++) {
+                    if (i != 0) {
+                        temp[i] = temp[i].substring(1, temp[i].length());
+                    }
+                    arr.add(temp[i].toString());
+                }
+            } else {
+                arr.add(str.toString());
+            }
+        }
+        return arr;
+    }
+	
 	public static void BlockNotify(Context ctx, boolean blocked) {
 		if (blocked) {
 			Toast.makeText(ctx, R.string.button_blocked, Toast.LENGTH_SHORT).show();
@@ -79,9 +115,10 @@ public class BaseMethod {
 		context.startActivity(intent);
 	}
 
-	public static void KeyLockBroadcast(Context mContext) {
+	public static void KeyLockBroadcast(Context mContext, boolean isManual) {
 		Intent intent = new Intent();
 		intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
+		intent.putExtra(Config.CONTROL_MANUAL, isManual);
 		mContext.sendBroadcast(intent);
 	}
 
