@@ -1,2 +1,7 @@
 # KeyBlocker
-An Android Application which can block your keys
+## 按键屏蔽
+本应用可以在安卓系统的手机上屏蔽大部分默认存在的物理按键的使用  
+  
+**源码分享 仅供参考**
+  
+*开源协议 GNU3.0*
