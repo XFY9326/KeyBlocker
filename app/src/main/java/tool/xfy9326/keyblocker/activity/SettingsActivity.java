@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -21,12 +23,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
-import android.content.pm.ApplicationInfo;
-import java.util.Iterator;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences mSp;
@@ -225,39 +228,39 @@ public class SettingsActivity extends PreferenceActivity {
 		mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 				@Override
 				public boolean onPreferenceClick(Preference p) {
-					Toast.makeText(SettingsActivity.this, R.string.loading, Toast.LENGTH_SHORT).show();
-					final ArrayList<String> FilterApplication = BaseMethod.StringToStringArrayList(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY));
-					Thread thread = new Thread(new Runnable() {
+					Toast.makeText(SettingsActivity.this, R.string.loading, Toast.LENGTH_LONG).show();
+					new Thread(new Runnable() {
 							public void run() {
+								Looper.prepare();
+								final ArrayList<String> FilterApplication = BaseMethod.StringToStringArrayList(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY));
 								getAppInfo(SettingsActivity.this, FilterApplication);
-							}
-						});
-					thread.start();
-					try {
-						thread.join();
-
-						AlertDialog.Builder KeyBlockActivityAlert = new AlertDialog.Builder(SettingsActivity.this)
-							.setTitle(R.string.keyblock_activity_settings)
-							.setMultiChoiceItems(AppNames, AppState, new DialogInterface.OnMultiChoiceClickListener(){
-								public void onClick(DialogInterface dialog, int position, boolean isChecked) {
-									AppState[position] = isChecked;
-								}
-							})
-							.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener(){
-								public void onClick(DialogInterface dialog, int i) {
-									FilterApplication.clear();
-									for (int a = 0; a < AppState.length; a ++) {
-										if (AppState[a]) {
-											FilterApplication.add(PkgNames[a]);
+								final AlertDialog.Builder KeyBlockActivityAlert = new AlertDialog.Builder(SettingsActivity.this)
+									.setTitle(R.string.keyblock_activity_settings)
+									.setMultiChoiceItems(AppNames, AppState, new DialogInterface.OnMultiChoiceClickListener(){
+										public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+											AppState[position] = isChecked;
 										}
-									}
-									mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
-									mSpEditor.commit();
-								}
-							})
-							.setNegativeButton(R.string.cancel, null);
-						KeyBlockActivityAlert.show();
-					} catch (InterruptedException e) {}
+									})
+									.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener(){
+										public void onClick(DialogInterface dialog, int i) {
+											FilterApplication.clear();
+											for (int a = 0; a < AppState.length; a ++) {
+												if (AppState[a]) {
+													FilterApplication.add(PkgNames[a]);
+												}
+											}
+											mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
+											mSpEditor.commit();
+										}
+									})
+									.setNegativeButton(R.string.cancel, null);
+								runOnUiThread(new Runnable() {
+										public void run() {
+											KeyBlockActivityAlert.show();
+										}
+									});
+							}
+						}).start();
 					return true;
 				}
 			});
@@ -266,13 +269,21 @@ public class SettingsActivity extends PreferenceActivity {
 	private void getAppInfo(Context ctx, ArrayList<String> PkgHave) {
 		PackageManager pm = ctx.getPackageManager();
 		List<PackageInfo> info = pm.getInstalledPackages(0);
+
+
 		Iterator<PackageInfo> it = info.iterator();
 		while (it.hasNext()) {
-			PackageInfo pinfo = it.next();
-			if ((pinfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-				it.remove();
+			try {
+				ActivityInfo[] actInfo = pm.getPackageInfo(it.next().packageName, PackageManager.GET_ACTIVITIES).activities;
+				if (actInfo == null) {
+					it.remove();
+				}
+			} catch (PackageManager.NameNotFoundException e) {
+				e.printStackTrace();
+				break;
 			}
 		}
+
 		BaseMethod.orderPackageList(ctx, info);
 		AppNames = new String[info.size() - 1];
 		PkgNames = new String[info.size() - 1];

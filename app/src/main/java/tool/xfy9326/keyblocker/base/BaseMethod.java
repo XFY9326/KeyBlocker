@@ -17,6 +17,7 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
+	//应用名排序
 	public static List<PackageInfo> orderPackageList(final Context ctx, List<PackageInfo> list) {
 		Collections.sort(list, new Comparator<PackageInfo>() {
                 @Override
@@ -28,7 +29,8 @@ public class BaseMethod {
             });
 		return list;
 	}
-	
+
+	//字符串转数组
 	public final static ArrayList<String> StringToStringArrayList(String str) {
         ArrayList<String> arr = new ArrayList<String>();
         if (str.contains("[") && str.length() >= 3) {
@@ -47,7 +49,7 @@ public class BaseMethod {
         }
         return arr;
     }
-	
+
 	public static void BlockNotify(Context ctx, boolean blocked) {
 		if (blocked) {
 			Toast.makeText(ctx, R.string.button_blocked, Toast.LENGTH_SHORT).show();

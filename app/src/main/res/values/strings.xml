@@ -42,6 +42,7 @@
 	<string name="keyblock_activity_describe">Block keys automatically in custom applications, it will be disabled if you control it manually.</string>
 	<string name="keyblock_activity_settings">KeyBlock Applications set</string>
 	<string name="keyblock_custom_closed">Custom KeyBlock Application is closed</string>
+	<string name="show_system_application">Show system application</string>
 	
 	<string name="xml_general_settings">General Settings</string>
 	<string name="xml_notify_settings">Notification Settings</string>
