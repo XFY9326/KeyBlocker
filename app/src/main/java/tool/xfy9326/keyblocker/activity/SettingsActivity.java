@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -28,8 +28,6 @@ import java.util.List;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences mSp;
