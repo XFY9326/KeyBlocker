@@ -17,7 +17,6 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
-	//应用名排序
 	public static List<PackageInfo> orderPackageList(final Context ctx, List<PackageInfo> list) {
 		Collections.sort(list, new Comparator<PackageInfo>() {
                 @Override
@@ -30,8 +29,7 @@ public class BaseMethod {
 		return list;
 	}
 
-	//字符串转数组
-	public final static ArrayList<String> StringToStringArrayList(String str) {
+	public static ArrayList<String> StringToStringArrayList(String str) {
         ArrayList<String> arr = new ArrayList<String>();
         if (str.contains("[") && str.length() >= 3) {
             str = str.substring(1, str.length() - 1);
@@ -117,10 +115,9 @@ public class BaseMethod {
 		context.startActivity(intent);
 	}
 
-	public static void KeyLockBroadcast(Context mContext, boolean isManual) {
+	public static void KeyLockBroadcast(Context mContext) {
 		Intent intent = new Intent();
 		intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
-		intent.putExtra(Config.CONTROL_MANUAL, isManual);
 		mContext.sendBroadcast(intent);
 	}
 

@@ -22,14 +22,15 @@
     <string name="spaces_separate">Use spaces to separate them</string>
 	<string name="access_entry">Access Entry</string>
 	<string name="root">Use Root Function</string>
+	<string name="root_failed">Root failed</string>
 	<string name="root_describe">Button Light and Vibrate Control\nIt is unstable and reboot may fix problems</string>
 	<string name="show_notification_icon">Show Notification Icon</string>
 	<string name="allow_remove_notification">Allow to remove notification block is off</string>
-	<string name="button_vibrate">Block Button Vibrate</string>
+	<string name="button_vibrate">Block Button vibrate and light</string>
 	<string name="auto_close_statusbar">Auto close Status Bar when using Tile</string>
 	<string name="button_blocked">Button is blocked</string>
 	<string name="button_unblocked">Button is unblocked</string>
-	<string name="vibrate_warn">If you use this funtion, all vibrate will be blocked unless you do not block your keys!\n\nWe suggest you setting button vibrate in System Settings instead of using this!</string>
+	<string name="vibrate_warn">Some System do not support it!\n\nIf you use this funtion, all vibrate will be blocked unless you do not block your keys!\n\nWe suggest you setting button vibrate in System Settings instead of using this!</string>
 	<string name="access_entry_use">Remote call broadcast:\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\nAvailable parameters:\nBoolean value RESPOND\nPrompte when AccessibilityService is not open.(Default true)</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
@@ -39,7 +40,7 @@
     <string name="wrong_format">Wrong Format</string>
 	<string name="setting">KeyBlock Settings</string>
 	<string name="keyblock_activity">Custom KeyBlock Applications</string>
-	<string name="keyblock_activity_describe">Block keys automatically in custom applications, it will be disabled if you control it manually.</string>
+	<string name="keyblock_activity_describe">Block keys automatically in custom applications.</string>
 	<string name="keyblock_activity_settings">KeyBlock Applications set</string>
 	<string name="keyblock_custom_closed">Custom KeyBlock Application is closed</string>
 	<string name="show_system_application">Show system application</string>

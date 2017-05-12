@@ -36,7 +36,6 @@ public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences.Editor mSpEditor;
 	private String[] AppNames, PkgNames;
 	private boolean[] AppState;
-	private boolean ButtonVibrateCancel = false;
 	private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
 
 	@Override
@@ -79,33 +78,26 @@ public class SettingsActivity extends PreferenceActivity {
 				});
 		}
 
-		CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
+		final CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
 		mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
-						if (BaseMethod.isRoot()) {
-							if (displayToast(true)) {
-								BaseMethod.RestartAccessibilityService(SettingsActivity.this);
-							}
-						}
-					} else {
-						if (BaseMethod.isRoot()) {
-							displayToast(false);
-							if (displayToast(false)) {
-								BaseMethod.RestartAccessibilityService(SettingsActivity.this);
-							}
+						if (!BaseMethod.isRoot()) {
+							mCbRootFunction.setChecked(false);
+							Toast.makeText(SettingsActivity.this, R.string.root_failed, Toast.LENGTH_SHORT).show();
 						}
 					}
+					BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 					return true;
 				}
 			});
 
-		CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
+		final CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
 		mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
-				public boolean onPreferenceChange(Preference p, Object o) {
+				public boolean onPreferenceChange(final Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
 						AlertDialog.Builder vibrate_warn = new AlertDialog.Builder(SettingsActivity.this)
@@ -121,15 +113,12 @@ public class SettingsActivity extends PreferenceActivity {
 							.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface di, int i) {
-									ButtonVibrateCancel = true;
+									mCbButtonVibrate.setChecked(false);
 								}
 							});
 						vibrate_warn.show();
 					} else {
-						if (!ButtonVibrateCancel) {
-							BaseMethod.RestartAccessibilityService(SettingsActivity.this);
-						}
-						ButtonVibrateCancel = false;
+						BaseMethod.RestartAccessibilityService(SettingsActivity.this);
 					}
 					return true;
 				}
@@ -151,7 +140,6 @@ public class SettingsActivity extends PreferenceActivity {
 					return true;
 				}
 			});
-
 
 		Preference mBtnSettingCustomKeycode = findPreference(Config.CUSTOM_SETTINGS);
 		mBtnSettingCustomKeycode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -270,12 +258,12 @@ public class SettingsActivity extends PreferenceActivity {
 		PackageManager pm = ctx.getPackageManager();
 		List<PackageInfo> info = pm.getInstalledPackages(0);
 
-
 		Iterator<PackageInfo> it = info.iterator();
 		while (it.hasNext()) {
 			try {
-				ActivityInfo[] actInfo = pm.getPackageInfo(it.next().packageName, PackageManager.GET_ACTIVITIES).activities;
-				if (actInfo == null) {
+				PackageInfo pinfo = it.next();
+				ActivityInfo[] actInfo = pm.getPackageInfo(pinfo.packageName, PackageManager.GET_ACTIVITIES).activities;
+				if (actInfo == null || pinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
 					it.remove();
 				}
 			} catch (PackageManager.NameNotFoundException e) {
@@ -285,21 +273,17 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 
 		BaseMethod.orderPackageList(ctx, info);
-		AppNames = new String[info.size() - 1];
-		PkgNames = new String[info.size() - 1];
-		AppState = new boolean[info.size() - 1];
-		int countnum = 0;
+		AppNames = new String[info.size()];
+		PkgNames = new String[info.size()];
+		AppState = new boolean[info.size()];
 		for (int i = 0; i < info.size();i++) {
 			String pkgname = info.get(i).packageName;
-			if (!pkgname.equalsIgnoreCase(ctx.getPackageName())) {
-				AppNames[countnum] = info.get(i).applicationInfo.loadLabel(ctx.getPackageManager()).toString();
-				PkgNames[countnum] = pkgname;
-				if (PkgHave.contains(pkgname)) {
-					AppState[countnum] = true;
-				} else {
-					AppState[countnum] = false;
-				}
-				countnum++;
+			AppNames[i] = info.get(i).applicationInfo.loadLabel(ctx.getPackageManager()).toString();
+			PkgNames[i] = pkgname;
+			if (PkgHave.contains(pkgname)) {
+				AppState[i] = true;
+			} else {
+				AppState[i] = false;
 			}
 		}
 	}

@@ -25,6 +25,7 @@ import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
 	private String mCurrentActivity;
+	private String mLastActivity;
 	private ButtonBroadcastReceiver mBbr;
 	private Notification.Builder mNBuilder;
 	private SharedPreferences mSp;
@@ -78,7 +79,15 @@ public class KeyBlockService extends AccessibilityService {
 					mCurrentActivity = currentactivity;
 				}
 			}
-			currentActivityCheck();
+			if (mLastActivity != null) {
+				if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+					currentActivityCheck();
+					mLastActivity = mCurrentActivity;
+				}
+			} else {
+				currentActivityCheck();
+				mLastActivity = mCurrentActivity;
+			}
 		}
 	}
 
@@ -102,6 +111,7 @@ public class KeyBlockService extends AccessibilityService {
 		ReceiverUnregister();
 		ButtonLightControl(false);
 		ButtonVibrateControl(false);
+		mLastActivity = null;
 		if (!mIsQuickSetting) {
 			CloseNotification();
 		}
@@ -159,11 +169,11 @@ public class KeyBlockService extends AccessibilityService {
 					}
 					if (ActivityFound) {
 						if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
-							BaseMethod.KeyLockBroadcast(this, false);
+							BaseMethod.KeyLockBroadcast(this);
 						}
 					} else {
 						if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
-							BaseMethod.KeyLockBroadcast(this, false);
+							BaseMethod.KeyLockBroadcast(this);
 						}
 					}
 				}
@@ -219,8 +229,10 @@ public class KeyBlockService extends AccessibilityService {
 							if (close) {
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK + "\n");
 							} else {
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
+								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE + "\n");
 							}
 							mRuntimeStream.flush();
 							mProcess.waitFor();
@@ -251,7 +263,6 @@ public class KeyBlockService extends AccessibilityService {
 	private void ShowNotification() {
 		Intent click_intent = new Intent(Config.NOTIFICATION_CLICK_ACTION);
 		click_intent.putExtra(Config.DISPLAY_APPWIDGET, true);
-		click_intent.putExtra(Config.CONTROL_MANUAL, true);
 		PendingIntent click_pendingIntent = PendingIntent.getBroadcast(this, 0, click_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Intent delete_intent = new Intent(Config.NOTIFICATION_DELETE_ACTION);
 		PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -303,11 +314,6 @@ public class KeyBlockService extends AccessibilityService {
 				ButtonVibrateControl(mIsKeyBlocked);
 				mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
 				mSpEditor.commit();
-				if (intent.getBooleanExtra(Config.CONTROL_MANUAL, false) && mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
-					mSpEditor.putBoolean(Config.KEYBLOCK_ACTIVITY, false);
-					mSpEditor.commit();
-					Toast.makeText(content, R.string.keyblock_custom_closed, Toast.LENGTH_SHORT).show();
-				}
 				if (!mIsQuickSetting) {
 					if (mIsKeyBlocked) {
 						if (allowRemoveNotification) {
