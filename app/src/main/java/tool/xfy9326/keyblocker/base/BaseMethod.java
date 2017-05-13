@@ -110,9 +110,11 @@ public class BaseMethod {
 	}
 
 	public static void RestartAccessibilityService(Context context) {
-		Toast.makeText(context, R.string.restart_service, Toast.LENGTH_SHORT).show();
-		Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-		context.startActivity(intent);
+		if (isAccessibilitySettingsOn(context)) {
+			Toast.makeText(context, R.string.restart_service, Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+			context.startActivity(intent);
+		}
 	}
 
 	public static void KeyLockBroadcast(Context mContext) {

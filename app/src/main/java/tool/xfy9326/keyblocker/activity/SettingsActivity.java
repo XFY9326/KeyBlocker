@@ -34,6 +34,7 @@ public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences.Editor mSpEditor;
 	private String[] AppNames, PkgNames;
 	private boolean[] AppState;
+	private boolean AppListOpening = false;
 	private String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
 
 	@Override
@@ -76,15 +77,15 @@ public class SettingsActivity extends PreferenceActivity {
 				});
 		}
 
-		final CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
+		CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
 		mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference p, Object o) {
 					boolean isChecked = o;
 					if (isChecked) {
 						if (!BaseMethod.isRoot()) {
-							mCbRootFunction.setChecked(false);
 							Toast.makeText(SettingsActivity.this, R.string.root_failed, Toast.LENGTH_SHORT).show();
+							return false;
 						}
 					}
 					BaseMethod.RestartAccessibilityService(SettingsActivity.this);
@@ -92,7 +93,7 @@ public class SettingsActivity extends PreferenceActivity {
 				}
 			});
 
-		final CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
+		CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
 		mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(final Preference p, Object o) {
@@ -111,7 +112,7 @@ public class SettingsActivity extends PreferenceActivity {
 							.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface di, int i) {
-									mCbButtonVibrate.setChecked(false);
+									((CheckBoxPreference)p).setChecked(false);
 								}
 							});
 						vibrate_warn.show();
@@ -214,39 +215,48 @@ public class SettingsActivity extends PreferenceActivity {
 		mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
 				@Override
 				public boolean onPreferenceClick(Preference p) {
-					Toast.makeText(SettingsActivity.this, R.string.loading, Toast.LENGTH_LONG).show();
-					new Thread(new Runnable() {
-							public void run() {
-								Looper.prepare();
-								final ArrayList<String> FilterApplication = BaseMethod.StringToStringArrayList(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY));
-								getAppInfo(SettingsActivity.this, FilterApplication);
-								final AlertDialog.Builder KeyBlockActivityAlert = new AlertDialog.Builder(SettingsActivity.this)
-									.setTitle(R.string.keyblock_activity_settings)
-									.setMultiChoiceItems(AppNames, AppState, new DialogInterface.OnMultiChoiceClickListener(){
-										public void onClick(DialogInterface dialog, int position, boolean isChecked) {
-											AppState[position] = isChecked;
-										}
-									})
-									.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener(){
-										public void onClick(DialogInterface dialog, int i) {
-											FilterApplication.clear();
-											for (int a = 0; a < AppState.length; a ++) {
-												if (AppState[a]) {
-													FilterApplication.add(PkgNames[a]);
-												}
+					if (!AppListOpening) {
+						AppListOpening = true;
+						Toast.makeText(SettingsActivity.this, R.string.loading, Toast.LENGTH_LONG).show();
+						new Thread(new Runnable() {
+								public void run() {
+									Looper.prepare();
+									final ArrayList<String> FilterApplication = BaseMethod.StringToStringArrayList(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY));
+									getAppInfo(SettingsActivity.this, FilterApplication);
+									final AlertDialog.Builder KeyBlockActivityAlert = new AlertDialog.Builder(SettingsActivity.this)
+										.setTitle(R.string.keyblock_activity_settings)
+										.setCancelable(false)
+										.setMultiChoiceItems(AppNames, AppState, new DialogInterface.OnMultiChoiceClickListener(){
+											public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+												AppState[position] = isChecked;
 											}
-											mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
-											mSpEditor.commit();
-										}
-									})
-									.setNegativeButton(R.string.cancel, null);
-								runOnUiThread(new Runnable() {
-										public void run() {
-											KeyBlockActivityAlert.show();
-										}
-									});
-							}
-						}).start();
+										})
+										.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener(){
+											public void onClick(DialogInterface dialog, int i) {
+												FilterApplication.clear();
+												for (int a = 0; a < AppState.length; a ++) {
+													if (AppState[a]) {
+														FilterApplication.add(PkgNames[a]);
+													}
+												}
+												mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
+												mSpEditor.commit();
+												AppListOpening = false;
+											}
+										})
+										.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+											public void onClick(DialogInterface dialog, int i) {
+												AppListOpening = false;
+											}
+										});
+									runOnUiThread(new Runnable() {
+											public void run() {
+												KeyBlockActivityAlert.show();
+											}
+										});
+								}
+							}).start();
+					}
 					return true;
 				}
 			});
@@ -258,15 +268,17 @@ public class SettingsActivity extends PreferenceActivity {
 
 		Iterator<PackageInfo> it = info.iterator();
 		while (it.hasNext()) {
-			try {
-				PackageInfo pinfo = it.next();
-				ActivityInfo[] actInfo = pm.getPackageInfo(pinfo.packageName, PackageManager.GET_ACTIVITIES).activities;
-				if (actInfo == null || pinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
-					it.remove();
+			synchronized (ctx) {
+				try {
+					PackageInfo pinfo = it.next();
+					ActivityInfo[] actInfo = pm.getPackageInfo(pinfo.packageName, PackageManager.GET_ACTIVITIES).activities;
+					if (actInfo == null || pinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
+						it.remove();
+					}
+				} catch (PackageManager.NameNotFoundException e) {
+					e.printStackTrace();
+					break;
 				}
-			} catch (PackageManager.NameNotFoundException e) {
-				e.printStackTrace();
-				break;
 			}
 		}
 

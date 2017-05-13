@@ -59,7 +59,7 @@ public class KeyBlockService extends AccessibilityService {
 		getRoot();
 		ControlModeSet();
 		ReceiverRegister();
-		BaseMethod.BlockNotify(this, mSp.getBoolean(Config.ENABLED_KEYBLOCK, true));
+		BaseMethod.BlockNotify(this, mSp.getBoolean(Config.ENABLED_KEYBLOCK, false));
 		if (!mIsQuickSetting) {
 			ShowNotification();
 		}
@@ -130,7 +130,7 @@ public class KeyBlockService extends AccessibilityService {
 		if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
 			Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
 		}
-		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
 			if (mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
 				return false;
 			}
@@ -168,11 +168,11 @@ public class KeyBlockService extends AccessibilityService {
 						}
 					}
 					if (ActivityFound) {
-						if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+						if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
 							BaseMethod.KeyLockBroadcast(this);
 						}
 					} else {
-						if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+						if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
 							BaseMethod.KeyLockBroadcast(this);
 						}
 					}
@@ -271,7 +271,7 @@ public class KeyBlockService extends AccessibilityService {
 		mNBuilder.setOngoing(true);
 		mNBuilder.setSmallIcon(R.drawable.ic_notification);
 		mNBuilder.setContentTitle(getString(R.string.app_name));
-		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, true)) {
+		if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
 			ButtonLightControl(true);
 			ButtonVibrateControl(true);
 			if (allowRemoveNotification) {
@@ -308,7 +308,7 @@ public class KeyBlockService extends AccessibilityService {
 		@Override
 		public void onReceive(Context content, Intent intent) {
 			if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
-				mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
+				mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
 				BaseMethod.BlockNotify(content, mIsKeyBlocked);
 				ButtonLightControl(mIsKeyBlocked);
 				ButtonVibrateControl(mIsKeyBlocked);

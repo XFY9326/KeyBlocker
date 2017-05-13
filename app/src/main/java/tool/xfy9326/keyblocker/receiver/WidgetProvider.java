@@ -55,7 +55,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		mRv = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
 		mPI = PendingIntent.getBroadcast(context, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		mRv.setOnClickPendingIntent(R.id.btn_appwidget, mPI);
-		boolean key = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Config.ENABLED_KEYBLOCK, true);
+		boolean key = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Config.ENABLED_KEYBLOCK, false);
 		if (init) {
 			key = !key;
 			if (!BaseMethod.isAccessibilitySettingsOn(context)) {

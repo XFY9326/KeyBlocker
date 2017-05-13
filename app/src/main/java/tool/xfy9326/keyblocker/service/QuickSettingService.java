@@ -36,7 +36,7 @@ public class QuickSettingService extends TileService {
 	private void updateView(boolean displayToast, boolean init) {
 		Tile tile = getQsTile();
 		if (BaseMethod.isAccessibilitySettingsOn(this)) {
-			boolean KeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, true);
+			boolean KeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
 			if (init) {
 				if (KeyBlocked) {
 					tile.setState(Tile.STATE_ACTIVE);
