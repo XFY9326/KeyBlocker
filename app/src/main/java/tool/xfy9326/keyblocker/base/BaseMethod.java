@@ -72,37 +72,6 @@ public class BaseMethod {
 		return false;
 	}
 
-	public static Process getRootProcess(Runtime r) {
-		Process p;
-		try {
-			p = r.exec("su");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			p = null;
-		}
-		return p;
-	}
-
-	public static DataOutputStream getStream(Process p) {
-		if (p != null) {
-			DataOutputStream o = new DataOutputStream(p.getOutputStream());
-			return o;
-		}
-		return null;
-	}
-
-	public static void closeRuntime(Process p, DataOutputStream o) {
-		try {
-			if (o != null) {
-				o.writeBytes("exit\n");
-				o.close();
-			}
-			p.destroy();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static void RunAccessibilityService(Context context) {
 		Toast.makeText(context, R.string.start_service_first, Toast.LENGTH_SHORT).show();
 		Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);

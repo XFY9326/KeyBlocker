@@ -32,9 +32,6 @@ public class KeyBlockService extends AccessibilityService {
 	private SharedPreferences.Editor mSpEditor;
 	private boolean mIsQuickSetting = false;
 	private NotificationManager mNM;
-	private Runtime mRuntime;
-	private Process mProcess;
-	private DataOutputStream mRuntimeStream;
 	private boolean isReceiverRegistered = false;
 	private boolean isNotificationClosed = true;
 	private boolean inRootMode = false;
@@ -56,7 +53,6 @@ public class KeyBlockService extends AccessibilityService {
 		inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
 		allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
 		allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
-		getRoot();
 		ControlModeSet();
 		ReceiverRegister();
 		BaseMethod.BlockNotify(this, mSp.getBoolean(Config.ENABLED_KEYBLOCK, false));
@@ -67,26 +63,28 @@ public class KeyBlockService extends AccessibilityService {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
-		int eventType = event.getEventType();
-		if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-			if (event.getClassName() != null) {
-				String currentactivity = event.getClassName().toString();
-				if (currentactivity.length() >= 7) {
-					if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
+		if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
+			int eventType = event.getEventType();
+			if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+				if (event.getClassName() != null) {
+					String currentactivity = event.getClassName().toString();
+					if (currentactivity.length() >= 7) {
+						if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
+							mCurrentActivity = currentactivity;
+						}
+					} else {
 						mCurrentActivity = currentactivity;
 					}
-				} else {
-					mCurrentActivity = currentactivity;
 				}
-			}
-			if (mLastActivity != null) {
-				if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+				if (mLastActivity != null) {
+					if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+						currentActivityCheck();
+						mLastActivity = mCurrentActivity;
+					}
+				} else {
 					currentActivityCheck();
 					mLastActivity = mCurrentActivity;
 				}
-			} else {
-				currentActivityCheck();
-				mLastActivity = mCurrentActivity;
 			}
 		}
 	}
@@ -106,9 +104,7 @@ public class KeyBlockService extends AccessibilityService {
 
 	@Override
 	public void onDestroy() {
-		if (inRootMode) {
-			BaseMethod.closeRuntime(mProcess, mRuntimeStream);
-		}
+		System.gc();
 		super.onDestroy();
 	}
 
@@ -158,26 +154,24 @@ public class KeyBlockService extends AccessibilityService {
 	}
 
 	private void currentActivityCheck() {
-		if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
-			if (!mCurrentActivity.contains(getPackageName())) {
-				String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
-				ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
-				if (!ActivityArray.isEmpty() && ActivityArray.size() != 0) {
-					boolean ActivityFound = false;
-					for (String FilterActivity : ActivityArray) {
-						if (mCurrentActivity.contains(FilterActivity.toString())) {
-							ActivityFound = true;
-							break;
-						}
+		if (!mCurrentActivity.contains(getPackageName())) {
+			String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
+			ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
+			if (!ActivityArray.isEmpty() && ActivityArray.size() != 0) {
+				boolean ActivityFound = false;
+				for (String FilterActivity : ActivityArray) {
+					if (mCurrentActivity.contains(FilterActivity.toString())) {
+						ActivityFound = true;
+						break;
 					}
-					if (ActivityFound) {
-						if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-							BaseMethod.KeyLockBroadcast(this);
-						}
-					} else {
-						if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-							BaseMethod.KeyLockBroadcast(this);
-						}
+				}
+				if (ActivityFound) {
+					if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+						BaseMethod.KeyLockBroadcast(this);
+					}
+				} else {
+					if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+						BaseMethod.KeyLockBroadcast(this);
 					}
 				}
 			}
@@ -192,29 +186,25 @@ public class KeyBlockService extends AccessibilityService {
 		}
 	}
 
-	private void getRoot() {
-		if (inRootMode) {
-			mRuntime = Runtime.getRuntime();
-			mProcess = BaseMethod.getRootProcess(mRuntime);
-			mRuntimeStream = BaseMethod.getStream(mProcess);
-		}
-	}
-
-	private void ButtonLightControl(final boolean close) {
-		if (inRootMode && mRuntime != null && mProcess != null && mRuntimeStream != null) {
+	private void ButtonLightControl(final boolean NotInControl) {
+		if (inRootMode && allowBlockVibrator) {
 			new Thread(new Runnable() {
 					@Override
 					public void run() {
 						try {
+							Process process = Runtime.getRuntime().exec("su");
+							DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
 							mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
-							if (close) {
+							if (NotInControl) {
 								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
 								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
 							} else {
 								mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
 							}
 							mRuntimeStream.flush();
-							mProcess.waitFor();
+							process.waitFor();
+							mRuntimeStream.close();
+							process.destroy();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -223,13 +213,15 @@ public class KeyBlockService extends AccessibilityService {
 		}
 	}
 
-	private void ButtonVibrateControl(final boolean close) {
-		if (inRootMode && allowBlockVibrator && mRuntime != null && mProcess != null && mRuntimeStream != null) {
+	private void ButtonVibrateControl(final boolean NotInControl) {
+		if (inRootMode && allowBlockVibrator) {
 			new Thread(new Runnable() {
 					public void run() {
 						try {
+							Process process = Runtime.getRuntime().exec("su");
+							DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
 							mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
-							if (close) {
+							if (NotInControl) {
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK + "\n");
@@ -238,7 +230,9 @@ public class KeyBlockService extends AccessibilityService {
 								mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE + "\n");
 							}
 							mRuntimeStream.flush();
-							mProcess.waitFor();
+							process.waitFor();
+							mRuntimeStream.close();
+							process.destroy();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -295,13 +289,12 @@ public class KeyBlockService extends AccessibilityService {
 			mNBuilder.setPriority(Notification.PRIORITY_MIN);
 		}
 		isNotificationClosed = false;
-		startForeground(Config.NOTIFICATION_ID, mNBuilder.build());
+		mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
 	}
 
 	private void CloseNotification() {
 		if (!isNotificationClosed) {
 			isNotificationClosed = true;
-			stopForeground(true);
 			mNM.cancel(Config.NOTIFICATION_ID);
 		}
 	}
