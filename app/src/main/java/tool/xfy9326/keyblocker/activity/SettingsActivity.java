@@ -264,24 +264,17 @@ public class SettingsActivity extends PreferenceActivity {
 
 	private void getAppInfo(Context ctx, ArrayList<String> PkgHave) {
 		PackageManager pm = ctx.getPackageManager();
-		List<PackageInfo> info = pm.getInstalledPackages(0);
+		List<PackageInfo> info = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
 
 		Iterator<PackageInfo> it = info.iterator();
 		while (it.hasNext()) {
-			synchronized (ctx) {
-				try {
-					PackageInfo pinfo = it.next();
-					ActivityInfo[] actInfo = pm.getPackageInfo(pinfo.packageName, PackageManager.GET_ACTIVITIES).activities;
-					if (actInfo == null || pinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
-						it.remove();
-					}
-				} catch (PackageManager.NameNotFoundException e) {
-					e.printStackTrace();
-					break;
-				}
+			PackageInfo pinfo = it.next();
+			ActivityInfo[] actInfo = pinfo.activities;
+			if (actInfo == null || pinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
+				it.remove();
 			}
 		}
-
+		
 		BaseMethod.orderPackageList(ctx, info);
 		AppNames = new String[info.size()];
 		PkgNames = new String[info.size()];
@@ -290,11 +283,7 @@ public class SettingsActivity extends PreferenceActivity {
 			String pkgname = info.get(i).packageName;
 			AppNames[i] = info.get(i).applicationInfo.loadLabel(ctx.getPackageManager()).toString();
 			PkgNames[i] = pkgname;
-			if (PkgHave.contains(pkgname)) {
-				AppState[i] = true;
-			} else {
-				AppState[i] = false;
-			}
+			AppState[i] = PkgHave.contains(pkgname);
 		}
 	}
 

@@ -94,15 +94,21 @@ public class KeyBlockService extends AccessibilityService {
 	@Override
 	public void onInterrupt() {
 		ReceiverUnregister();
-		ButtonLightControl(false);
-		ButtonVibrateControl(false);
+		boolean mIsKeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
+		if (mIsKeyBlocked) {
+			ButtonLightControl(false);
+			ButtonVibrateControl(false);
+			BaseMethod.BlockNotify(this, false);
+			mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
+			mSpEditor.commit();
+		}
 	}
 
 	@Override
 	public void onDestroy() {
-		ReceiverUnregister();
-		ButtonLightControl(false);
-		ButtonVibrateControl(false);
+		if (inRootMode) {
+			BaseMethod.closeRuntime(mProcess, mRuntimeStream);
+		}
 		super.onDestroy();
 	}
 
@@ -114,9 +120,6 @@ public class KeyBlockService extends AccessibilityService {
 		mLastActivity = null;
 		if (!mIsQuickSetting) {
 			CloseNotification();
-		}
-		if (inRootMode) {
-			BaseMethod.closeRuntime(mProcess, mRuntimeStream);
 		}
 		return super.onUnbind(intent);
 	}
@@ -292,12 +295,13 @@ public class KeyBlockService extends AccessibilityService {
 			mNBuilder.setPriority(Notification.PRIORITY_MIN);
 		}
 		isNotificationClosed = false;
-		mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
+		startForeground(Config.NOTIFICATION_ID, mNBuilder.build());
 	}
 
 	private void CloseNotification() {
 		if (!isNotificationClosed) {
 			isNotificationClosed = true;
+			stopForeground(true);
 			mNM.cancel(Config.NOTIFICATION_ID);
 		}
 	}

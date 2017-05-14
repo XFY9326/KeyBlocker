@@ -3,7 +3,7 @@
     package="tool.xfy9326.keyblocker">
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-
+		
     <application
 		android:name=".base.BaseApplication"
         android:icon="@mipmap/ic_launcher"
