@@ -24,8 +24,8 @@ import tool.xfy9326.keyblocker.config.Config;
 import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
-	private String mCurrentActivity;
-	private String mLastActivity;
+	private String mCurrentActivity = "";
+	private String mLastActivity = "";
 	private ButtonBroadcastReceiver mBbr;
 	private Notification.Builder mNBuilder;
 	private SharedPreferences mSp;
@@ -75,14 +75,9 @@ public class KeyBlockService extends AccessibilityService {
 					} else {
 						mCurrentActivity = currentactivity;
 					}
-				}
-				if (mLastActivity != null) {
 					if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
 						currentActivityCheck();
-						mLastActivity = mCurrentActivity;
 					}
-				} else {
-					currentActivityCheck();
 					mLastActivity = mCurrentActivity;
 				}
 			}
