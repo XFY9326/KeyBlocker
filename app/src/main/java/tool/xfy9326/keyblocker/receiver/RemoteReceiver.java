@@ -10,12 +10,11 @@ import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class RemoteReceiver extends BroadcastReceiver {
-	private boolean displayToast;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(Config.REMOTE_CONTROL_ACTION)) {
-			displayToast = intent.getBooleanExtra("RESPOND", true);
+			boolean displayToast = intent.getBooleanExtra("RESPOND", true);
 			if (BaseMethod.isAccessibilitySettingsOn(context)) {
 				Intent notify_intent = new Intent();
 				notify_intent.setAction(Config.NOTIFICATION_CLICK_ACTION);

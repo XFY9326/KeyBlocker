@@ -11,13 +11,6 @@ import tool.xfy9326.keyblocker.config.Config;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class QuickSettingService extends TileService {
-	private SharedPreferences mSp = null;
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		mSp = PreferenceManager.getDefaultSharedPreferences(this);
-	}
 
 	@Override
 	public void onStartListening() {
@@ -36,7 +29,7 @@ public class QuickSettingService extends TileService {
 	private void updateView(boolean displayToast, boolean init) {
 		Tile tile = getQsTile();
 		if (BaseMethod.isAccessibilitySettingsOn(this)) {
-			boolean KeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
+			boolean KeyBlocked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Config.ENABLED_KEYBLOCK, false);
 			if (init) {
 				if (KeyBlocked) {
 					tile.setState(Tile.STATE_ACTIVE);

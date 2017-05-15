@@ -29,7 +29,7 @@
 	<string name="button_vibrate">Block Button vibrate and light</string>
 	<string name="auto_close_statusbar">Auto close Status Bar when using Tile</string>
 	<string name="button_blocked">Button is blocked</string>
-	<string name="button_unblocked">Button is unblocked</string>
+	<string name="button_unblocked">Button is unblocked now</string>
 	<string name="vibrate_warn">Some System do not support it!\n\nIf you use this funtion, all vibrate will be blocked unless you do not block your keys!\n\nWe suggest you setting button vibrate in System Settings instead of using this!</string>
 	<string name="access_entry_use">Remote call broadcast:\ntool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION\n\nAvailable parameters:\nBoolean value RESPOND\nPrompte when AccessibilityService is not open.(Default true)</string>
     <string name="cancel">Cancel</string>
