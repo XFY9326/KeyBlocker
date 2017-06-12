@@ -4,10 +4,10 @@ import android.app.Application;
 
 public class BaseApplication extends Application {
 
-	@Override
-	public void onCreate() {
-		CrashHandler.get().Catch(this);
-		super.onCreate();
-	}
+    @Override
+    public void onCreate() {
+        CrashHandler.get().Catch(this);
+        super.onCreate();
+    }
 
 }
