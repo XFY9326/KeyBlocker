@@ -32,6 +32,7 @@ public class Config {
 	public static String KEYBLOCK_ACTIVITY = "KeyBlockActivity";
 	public static String KEYBLOCK_ACTIVITY_SET = "KeyBlockActivitySet";
 	public static String CUSTOM_KEYBLOCK_ACTIVITY = "CustomKeyBlockActivity";
+	public static String CONTROL_NOTIFICATION = "ControlNotification";
 
     public static String RUNTIME_BUTTONLIGHT_ON = "echo 100 > /sys/class/leds/button-backlight/brightness";
 	public static String RUNTIME_BUTTONLIGHT_OFF = "echo 0 > /sys/class/leds/button-backlight/brightness";

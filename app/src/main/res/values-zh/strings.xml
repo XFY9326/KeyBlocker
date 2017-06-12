@@ -43,6 +43,8 @@
 	<string name="keyblock_activity_describe">在指定的应用内自动屏蔽按键</string>
 	<string name="keyblock_activity_settings">按键屏蔽应用设置</string>
 	<string name="keyblock_custom_closed">自定义按键屏蔽应用已关闭</string>
+	<string name="keyblock_close_control_notification">关闭操作提示</string>
+	<string name="keyblock_close_control_notification_describe">任何情况下都不会显示操作的提示</string>
 	
 	<string name="xml_general_settings">通用设置</string>
 	<string name="xml_notify_settings">通知设置</string>

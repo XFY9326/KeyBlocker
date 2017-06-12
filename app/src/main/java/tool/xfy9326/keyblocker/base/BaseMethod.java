@@ -49,10 +49,12 @@ public class BaseMethod {
     }
 
 	public static void BlockNotify(Context ctx, boolean blocked) {
-		if (blocked) {
-			Toast.makeText(ctx, R.string.button_blocked, Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(ctx, R.string.button_unblocked, Toast.LENGTH_SHORT).show();
+		if (!PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(Config.CONTROL_NOTIFICATION, false)) {
+			if (blocked) {
+				Toast.makeText(ctx, R.string.button_blocked, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(ctx, R.string.button_unblocked, Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

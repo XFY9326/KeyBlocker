@@ -23,6 +23,12 @@
             android:title="@string/keyblock_activity_settings" 
 			android:dependency="KeyBlockActivity"
         />
+		<CheckBoxPreference
+			android:key="ControlNotification"
+			android:title="@string/keyblock_close_control_notification"
+			android:defaultValue="false"
+			android:summary="@string/keyblock_close_control_notification_describe"
+		/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_notify_settings">
 		<CheckBoxPreference 
