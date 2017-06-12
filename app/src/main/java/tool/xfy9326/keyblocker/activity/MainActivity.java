@@ -15,8 +15,6 @@ import android.widget.Button;
 import tool.xfy9326.keyblocker.R;
 
 public class MainActivity extends Activity {
-    private SharedPreferences mSp;
-    private SharedPreferences.Editor mSpEditor;
     private Button
             mBtnStart,
             mBtnSettings,
@@ -26,8 +24,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_layout);
-        mSp = PreferenceManager.getDefaultSharedPreferences(this);
-        mSpEditor = mSp.edit();
+        SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor mSpEditor = mSp.edit();
         mSpEditor.apply();
         initView();
         initHandle();

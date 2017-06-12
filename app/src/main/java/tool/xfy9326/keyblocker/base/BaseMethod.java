@@ -17,7 +17,7 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
-    public static List<PackageInfo> orderPackageList(final Context ctx, List<PackageInfo> list) {
+    public static void orderPackageList(final Context ctx, List<PackageInfo> list) {
         Collections.sort(list, new Comparator<PackageInfo>() {
             @Override
             public int compare(PackageInfo o1, PackageInfo o2) {
@@ -26,7 +26,6 @@ public class BaseMethod {
                 return str1.compareTo(str2);
             }
         });
-        return list;
     }
 
     public static ArrayList<String> StringToStringArrayList(String str) {
@@ -58,7 +57,7 @@ public class BaseMethod {
         }
     }
 
-    public static boolean isRoot() {
+    public static boolean checkRoot() {
         try {
             Process process = Runtime.getRuntime().exec("su");
             process.getOutputStream().write("exit\n".getBytes());
@@ -66,12 +65,12 @@ public class BaseMethod {
             int i = process.waitFor();
             if (i == 0) {
                 Runtime.getRuntime().exec("su");
-                return true;
+                return false;
             }
         } catch (Exception e) {
-            return false;
+            return true;
         }
-        return false;
+        return true;
     }
 
     public static void RunAccessibilityService(Context context) {

@@ -11,7 +11,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		android:padding="10dp"
-		android:layout_alignParentLeft="true">
+		android:layout_alignParentStart="true">
 
 		<TextView
 			android:layout_width="match_parent"
@@ -60,9 +60,10 @@
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
 		android:orientation="horizontal"
+		style="?android:attr/buttonBarStyle"
 		android:layout_above="@id/textview_author"
 		android:layout_marginBottom="10dp"
-		android:gravity="center_vertical"
+		android:gravity="center"
 		android:layout_centerHorizontal="true">
 
 		<Button
@@ -71,7 +72,7 @@
 			android:layout_height="wrap_content"
 			android:text="@string/setting"
 			android:layout_weight="8.0"
-			android:layout_marginRight="10dp"/>
+			android:layout_marginEnd="10dp" />
 
 		<Button
 			android:id="@+id/btn_access_entry"
@@ -79,7 +80,7 @@
 			android:layout_height="wrap_content"
 			android:text="@string/access_entry"
 			android:layout_weight="3.0"
-			android:layout_marginRight="10dp"/>
+			android:layout_marginEnd="10dp" />
 
 		<Button
 			android:id="@+id/btn_start"

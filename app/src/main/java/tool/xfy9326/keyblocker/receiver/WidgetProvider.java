@@ -15,7 +15,6 @@ import tool.xfy9326.keyblocker.config.Config;
 
 public class WidgetProvider extends AppWidgetProvider {
     private RemoteViews mRv;
-    private PendingIntent mPI;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -52,7 +51,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     private void ViewSet(Context context, boolean init) {
         mRv = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
-        mPI = PendingIntent.getBroadcast(context, 0, new Intent(Config.APPWIDGET_CLICK_ACTION), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent mPI = PendingIntent.getBroadcast(context, 0, new Intent(Config.APPWIDGET_CLICK_ACTION), PendingIntent.FLAG_UPDATE_CURRENT);
         mRv.setOnClickPendingIntent(R.id.btn_appwidget, mPI);
         boolean key = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Config.ENABLED_KEYBLOCK, false);
         if (init) {

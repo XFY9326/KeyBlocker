@@ -30,18 +30,6 @@
 			android:summary="@string/keyblock_close_control_notification_describe"
 		/>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/xml_notify_settings">
-		<CheckBoxPreference 
-            android:key="NotificationIcon" 
-            android:title="@string/show_notification_icon" 
-            android:defaultValue="false"
-        />
-		<CheckBoxPreference 
-            android:key="RemoveNotification" 
-            android:title="@string/allow_remove_notification" 
-            android:defaultValue="false"
-        />
-    </PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_tile_settings"> 
 		<CheckBoxPreference 
             android:key="DisplayNotification" 
@@ -53,6 +41,18 @@
             android:title="@string/auto_close_statusbar" 
             android:defaultValue="true"
         />
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/xml_notify_settings"
+		android:dependency="DisplayNotification">
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="NotificationIcon"
+			android:title="@string/show_notification_icon" />
+		<CheckBoxPreference
+			android:key="RemoveNotification"
+			android:title="@string/allow_remove_notification"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_root_settings">
 		<CheckBoxPreference 
@@ -66,7 +66,7 @@
             android:title="@string/button_vibrate" 
             android:defaultValue="false"
 			android:dependency="RootFunction"
-        />
+			android:layout_height="wrap_content" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_custom_settings">
 		<CheckBoxPreference 
