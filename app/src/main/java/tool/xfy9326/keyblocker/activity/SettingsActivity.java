@@ -20,6 +20,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -161,7 +162,7 @@ public class SettingsActivity extends Activity {
                 @Override
                 public boolean onPreferenceClick(Preference p) {
                     LayoutInflater mLiContent = LayoutInflater.from(getActivity());
-                    mSubView = mLiContent.inflate(R.layout.v_custom_keycode, null);
+                    mSubView = mLiContent.inflate(R.layout.v_custom_keycode, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
                     mEtCustomKeycode = (EditText) mSubView.findViewById(R.id.et_custom_keycode);
                     mBtnCancel = (Button) mSubView.findViewById(R.id.btn_cancel);
                     mBtnSubmit = (Button) mSubView.findViewById(R.id.btn_submit);
