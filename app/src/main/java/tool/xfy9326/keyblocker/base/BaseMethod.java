@@ -76,6 +76,7 @@ public class BaseMethod {
     public static void RunAccessibilityService(Context context) {
         Toast.makeText(context, R.string.start_service_first, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

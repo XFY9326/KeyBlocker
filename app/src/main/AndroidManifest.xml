@@ -3,16 +3,16 @@
     package="tool.xfy9326.keyblocker">
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-		
+
     <application
-		android:name=".base.BaseApplication"
-        android:fullBackupContent="true"
+        android:name=".base.BaseApplication"
         android:allowBackup="true"
-        android:supportsRtl="false"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-		android:roundIcon="@mipmap/ic_launcher"
-		android:theme="@style/AppTheme"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".activity.MainActivity"
@@ -23,9 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity
+        <activity
             android:name=".activity.SettingsActivity"
-			android:label="@string/setting">
+            android:label="@string/setting">
         </activity>
 
         <service

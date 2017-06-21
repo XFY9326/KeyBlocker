@@ -61,9 +61,9 @@ public class MainActivity extends Activity {
 
     @SuppressLint("InflateParams")
     private void initView() {
-        mBtnStart = (Button) findViewById(R.id.btn_start);
-        mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
-        mBtnSettings = (Button) findViewById(R.id.btn_settings);
+        mBtnStart = findViewById(R.id.btn_start);
+        mBtnAccessEntry = findViewById(R.id.btn_access_entry);
+        mBtnSettings = findViewById(R.id.btn_settings);
     }
 
 
