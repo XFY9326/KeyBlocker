@@ -47,6 +47,7 @@ public class SettingsActivity extends Activity {
         private String[] AppNames, PkgNames;
         private boolean[] AppState;
         private boolean AppListOpening = false;
+        private Preference.OnPreferenceChangeListener launchService;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -55,10 +56,21 @@ public class SettingsActivity extends Activity {
             mSp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             mSpEditor = mSp.edit();
             mSpEditor.apply();
-            Settings();
+            launchService = new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference p, Object o) {
+                    BaseMethod.RestartAccessibilityService(getActivity());
+                    return true;
+                }
+            };
+            GeneralSettings();
+            NotificationSettings();
+            RootSettings();
+            NSettings();
+            CustomSettings();
         }
 
-        private void Settings() {
+        private void GeneralSettings() {
             CheckBoxPreference mCbEnabledVolumeKey = (CheckBoxPreference) findPreference(Config.ENABLED_VOLUME_KEY);
             mCbEnabledVolumeKey.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -68,160 +80,6 @@ public class SettingsActivity extends Activity {
                 }
             });
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                CheckBoxPreference mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
-                mCbDisplayNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference p, Object o) {
-                        BaseMethod.RestartAccessibilityService(getActivity());
-                        return true;
-                    }
-                });
-
-                CheckBoxPreference mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
-                mCbAutoCloseStatusBar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference p, Object o) {
-                        displayToast((boolean) o);
-                        return true;
-                    }
-                });
-            }
-
-            CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
-            mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference p, Object o) {
-                    boolean isChecked = (boolean) o;
-                    if (isChecked) {
-                        if (BaseMethod.checkRoot()) {
-                            Toast.makeText(getActivity(), R.string.root_failed, Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    }
-                    BaseMethod.RestartAccessibilityService(getActivity());
-                    return true;
-                }
-            });
-
-            CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
-            mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(final Preference p, Object o) {
-                    boolean isChecked = (boolean) o;
-                    if (isChecked) {
-                        AlertDialog.Builder vibrate_warn = new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.button_vibrate)
-                                .setMessage(R.string.vibrate_warn)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.continue_do, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface di, int i) {
-                                        BaseMethod.RestartAccessibilityService(getActivity());
-                                    }
-                                })
-                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface di, int i) {
-                                        ((CheckBoxPreference) p).setChecked(false);
-                                    }
-                                });
-                        vibrate_warn.show();
-                    } else {
-                        BaseMethod.RestartAccessibilityService(getActivity());
-                    }
-                    return true;
-                }
-            });
-
-            CheckBoxPreference mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
-            mCbNotificationIcon.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference p, Object o) {
-                    BaseMethod.RestartAccessibilityService(getActivity());
-                    return true;
-                }
-            });
-
-            CheckBoxPreference mCbRemoveNotification = (CheckBoxPreference) findPreference(Config.REMOVE_NOTIFICATION);
-            mCbRemoveNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference p, Object o) {
-                    BaseMethod.RestartAccessibilityService(getActivity());
-                    return true;
-                }
-            });
-
-            Preference mBtnSettingCustomKeycode = findPreference(Config.CUSTOM_SETTINGS);
-            mBtnSettingCustomKeycode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                View mSubView;
-                EditText mEtCustomKeycode;
-                AlertDialog mAdCustomKeycode;
-                AlertDialog.Builder mAdBuilderCustomKeycode;
-                Button mBtnCancel, mBtnSubmit, mBtnHelp;
-
-                @Override
-                public boolean onPreferenceClick(Preference p) {
-                    LayoutInflater mLiContent = LayoutInflater.from(getActivity());
-                    mSubView = mLiContent.inflate(R.layout.v_custom_keycode, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
-                    mEtCustomKeycode = mSubView.findViewById(R.id.et_custom_keycode);
-                    mBtnCancel = mSubView.findViewById(R.id.btn_cancel);
-                    mBtnSubmit = mSubView.findViewById(R.id.btn_submit);
-                    mBtnHelp = mSubView.findViewById(R.id.btn_help);
-
-                    mAdBuilderCustomKeycode = new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.custom_setting)
-                            .setView(mSubView)
-                            .setCancelable(false);
-
-                    mEtCustomKeycode.setText(mSp.getString(Config.CUSTOM_KEYCODE, ""));
-                    mEtCustomKeycode.setSelection(mEtCustomKeycode.length());
-
-                    mBtnHelp.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String url = "https://github.com/XFY9326/KeyBlocker/wiki/DIY-KeyCode-Block";
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            Uri content_url = Uri.parse(url);
-                            intent.setData(content_url);
-                            startActivity(intent);
-                        }
-                    });
-
-                    mBtnCancel.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mAdCustomKeycode.cancel();
-                        }
-                    });
-
-                    mBtnSubmit.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mEtCustomKeycode.length() == 0) {
-                                mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
-                                mSpEditor.commit();
-                                if (mAdCustomKeycode != null) {
-                                    mAdCustomKeycode.dismiss();
-                                }
-                            } else {
-                                String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
-                                if (mStringCustomKeycode.matches(mCustomKeycodeRegEx)) {
-                                    mSpEditor.putString(Config.CUSTOM_KEYCODE, mStringCustomKeycode);
-                                    mSpEditor.commit();
-                                    if (mAdCustomKeycode != null) {
-                                        mAdCustomKeycode.dismiss();
-                                    }
-                                } else {
-                                    Toast.makeText(getActivity(), R.string.wrong_format, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
-
-                    mAdCustomKeycode = mAdBuilderCustomKeycode.show();
-                    return true;
-                }
-            });
             Preference mKeyBlockActivitySet = findPreference(Config.KEYBLOCK_ACTIVITY_SET);
             mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -268,6 +126,148 @@ public class SettingsActivity extends Activity {
                             }
                         }).start();
                     }
+                    return true;
+                }
+            });
+        }
+
+        private void NotificationSettings() {
+            CheckBoxPreference mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
+            mCbNotificationIcon.setOnPreferenceChangeListener(launchService);
+
+            CheckBoxPreference mCbRemoveNotification = (CheckBoxPreference) findPreference(Config.REMOVE_NOTIFICATION);
+            mCbRemoveNotification.setOnPreferenceChangeListener(launchService);
+
+        }
+
+        private void RootSettings() {
+            CheckBoxPreference mCbRootFunction = (CheckBoxPreference) findPreference(Config.ROOT_FUNCTION);
+            mCbRootFunction.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference p, Object o) {
+                    boolean isChecked = (boolean) o;
+                    if (isChecked) {
+                        if (BaseMethod.checkRoot()) {
+                            Toast.makeText(getActivity(), R.string.root_failed, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    }
+                    BaseMethod.RestartAccessibilityService(getActivity());
+                    return true;
+                }
+            });
+
+            CheckBoxPreference mCbButtonVibrate = (CheckBoxPreference) findPreference(Config.BUTTON_VIBRATE);
+            mCbButtonVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(final Preference p, Object o) {
+                    boolean isChecked = (boolean) o;
+                    if (isChecked) {
+                        AlertDialog.Builder vibrate_warn = new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.button_vibrate)
+                                .setMessage(R.string.vibrate_warn)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.continue_do, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface di, int i) {
+                                        BaseMethod.RestartAccessibilityService(getActivity());
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface di, int i) {
+                                        ((CheckBoxPreference) p).setChecked(false);
+                                    }
+                                });
+                        vibrate_warn.show();
+                    } else {
+                        BaseMethod.RestartAccessibilityService(getActivity());
+                    }
+                    return true;
+                }
+            });
+        }
+
+        private void NSettings() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                CheckBoxPreference mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
+                mCbDisplayNotification.setOnPreferenceChangeListener(launchService);
+
+                CheckBoxPreference mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
+                mCbAutoCloseStatusBar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference p, Object o) {
+                        displayToast((boolean) o);
+                        return true;
+                    }
+                });
+            }
+        }
+
+        private void CustomSettings() {
+            Preference mBtnSettingCustomKeycode = findPreference(Config.CUSTOM_SETTINGS);
+            mBtnSettingCustomKeycode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                View mSubView;
+                EditText mEtCustomKeycode;
+                AlertDialog mAdCustomKeycode;
+                AlertDialog.Builder mAdBuilderCustomKeycode;
+                Button mBtnCancel, mBtnSubmit, mBtnHelp;
+
+                @Override
+                public boolean onPreferenceClick(Preference p) {
+                    LayoutInflater mLiContent = LayoutInflater.from(getActivity());
+                    mSubView = mLiContent.inflate(R.layout.v_custom_keycode, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
+                    mEtCustomKeycode = mSubView.findViewById(R.id.et_custom_keycode);
+                    mBtnCancel = mSubView.findViewById(R.id.btn_cancel);
+                    mBtnSubmit = mSubView.findViewById(R.id.btn_submit);
+                    mBtnHelp = mSubView.findViewById(R.id.btn_help);
+
+                    mAdBuilderCustomKeycode = new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.custom_setting)
+                            .setView(mSubView)
+                            .setCancelable(false);
+                    mEtCustomKeycode.setText(mSp.getString(Config.CUSTOM_KEYCODE, ""));
+                    mEtCustomKeycode.setSelection(mEtCustomKeycode.length());
+                    mBtnHelp.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String url = "https://github.com/XFY9326/KeyBlocker/wiki/DIY-KeyCode-Block";
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            Uri content_url = Uri.parse(url);
+                            intent.setData(content_url);
+                            startActivity(intent);
+                        }
+                    });
+                    mBtnCancel.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAdCustomKeycode.cancel();
+                        }
+                    });
+                    mBtnSubmit.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mEtCustomKeycode.length() == 0) {
+                                mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
+                                mSpEditor.commit();
+                                if (mAdCustomKeycode != null) {
+                                    mAdCustomKeycode.dismiss();
+                                }
+                            } else {
+                                String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
+                                if (mStringCustomKeycode.matches(mCustomKeycodeRegEx)) {
+                                    mSpEditor.putString(Config.CUSTOM_KEYCODE, mStringCustomKeycode);
+                                    mSpEditor.commit();
+                                    if (mAdCustomKeycode != null) {
+                                        mAdCustomKeycode.dismiss();
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity(), R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                    mAdCustomKeycode = mAdBuilderCustomKeycode.show();
                     return true;
                 }
             });

@@ -66,5 +66,4 @@ public class MainActivity extends Activity {
         mBtnSettings = findViewById(R.id.btn_settings);
     }
 
-
 }

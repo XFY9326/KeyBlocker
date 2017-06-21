@@ -137,9 +137,9 @@ public class KeyBlockService extends AccessibilityService {
                 boolean isDisabled = index >= 0;
                 if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
                     if (isDisabled) {
-                        Toast.makeText(this, "Keycode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "KeyCode: " + keycode + " " + getString(R.string.has_disabled), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "KeyCode: " + keycode, Toast.LENGTH_SHORT).show();
                     }
                 }
                 return isDisabled;
@@ -296,6 +296,29 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
+    private void UiUpdater(Context content, Intent intent, boolean mIsKeyBlocked) {
+        if (!mIsQuickSetting) {
+            if (mIsKeyBlocked) {
+                if (allowRemoveNotification) {
+                    mNBuilder.setOngoing(true);
+                }
+                mNBuilder.setContentText(getString(R.string.notify_mes_off));
+            } else {
+                if (allowRemoveNotification) {
+                    mNBuilder.setOngoing(false);
+                }
+                mNBuilder.setContentText(getString(R.string.notify_mes_on));
+            }
+            if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
+                sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
+            }
+            isNotificationClosed = false;
+            mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
+            BaseMethod.collapseStatusBar(content);
+        }
+        BaseMethod.BlockNotify(content, mIsKeyBlocked);
+    }
+
     private class ButtonBroadcastReceiver extends BroadcastReceiver {
         private boolean mIsKeyBlocked;
 
@@ -303,30 +326,11 @@ public class KeyBlockService extends AccessibilityService {
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
                 mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
-                BaseMethod.BlockNotify(content, mIsKeyBlocked);
                 ButtonLightControl(mIsKeyBlocked);
                 ButtonVibrateControl(mIsKeyBlocked);
                 mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
                 mSpEditor.commit();
-                if (!mIsQuickSetting) {
-                    if (mIsKeyBlocked) {
-                        if (allowRemoveNotification) {
-                            mNBuilder.setOngoing(true);
-                        }
-                        mNBuilder.setContentText(getString(R.string.notify_mes_off));
-                    } else {
-                        if (allowRemoveNotification) {
-                            mNBuilder.setOngoing(false);
-                        }
-                        mNBuilder.setContentText(getString(R.string.notify_mes_on));
-                    }
-                    if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
-                        sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
-                    }
-                    isNotificationClosed = false;
-                    mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
-                    BaseMethod.collapseStatusBar(content);
-                }
+                UiUpdater(content, intent, mIsKeyBlocked);
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
                 if (allowRemoveNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
