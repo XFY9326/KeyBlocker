@@ -275,13 +275,18 @@ public class SettingsActivity extends Activity {
 
         private void getAppInfo(Context ctx, ArrayList<String> PkgHave) {
             PackageManager pm = ctx.getPackageManager();
-            List<PackageInfo> info = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+            boolean activity_filter = mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_FILTER, true);
+            List<PackageInfo> info = activity_filter ? pm.getInstalledPackages(PackageManager.GET_ACTIVITIES) : pm.getInstalledPackages(0);
 
             Iterator<PackageInfo> it = info.iterator();
             while (it.hasNext()) {
                 PackageInfo packageinfo = it.next();
                 ActivityInfo[] actInfo = packageinfo.activities;
-                if (actInfo == null || packageinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
+                if (packageinfo.packageName.equalsIgnoreCase(ctx.getPackageName())) {
+                    it.remove();
+                    continue;
+                }
+                if (actInfo == null && activity_filter) {
                     it.remove();
                 }
             }

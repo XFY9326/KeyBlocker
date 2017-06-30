@@ -7,28 +7,34 @@
 			android:key="EnabledVolumeKey"
 			android:title="@string/disabled_volume_key"
         />
-		<CheckBoxPreference 
-            android:defaultValue="false"
-			android:key="KeyBlockActivity"
-			android:summary="@string/keyblock_activity_describe"
-			android:title="@string/keyblock_activity"
-        />
-		<Preference
-			android:dependency="KeyBlockActivity"
-			android:key="KeyBlockActivitySet"
-			android:title="@string/keyblock_activity_settings"
-        />
 		<CheckBoxPreference
 			android:defaultValue="false"
 			android:key="ControlNotification"
 			android:summary="@string/keyblock_close_control_notification_describe"
-			android:title="@string/keyblock_close_control_notification"
-		/>
+			android:title="@string/keyblock_close_control_notification" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/xml_keyblock_application">
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="KeyBlockActivity"
+			android:summary="@string/keyblock_activity_describe"
+			android:title="@string/keyblock_activity" />
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:dependency="KeyBlockActivity"
+			android:key="KeyBlockActivityFilter"
+			android:summary="@string/keyblock_activity_filter_describe"
+			android:title="@string/keyblock_activity_filter" />
+		<Preference
+			android:dependency="KeyBlockActivity"
+			android:key="KeyBlockActivitySet"
+			android:title="@string/keyblock_activity_settings" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/xml_tile_settings"> 
 		<CheckBoxPreference 
             android:defaultValue="false"
 			android:key="DisplayNotification"
+			android:summary="@string/force_notification_control_describe"
 			android:title="@string/force_notification_control"
         />
 		<CheckBoxPreference 

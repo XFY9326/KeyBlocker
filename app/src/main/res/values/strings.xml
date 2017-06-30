@@ -6,7 +6,7 @@
     <string name="tile_set">Above Android N Devices default open your Status Bar and enable the Tile to control KeyBlocker!</string>
     <string name="go_start">Click Here to Start</string>
     <string name="disabled_volume_key">Not Block Volume Button</string>
-    <string name="force_notification_control">Force Notification Control (Android N)</string>
+	<string name="force_notification_control">Force Notification Control (Android N and above)</string>
     <string name="notify_mes_on">Click Here to Open Physical Keys</string>
     <string name="notify_mes_off">Click Here to Close Physical Keys</string>
     <string name="restart_service">Restart AccessibilityService to apply</string>
@@ -51,4 +51,8 @@
 	<string name="xml_root_settings">Root Settings</string>
 	<string name="xml_tile_settings">Tile Settings</string>
 	<string name="widget_description">KeyBlocker Switch</string>
+	<string name="xml_keyblock_application">KeyBlock Application Settings</string>
+	<string name="keyblock_activity_filter_describe">Will not show applications without activities, may have some problems but can save device memory.</string>
+	<string name="keyblock_activity_filter">KeyBlock Application Filter</string>
+	<string name="force_notification_control_describe">To solve some device which can not use Tile</string>
 </resources>
