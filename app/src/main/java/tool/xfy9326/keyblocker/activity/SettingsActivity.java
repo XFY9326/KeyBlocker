@@ -201,6 +201,11 @@ public class SettingsActivity extends Activity {
                         return true;
                     }
                 });
+            } else {
+                CheckBoxPreference mCbDisplayNotification = (CheckBoxPreference) findPreference(Config.DISPLAY_NOTIFICATION);
+                CheckBoxPreference mCbAutoCloseStatusBar = (CheckBoxPreference) findPreference(Config.AUTO_CLOSE_STATUSBAR);
+                mCbDisplayNotification.setEnabled(false);
+                mCbAutoCloseStatusBar.setEnabled(false);
             }
         }
 
@@ -217,10 +222,10 @@ public class SettingsActivity extends Activity {
                 public boolean onPreferenceClick(Preference p) {
                     LayoutInflater mLiContent = LayoutInflater.from(getActivity());
                     mSubView = mLiContent.inflate(R.layout.v_custom_keycode, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
-                    mEtCustomKeycode = mSubView.findViewById(R.id.et_custom_keycode);
-                    mBtnCancel = mSubView.findViewById(R.id.btn_cancel);
-                    mBtnSubmit = mSubView.findViewById(R.id.btn_submit);
-                    mBtnHelp = mSubView.findViewById(R.id.btn_help);
+                    mEtCustomKeycode = (EditText) mSubView.findViewById(R.id.et_custom_keycode);
+                    mBtnCancel = (Button) mSubView.findViewById(R.id.btn_cancel);
+                    mBtnSubmit = (Button) mSubView.findViewById(R.id.btn_submit);
+                    mBtnHelp = (Button) mSubView.findViewById(R.id.btn_help);
 
                     mAdBuilderCustomKeycode = new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.custom_setting)

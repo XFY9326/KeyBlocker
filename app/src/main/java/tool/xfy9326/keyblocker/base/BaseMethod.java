@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import java.io.DataOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,30 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
+    public static void controlAccessibilityServiceWithRoot(final boolean isOpen) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
+                    mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_REGISTER + "\n");
+                    if (isOpen) {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_OPEN_REFRESH + "\n");
+                    } else {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_CLOSE_REFRESH + "\n");
+                    }
+                    mRuntimeStream.flush();
+                    process.waitFor();
+                    mRuntimeStream.close();
+                    process.destroy();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public static void orderPackageList(final Context ctx, List<PackageInfo> list) {
         Collections.sort(list, new Comparator<PackageInfo>() {
             @Override

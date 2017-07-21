@@ -24,6 +24,7 @@ public class Config {
     public static final String ENABLED_KEYBLOCK = "EnabledKeyBlock";
     public static final String DISPLAY_APPWIDGET = "DisplayAppWidget";
     public static final String ROOT_FUNCTION = "RootFunction";
+    public static final String ROOT_OPEN_SERVICE = "RootOpenService";
     public static final String BUTTON_VIBRATE = "ButtonVibrate";
     public static final String DISPLAY_NOTIFICATION = "DisplayNotification";
     public static final String NOTIFICATION_ICON = "NotificationIcon";
@@ -46,4 +47,7 @@ public class Config {
     public static final String RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK = "chmod 444 /sys/class/timed_output/vibrator/enable";
     public static final String RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE = "chmod 644 /sys/class/timed_output/vibrator/enable";
 
+    public static final String RUNTIME_ROOT_OPEN_SERVICE_REGISTER = "settings put secure enabled_accessibility_services tool.xfy9326.keyblocker/tool.xfy9326.keyblocker.service.KeyBlockService";
+    public static final String RUNTIME_ROOT_OPEN_SERVICE_OPEN_REFRESH = "settings put secure accessibility_enabled 1";
+    public static final String RUNTIME_ROOT_OPEN_SERVICE_CLOSE_REFRESH = "settings put secure accessibility_enabled 0";
 }

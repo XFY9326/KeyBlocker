@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="tool.xfy9326.keyblocker">
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
@@ -12,12 +13,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,8 +28,7 @@
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
-            android:label="@string/setting">
-        </activity>
+            android:label="@string/setting"></activity>
 
         <service
             android:name=".service.KeyBlockService"
@@ -41,7 +43,7 @@
         </service>
         <service
             android:name=".service.QuickSettingService"
-            android:icon="@drawable/ic_notification"
+            android:icon="@drawable/ic_notification_blocked"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

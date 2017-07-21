@@ -8,14 +8,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
-public class CrashHandler implements Thread.UncaughtExceptionHandler {
+class CrashHandler implements Thread.UncaughtExceptionHandler {
     private Context mContext;
 
-    public static CrashHandler get() {
+    static CrashHandler get() {
         return new CrashHandler();
     }
 
-    public void Catch(Context context) {
+    void Catch(Context context) {
         this.mContext = context;
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
@@ -31,7 +31,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             }
         }).start();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             thread.interrupt();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -49,24 +49,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             cause = cause.getCause();
         }
         printWriter.close();
-        String str = writer.toString();
-        String[] errs = str.split("\n");
-        String result = "";
-        for (String err : errs) {
-            if (err.contains("at")) {
-                if (!err.contains(mContext.getPackageName())) {
-                    continue;
-                } else {
-                    err = err.replace(mContext.getPackageName(), "").trim();
-                    StringBuilder sb = new StringBuilder(err);
-                    sb.insert(err.indexOf("("), "\n");
-                    err = sb.toString();
-                }
-            }
-            result += err + "\n";
-        }
-        result = result.substring(0, result.length() - 1);
-        return result;
+        return writer.toString();
     }
 
 }

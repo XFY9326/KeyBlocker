@@ -1,19 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "tool.xfy9326.keyblocker"
         minSdkVersion 18
-        targetSdkVersion 26
-        versionCode 29
-        versionName '2.6.9'
+        //noinspection OldTargetApi
+        targetSdkVersion 25
+        versionCode 30
+        versionName '2.7'
     }
     
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             android.applicationVariants.all {
                 variant ->

@@ -11,8 +11,11 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import tool.xfy9326.keyblocker.R;
+import tool.xfy9326.keyblocker.base.BaseMethod;
+import tool.xfy9326.keyblocker.config.Config;
 
 public class MainActivity extends Activity {
     private Button
@@ -24,9 +27,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide_layout);
-        SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor mSpEditor = mSp.edit();
-        mSpEditor.apply();
         initView();
         initHandle();
     }
@@ -34,8 +34,23 @@ public class MainActivity extends Activity {
     private void initHandle() {
         mBtnStart.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivity(intent);
+                SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                if (BaseMethod.isAccessibilitySettingsOn(MainActivity.this)) {
+                    if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                        BaseMethod.controlAccessibilityServiceWithRoot(false);
+                        ((Button) v).setText(R.string.go_start);
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.warn_service_started, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                        BaseMethod.controlAccessibilityServiceWithRoot(true);
+                        ((Button) v).setText(R.string.close_service);
+                    } else {
+                        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                        startActivity(intent);
+                    }
+                }
             }
         });
 
@@ -59,11 +74,22 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(this);
+        if (BaseMethod.isAccessibilitySettingsOn(this) && mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false)) {
+            mBtnStart.setText(R.string.close_service);
+        } else {
+            mBtnStart.setText(R.string.go_start);
+        }
+        super.onResume();
+    }
+
     @SuppressLint("InflateParams")
     private void initView() {
-        mBtnStart = findViewById(R.id.btn_start);
-        mBtnAccessEntry = findViewById(R.id.btn_access_entry);
-        mBtnSettings = findViewById(R.id.btn_settings);
+        mBtnStart = (Button) findViewById(R.id.btn_start);
+        mBtnAccessEntry = (Button) findViewById(R.id.btn_access_entry);
+        mBtnSettings = (Button) findViewById(R.id.btn_settings);
     }
 
 }

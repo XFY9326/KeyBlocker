@@ -263,7 +263,11 @@ public class KeyBlockService extends AccessibilityService {
 
         mNBuilder = new Notification.Builder(this);
         mNBuilder.setOngoing(true);
-        mNBuilder.setSmallIcon(R.drawable.ic_notification);
+        if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+            mNBuilder.setSmallIcon(R.drawable.ic_notification_blocked);
+        } else {
+            mNBuilder.setSmallIcon(R.drawable.ic_notification_not_blocked);
+        }
         mNBuilder.setContentTitle(getString(R.string.app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
             ButtonLightControl(true);
@@ -282,7 +286,7 @@ public class KeyBlockService extends AccessibilityService {
         }
         mNBuilder.setDeleteIntent(delete_pendingintent);
         mNBuilder.setContentIntent(click_pendingIntent);
-        if (!mSp.getBoolean(Config.NOTIFICATION_ICON, false)) {
+        if (!mSp.getBoolean(Config.NOTIFICATION_ICON, true)) {
             mNBuilder.setPriority(Notification.PRIORITY_MIN);
         }
         isNotificationClosed = false;
@@ -313,6 +317,11 @@ public class KeyBlockService extends AccessibilityService {
                 sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
             }
             isNotificationClosed = false;
+            if (mIsKeyBlocked) {
+                mNBuilder.setSmallIcon(R.drawable.ic_notification_blocked);
+            } else {
+                mNBuilder.setSmallIcon(R.drawable.ic_notification_not_blocked);
+            }
             mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
             BaseMethod.collapseStatusBar(content);
         }
