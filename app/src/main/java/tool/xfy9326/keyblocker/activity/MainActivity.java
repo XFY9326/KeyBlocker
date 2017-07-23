@@ -37,14 +37,14 @@ public class MainActivity extends Activity {
                 SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 if (BaseMethod.isAccessibilitySettingsOn(MainActivity.this)) {
                     if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
-                        BaseMethod.controlAccessibilityServiceWithRoot(false);
+                        BaseMethod.controlAccessibilityServiceWithRoot(false, false);
                         ((Button) v).setText(R.string.go_start);
                     } else {
                         Toast.makeText(MainActivity.this, R.string.warn_service_started, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
-                        BaseMethod.controlAccessibilityServiceWithRoot(true);
+                        BaseMethod.controlAccessibilityServiceWithRoot(true, false);
                         ((Button) v).setText(R.string.close_service);
                     } else {
                         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);

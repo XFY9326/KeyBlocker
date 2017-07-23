@@ -2,6 +2,7 @@ package tool.xfy9326.keyblocker.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -18,7 +19,7 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
-    public static void controlAccessibilityServiceWithRoot(final boolean isOpen) {
+    public static void controlAccessibilityServiceWithRoot(final boolean isOpen, final boolean isRestart) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -26,7 +27,10 @@ public class BaseMethod {
                     Process process = Runtime.getRuntime().exec("su");
                     DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
                     mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_REGISTER + "\n");
-                    if (isOpen) {
+                    if (isRestart) {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_CLOSE_REFRESH + "\n");
+                        mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_OPEN_REFRESH + "\n");
+                    } else if (isOpen) {
                         mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_OPEN_REFRESH + "\n");
                     } else {
                         mRuntimeStream.writeBytes(Config.RUNTIME_ROOT_OPEN_SERVICE_CLOSE_REFRESH + "\n");
@@ -107,9 +111,14 @@ public class BaseMethod {
 
     public static void RestartAccessibilityService(Context context) {
         if (isAccessibilitySettingsOn(context)) {
-            Toast.makeText(context, R.string.restart_service, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            context.startActivity(intent);
+            SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(context);
+            if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                controlAccessibilityServiceWithRoot(false, true);
+            } else {
+                Toast.makeText(context, R.string.restart_service, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                context.startActivity(intent);
+            }
         }
     }
 
