@@ -59,4 +59,7 @@
     <string name="xml_root_open_service_sum">It may not work for the first time (restart service manually to solve it)and is awkward</string>
     <string name="warn_service_started">The Service has already started!</string>
     <string name="close_service">Click Here to Close</string>
+    <string name="double_click_cancel_block">Double click exit</string>
+    <string name="double_click_cancel_block_sum">Double click back button to unblock key</string>
+    <string name="disabled_volume_key_more_sum">You can also manually set more below</string>
 </resources>

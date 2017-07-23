@@ -58,4 +58,7 @@
     <string name="xml_root_open_service_sum">第一次使用可能会不工作（手动重启解决）并且反应迟钝</string>
     <string name="warn_service_started">服务已经启动！</string>
     <string name="close_service">点击这里，关闭服务</string>
+    <string name="double_click_cancel_block">双击退出</string>
+    <string name="double_click_cancel_block_sum">双击返回按键解除按键屏蔽</string>
+    <string name="disabled_volume_key_more_sum">你可以在下面自定义设定更多</string>
 </resources>

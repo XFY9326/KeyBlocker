@@ -103,10 +103,15 @@ public class BaseMethod {
     }
 
     public static void RunAccessibilityService(Context context) {
-        Toast.makeText(context, R.string.start_service_first, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(context);
+        if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+            controlAccessibilityServiceWithRoot(true, false);
+        } else {
+            Toast.makeText(context, R.string.start_service_first, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 
     public static void RestartAccessibilityService(Context context) {

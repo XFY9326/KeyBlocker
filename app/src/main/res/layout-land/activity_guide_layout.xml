@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:padding="5dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
 
-	<LinearLayout
-		android:id="@+id/layout_content"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentStart="true"
-		android:orientation="vertical"
-		android:padding="10dp">
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="10dp"
-			android:gravity="start"
-			android:text="@string/introduce"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textSize="14sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="start"
+            android:text="@string/introduce"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp" />
 
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="10dp"
-			android:layout_marginTop="5dp"
-			android:gravity="start"
-			android:text="@string/attention"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textSize="14sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:gravity="start"
+            android:text="@string/attention"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp" />
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
-			android:gravity="start"
-			android:text="@string/tile_set"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textSize="14sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="start"
+            android:text="@string/tile_set"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp" />
 
-	</LinearLayout>
+    </LinearLayout>
 
-	<TextView
-		android:id="@+id/textview_author"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true"
-		android:layout_marginBottom="5dp"
-		android:autoLink="web"
-		android:gravity="center"
-		android:text="@string/author"
-		android:textAppearance="?android:attr/textAppearanceSmall" />
+    <TextView
+        android:id="@+id/textview_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5dp"
+        android:autoLink="web"
+        android:gravity="center"
+        android:text="@string/author"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-	<LinearLayout
-		style="?android:attr/buttonBarStyle"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_above="@id/textview_author"
-		android:layout_centerHorizontal="true"
-		android:layout_marginBottom="10dp"
-		android:gravity="center"
-		android:orientation="horizontal">
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/textview_author"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-		<Button
-			android:id="@+id/btn_settings"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginEnd="10dp"
-			android:layout_weight="8.0"
-			android:text="@string/setting"
-			tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/btn_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="8.0"
+            android:text="@string/setting"
+            tools:ignore="ButtonStyle" />
 
-		<Button
-			android:id="@+id/btn_access_entry"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginEnd="10dp"
-			android:layout_weight="3.0"
-			android:text="@string/access_entry"
-			tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/btn_access_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="3.0"
+            android:text="@string/access_entry"
+            tools:ignore="ButtonStyle" />
 
-		<Button
-			android:id="@+id/btn_start"
-			android:layout_width="wrap_content"
-			android:layout_height="50dp"
-			android:layout_weight="5.0"
-			android:text="@string/go_start"
-			tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="5.0"
+            android:text="@string/go_start"
+            tools:ignore="ButtonStyle" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
 

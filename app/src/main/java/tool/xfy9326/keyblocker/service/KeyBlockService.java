@@ -23,6 +23,7 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
 
+import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
 
 public class KeyBlockService extends AccessibilityService {
@@ -39,6 +40,7 @@ public class KeyBlockService extends AccessibilityService {
     private boolean inRootMode = false;
     private boolean allowBlockVibrator = false;
     private boolean allowRemoveNotification = false;
+    private long backClickTime = 0;
 
     @Override
     public void onCreate() {
@@ -123,6 +125,16 @@ public class KeyBlockService extends AccessibilityService {
         if (keycode == KeyEvent.KEYCODE_POWER) {
             return false;
         }
+        if (event.getAction() == ACTION_DOWN && mSp.getBoolean(Config.DOUBLE_CLICK_EXIT, false) && mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - backClickTime <= 700) {
+                CloseBlock();
+                backClickTime = 0;
+                return true;
+            } else {
+                backClickTime = nowTime;
+            }
+        }
         if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
             Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
         }
@@ -148,6 +160,14 @@ public class KeyBlockService extends AccessibilityService {
         } else {
             return false;
         }
+    }
+
+    private void CloseBlock() {
+        ButtonLightControl(false);
+        ButtonVibrateControl(false);
+        mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
+        mSpEditor.commit();
+        UiUpdater(this, true, false);
     }
 
     private void currentActivityCheck() {
@@ -300,7 +320,7 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
-    private void UiUpdater(Context content, Intent intent, boolean mIsKeyBlocked) {
+    private void UiUpdater(Context content, boolean updateAppWidget, boolean mIsKeyBlocked) {
         if (!mIsQuickSetting) {
             if (mIsKeyBlocked) {
                 if (allowRemoveNotification) {
@@ -313,7 +333,7 @@ public class KeyBlockService extends AccessibilityService {
                 }
                 mNBuilder.setContentText(getString(R.string.notify_mes_on));
             }
-            if (intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false)) {
+            if (updateAppWidget) {
                 sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
             }
             isNotificationClosed = false;
@@ -339,7 +359,7 @@ public class KeyBlockService extends AccessibilityService {
                 ButtonVibrateControl(mIsKeyBlocked);
                 mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
                 mSpEditor.commit();
-                UiUpdater(content, intent, mIsKeyBlocked);
+                UiUpdater(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false), mIsKeyBlocked);
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
                 if (allowRemoveNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
