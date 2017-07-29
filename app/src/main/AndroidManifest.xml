@@ -28,7 +28,7 @@
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
-            android:label="@string/setting"></activity>
+            android:label="@string/setting" />
 
         <service
             android:name=".service.KeyBlockService"

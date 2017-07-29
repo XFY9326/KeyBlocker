@@ -182,11 +182,15 @@ public class KeyBlockService extends AccessibilityService {
                 @Override
                 public void run() {
                     try {
+                        final int default_sleep_time = 1250;
+                        final int wait_sleep_time = 3000;
                         while (RootActivityListener) {
                             if (BaseMethod.isScreenOn(KeyBlockService.this)) {
                                 CurrentActivityFix(BaseMethod.getCurrentActivity());
+                                Thread.sleep(default_sleep_time);
+                            } else {
+                                Thread.sleep(wait_sleep_time);
                             }
-                            Thread.sleep(1250);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -202,7 +206,7 @@ public class KeyBlockService extends AccessibilityService {
             if (currentactivity.length() >= 7) {
                 if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
                     mCurrentActivity = currentactivity;
-                    if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+                    if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
                         currentActivityCheck();
                     }
                     mLastActivity = mCurrentActivity;
