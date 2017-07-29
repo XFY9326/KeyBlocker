@@ -4,11 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.os.Build;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +26,38 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
+
+    public static boolean isScreenOn(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            return powerManager.isInteractive();
+        } else {
+            //noinspection deprecation
+            return powerManager.isScreenOn();
+        }
+    }
+
+    public static String getCurrentActivity() throws Exception {
+        Process process = Runtime.getRuntime().exec("su");
+        BufferedWriter mOutputWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        BufferedReader mInputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        mOutputWriter.write(Config.RUNTIME_GET_CURRENT_ACTIVITY + "\n");
+        mOutputWriter.flush();
+        String result = mInputReader.readLine();
+        //process.waitFor();
+        mOutputWriter.close();
+        mInputReader.close();
+        process.getErrorStream().close();
+        process.destroy();
+        if (!TextUtils.isEmpty(result)) {
+            result = result.substring(result.indexOf("{"), result.lastIndexOf("}"));
+            String[] data = result.split(" ");
+            String act_data = data[2];
+            return act_data.substring(0, act_data.lastIndexOf("/"));
+        }
+        return null;
+    }
+
     public static void controlAccessibilityServiceWithRoot(final boolean isOpen, final boolean isRestart) {
         new Thread(new Runnable() {
             @Override
@@ -37,6 +76,7 @@ public class BaseMethod {
                     }
                     mRuntimeStream.flush();
                     process.waitFor();
+                    process.getErrorStream().close();
                     mRuntimeStream.close();
                     process.destroy();
                 } catch (Exception e) {

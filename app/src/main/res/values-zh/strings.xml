@@ -61,4 +61,6 @@
     <string name="double_click_cancel_block">双击退出</string>
     <string name="double_click_cancel_block_sum">双击返回按键解除按键屏蔽</string>
     <string name="disabled_volume_key_more_sum">你可以在下面自定义设定更多</string>
+    <string name="xml_root_scan_activity">使用Root扫描自定义屏蔽应用</string>
+    <string name="xml_root_scan_activity_sum">更加精确但是耗电增加</string>
 </resources>

@@ -62,4 +62,6 @@
     <string name="double_click_cancel_block">Double click exit</string>
     <string name="double_click_cancel_block_sum">Double click back button to unblock key</string>
     <string name="disabled_volume_key_more_sum">You can also manually set more below</string>
+    <string name="xml_root_scan_activity">Use Root scan the application you are using</string>
+    <string name="xml_root_scan_activity_sum">More accurate but use more battery</string>
 </resources>

@@ -186,6 +186,9 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
+
+            CheckBoxPreference mCbRootScanActivity = (CheckBoxPreference) findPreference(Config.ROOT_SCAN_ACTIVITY);
+            mCbRootScanActivity.setOnPreferenceChangeListener(launchService);
         }
 
         private void NSettings() {

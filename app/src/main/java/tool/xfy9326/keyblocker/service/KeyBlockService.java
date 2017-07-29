@@ -33,11 +33,14 @@ public class KeyBlockService extends AccessibilityService {
     private Notification.Builder mNBuilder;
     private SharedPreferences mSp;
     private SharedPreferences.Editor mSpEditor;
+    private Thread ActivityListener = null;
+    private boolean RootActivityListener = false;
     private boolean mIsQuickSetting = false;
     private NotificationManager mNM;
     private boolean isReceiverRegistered = false;
     private boolean isNotificationClosed = true;
     private boolean inRootMode = false;
+    private boolean RootScanActivity = false;
     private boolean allowBlockVibrator = false;
     private boolean allowRemoveNotification = false;
     private long backClickTime = 0;
@@ -55,10 +58,12 @@ public class KeyBlockService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
+        RootScanActivity = mSp.getBoolean(Config.ROOT_SCAN_ACTIVITY, false);
         allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
         allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
         ControlModeSet();
         ReceiverRegister();
+        RootGetActivitySet();
         BaseMethod.BlockNotify(this, mSp.getBoolean(Config.ENABLED_KEYBLOCK, false));
         if (!mIsQuickSetting) {
             ShowNotification();
@@ -67,22 +72,11 @@ public class KeyBlockService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
+        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && !RootScanActivity) {
             int eventType = event.getEventType();
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 if (event.getClassName() != null) {
-                    String currentactivity = event.getClassName().toString();
-                    if (currentactivity.length() >= 7) {
-                        if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
-                            mCurrentActivity = currentactivity;
-                        }
-                    } else {
-                        mCurrentActivity = currentactivity;
-                    }
-                    if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
-                        currentActivityCheck();
-                    }
-                    mLastActivity = mCurrentActivity;
+                    CurrentActivityFix(event.getClassName().toString());
                 }
             }
         }
@@ -91,6 +85,10 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         ReceiverUnregister();
+        if (ActivityListener != null) {
+            RootActivityListener = false;
+            ActivityListener = null;
+        }
         boolean mIsKeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
         if (mIsKeyBlocked) {
             ButtonLightControl(false);
@@ -110,6 +108,10 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     public boolean onUnbind(Intent intent) {
         ReceiverUnregister();
+        if (ActivityListener != null) {
+            RootActivityListener = false;
+            ActivityListener = null;
+        }
         ButtonLightControl(false);
         ButtonVibrateControl(false);
         mLastActivity = null;
@@ -159,6 +161,59 @@ public class KeyBlockService extends AccessibilityService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void RootGetActivitySet() {
+        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && inRootMode && RootScanActivity) {
+            if (ActivityListener != null) {
+                RootActivityListener = false;
+                try {
+                    if (ActivityListener.isAlive()) {
+                        ActivityListener.interrupt();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ActivityListener = null;
+            }
+            RootActivityListener = true;
+            ActivityListener = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (RootActivityListener) {
+                            if (BaseMethod.isScreenOn(KeyBlockService.this)) {
+                                CurrentActivityFix(BaseMethod.getCurrentActivity());
+                            }
+                            Thread.sleep(1250);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            ActivityListener.start();
+        }
+    }
+
+    private void CurrentActivityFix(String currentactivity) {
+        if (currentactivity != null) {
+            if (currentactivity.length() >= 7) {
+                if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
+                    mCurrentActivity = currentactivity;
+                    if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+                        currentActivityCheck();
+                    }
+                    mLastActivity = mCurrentActivity;
+                }
+            } else {
+                mCurrentActivity = currentactivity;
+                if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+                    currentActivityCheck();
+                }
+                mLastActivity = mCurrentActivity;
+            }
         }
     }
 
@@ -220,6 +275,7 @@ public class KeyBlockService extends AccessibilityService {
                         }
                         mRuntimeStream.flush();
                         process.waitFor();
+                        process.getErrorStream().close();
                         mRuntimeStream.close();
                         process.destroy();
                     } catch (Exception e) {
@@ -248,6 +304,7 @@ public class KeyBlockService extends AccessibilityService {
                         }
                         mRuntimeStream.flush();
                         process.waitFor();
+                        process.getErrorStream().close();
                         mRuntimeStream.close();
                         process.destroy();
                     } catch (Exception e) {

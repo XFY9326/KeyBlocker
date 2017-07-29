@@ -73,6 +73,12 @@
             android:key="RootOpenService"
             android:summary="@string/xml_root_open_service_sum"
             android:title="@string/xml_root_open_service" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="RootFunction"
+            android:key="RootScanActivity"
+            android:summary="@string/xml_root_scan_activity_sum"
+            android:title="@string/xml_root_scan_activity" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/xml_custom_settings">
         <CheckBoxPreference

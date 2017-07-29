@@ -36,6 +36,7 @@ public class Config {
     public static final String CONTROL_NOTIFICATION = "ControlNotification";
     public static final String KEYBLOCK_ACTIVITY_FILTER = "KeyBlockActivityFilter";
     public static final String DOUBLE_CLICK_EXIT = "DoubleClickExit";
+    public static final String ROOT_SCAN_ACTIVITY = "RootScanActivity";
 
     public static final String RUNTIME_BUTTONLIGHT_ON = "echo 100 > /sys/class/leds/button-backlight/brightness";
     public static final String RUNTIME_BUTTONLIGHT_OFF = "echo 0 > /sys/class/leds/button-backlight/brightness";
@@ -47,6 +48,7 @@ public class Config {
     public static final String RUNTIME_VIBRATE_CHMOD_CHANGE = "chmod 644 /sys/class/timed_output/vibrator/vtg_level";
     public static final String RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK = "chmod 444 /sys/class/timed_output/vibrator/enable";
     public static final String RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE = "chmod 644 /sys/class/timed_output/vibrator/enable";
+    public static final String RUNTIME_GET_CURRENT_ACTIVITY = "dumpsys activity | grep \"mFocusedActivity\"";
 
     public static final String RUNTIME_ROOT_OPEN_SERVICE_REGISTER = "settings put secure enabled_accessibility_services tool.xfy9326.keyblocker/tool.xfy9326.keyblocker.service.KeyBlockService";
     public static final String RUNTIME_ROOT_OPEN_SERVICE_OPEN_REFRESH = "settings put secure accessibility_enabled 1";
