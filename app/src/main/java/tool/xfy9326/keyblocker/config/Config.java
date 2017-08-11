@@ -10,6 +10,8 @@ public class Config {
 
     public static final String EMPTY_ARRAY = "[]";
 
+    public static final String CLOSE_SERVICE = "CLOSE_SERVICE";
+
     public static final String APPWIDGET_CLICK_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_CLICK_ACTION";
     public static final String APPWIDGET_UPDATE_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_UPDATE_ACTION";
     public static final String REMOTE_CONTROL_ACTION = "tool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION";

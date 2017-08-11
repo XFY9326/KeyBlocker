@@ -55,6 +55,19 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            if (intent.getBooleanExtra(Config.CLOSE_SERVICE, false)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    disableSelf();
+                }
+                stopSelf();
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
         inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
@@ -127,14 +140,16 @@ public class KeyBlockService extends AccessibilityService {
         if (keycode == KeyEvent.KEYCODE_POWER) {
             return false;
         }
-        if (event.getAction() == ACTION_DOWN && mSp.getBoolean(Config.DOUBLE_CLICK_EXIT, false) && mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-            long nowTime = System.currentTimeMillis();
-            if (nowTime - backClickTime <= 700) {
-                CloseBlock();
-                backClickTime = 0;
-                return true;
-            } else {
-                backClickTime = nowTime;
+        if (event.getAction() == ACTION_DOWN && keycode == KeyEvent.KEYCODE_BACK) {
+            if (mSp.getBoolean(Config.DOUBLE_CLICK_EXIT, false) && mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+                long nowTime = System.currentTimeMillis();
+                if (nowTime - backClickTime <= 700) {
+                    CloseBlock();
+                    backClickTime = 0;
+                    return true;
+                } else {
+                    backClickTime = nowTime;
+                }
             }
         }
         if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
@@ -424,8 +439,8 @@ public class KeyBlockService extends AccessibilityService {
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
                 if (allowRemoveNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
-                    stopSelf();
                 }
+                stopSelf();
             }
         }
     }

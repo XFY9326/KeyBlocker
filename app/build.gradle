@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "tool.xfy9326.keyblocker"
         minSdkVersion 18
         //noinspection OldTargetApi
         targetSdkVersion 25
-        versionCode 31
-        versionName '2.8'
+        versionCode 32
+        versionName '2.9'
     }
     
     buildTypes {

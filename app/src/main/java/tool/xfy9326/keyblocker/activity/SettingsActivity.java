@@ -164,7 +164,7 @@ public class SettingsActivity extends Activity {
                     boolean isChecked = (boolean) o;
                     if (isChecked) {
                         AlertDialog.Builder vibrate_warn = new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.button_vibrate)
+                                .setTitle(R.string.button_vibrate_light_control)
                                 .setMessage(R.string.vibrate_warn)
                                 .setCancelable(false)
                                 .setPositiveButton(R.string.continue_do, new DialogInterface.OnClickListener() {

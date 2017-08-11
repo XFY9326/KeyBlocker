@@ -22,10 +22,11 @@
     <string name="access_entry">Access Entry</string>
     <string name="root">Use Root Function</string>
     <string name="root_failed">Root failed</string>
-    <string name="root_describe">Button Light and Vibrate Control\nIt is unstable and reboot may fix problems</string>
+    <string name="root_describe">It is powerful but unstable and reboot may fix problems causing by this</string>
     <string name="show_notification_icon">Show Notification Icon</string>
     <string name="allow_remove_notification">Allow to remove notification block is off</string>
-    <string name="button_vibrate">Block Button vibrate and light</string>
+    <string name="button_vibrate_light_control">Block Button vibrate and light</string>
+    <string name="button_vibrate_light_control_sum">May cause problems in some devices, reboot may fix these problems.</string>
     <string name="auto_close_statusbar">Auto close Status Bar when using Tile</string>
     <string name="button_blocked">Button is blocked</string>
     <string name="button_unblocked">Button is unblocked now</string>
@@ -43,8 +44,6 @@
     <string name="keyblock_activity_settings">KeyBlock Applications set</string>
     <string name="keyblock_close_control_notification">Close control notification</string>
     <string name="keyblock_close_control_notification_describe">Will not notify when you are doing everything.</string>
-
-
     <string name="xml_general_settings">General Settings</string>
     <string name="xml_notify_settings">Notification Settings</string>
     <string name="xml_custom_settings">Custom Settings</string>

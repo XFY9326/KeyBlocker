@@ -66,7 +66,8 @@
             android:defaultValue="false"
             android:dependency="RootFunction"
             android:key="ButtonVibrate"
-            android:title="@string/button_vibrate" />
+            android:summary="@string/button_vibrate_light_control_sum"
+            android:title="@string/button_vibrate_light_control" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="RootFunction"

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
+import tool.xfy9326.keyblocker.service.KeyBlockService;
 
 public class MainActivity extends Activity {
     private Button
@@ -36,13 +38,20 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 if (BaseMethod.isAccessibilitySettingsOn(MainActivity.this)) {
-                    if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                    //Close Service
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Intent intent = new Intent(MainActivity.this, KeyBlockService.class);
+                        intent.putExtra(Config.CLOSE_SERVICE, true);
+                        startService(intent);
+                    } else if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                        //Use this root command may cause some problems
                         BaseMethod.controlAccessibilityServiceWithRoot(false, false);
                         ((Button) v).setText(R.string.go_start);
                     } else {
                         Toast.makeText(MainActivity.this, R.string.warn_service_started, Toast.LENGTH_SHORT).show();
                     }
                 } else {
+                    //Open Service
                     if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
                         BaseMethod.controlAccessibilityServiceWithRoot(true, false);
                         ((Button) v).setText(R.string.close_service);
@@ -77,7 +86,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (BaseMethod.isAccessibilitySettingsOn(this) && mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false)) {
+        if (BaseMethod.isAccessibilitySettingsOn(this) && mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mBtnStart.setText(R.string.close_service);
         } else {
             mBtnStart.setText(R.string.go_start);

@@ -92,6 +92,8 @@ public class BaseMethod {
             public int compare(PackageInfo o1, PackageInfo o2) {
                 String str1 = o1.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
                 String str2 = o2.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
+                str1 = HanziToPinyin.getInstance().convert(str1.toLowerCase());
+                str2 = HanziToPinyin.getInstance().convert(str2.toLowerCase());
                 return str1.compareTo(str2);
             }
         });
