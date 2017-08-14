@@ -63,4 +63,5 @@
     <string name="disabled_volume_key_more_sum">你可以在下面自定义设定更多</string>
     <string name="xml_root_scan_activity">使用Root扫描自定义屏蔽应用</string>
     <string name="xml_root_scan_activity_sum">更加精确但是耗电增加</string>
+    <string name="shortcut_disabled">这个快捷方式被禁用了！</string>
 </resources>

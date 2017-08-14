@@ -25,10 +25,19 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcut_config" />
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/setting" />
+        <activity
+            android:name=".activity.ShortCutActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent" />
 
         <service
             android:name=".service.KeyBlockService"

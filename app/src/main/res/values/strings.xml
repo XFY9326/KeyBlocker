@@ -63,4 +63,5 @@
     <string name="disabled_volume_key_more_sum">You can also manually set more below</string>
     <string name="xml_root_scan_activity">Use Root scan the application you are using</string>
     <string name="xml_root_scan_activity_sum">More accurate but use more battery</string>
+    <string name="shortcut_disabled">This ShortCut is disabled!</string>
 </resources>
