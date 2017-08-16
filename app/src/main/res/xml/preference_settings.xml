@@ -53,6 +53,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="RemoveNotification"
+            android:summary="@string/allow_remove_notification_sum"
             android:title="@string/allow_remove_notification" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/xml_root_settings">

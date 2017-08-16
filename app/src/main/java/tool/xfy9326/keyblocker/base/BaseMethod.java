@@ -14,6 +14,8 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
@@ -128,20 +130,48 @@ public class BaseMethod {
         }
     }
 
-    public static boolean checkRoot() {
-        try {
-            Process process = Runtime.getRuntime().exec("su");
-            process.getOutputStream().write("exit\n".getBytes());
-            process.getOutputStream().flush();
-            int i = process.waitFor();
-            if (i == 0) {
-                Runtime.getRuntime().exec("su");
-                return false;
+    public static void getRoot() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    process.getOutputStream().write("exit\n".getBytes());
+                    process.getOutputStream().flush();
+                    process.waitFor();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            return true;
+        }).start();
+    }
+
+    public static boolean isRooted() {
+        String binPath = "/system/bin/su";
+        String xBinPath = "/system/xbin/su";
+        return new File(binPath).exists() && isExecutable(binPath) || new File(xBinPath).exists() && isExecutable(xBinPath);
+    }
+
+    private static boolean isExecutable(String filePath) {
+        Process p = null;
+        try {
+            p = Runtime.getRuntime().exec("ls -l " + filePath);
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    p.getInputStream()));
+            String str = in.readLine();
+            if (str != null && str.length() >= 4) {
+                char flag = str.charAt(3);
+                if (flag == 's' || flag == 'x')
+                    return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
-        return true;
+        return false;
     }
 
     public static void RunAccessibilityService(Context context) {

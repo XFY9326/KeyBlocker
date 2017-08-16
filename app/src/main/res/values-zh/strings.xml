@@ -26,6 +26,7 @@
     <string name="root_describe">该功能强大但并不稳定，重启可以解决大多带来的问题</string>
     <string name="show_notification_icon">显示通知栏图标</string>
     <string name="allow_remove_notification">不屏蔽时允许移除通知栏信息</string>
+    <string name="allow_remove_notification_sum">同时会关闭辅助服务（安卓N或Root功能开启时生效）</string>
     <string name="button_vibrate_light_control">按键震动与按键灯屏蔽</string>
     <string name="button_vibrate_light_control_sum">在部分设备上可能会导致无法还原的问题，重启即可解决</string>
     <string name="auto_close_statusbar">使用磁贴(瓦片)时自动关闭状态栏</string>

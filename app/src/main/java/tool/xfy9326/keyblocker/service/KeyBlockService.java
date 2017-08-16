@@ -114,6 +114,7 @@ public class KeyBlockService extends AccessibilityService {
 
     @Override
     public void onDestroy() {
+        ReceiverUnregister();
         System.gc();
         super.onDestroy();
     }
@@ -437,8 +438,12 @@ public class KeyBlockService extends AccessibilityService {
                 mSpEditor.commit();
                 UiUpdater(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false), mIsKeyBlocked);
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
-                if (allowRemoveNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    disableSelf();
+                if (allowRemoveNotification) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        disableSelf();
+                    } else if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
+                        BaseMethod.controlAccessibilityServiceWithRoot(false, false);
+                    }
                 }
                 stopSelf();
             }

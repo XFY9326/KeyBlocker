@@ -145,7 +145,10 @@ public class SettingsActivity extends Activity {
                 public boolean onPreferenceChange(Preference p, Object o) {
                     boolean isChecked = (boolean) o;
                     if (isChecked) {
-                        if (BaseMethod.checkRoot()) {
+                        if (BaseMethod.isRooted()) {
+                            BaseMethod.getRoot();
+                            return true;
+                        } else {
                             Toast.makeText(getActivity(), R.string.root_failed, Toast.LENGTH_SHORT).show();
                             return false;
                         }

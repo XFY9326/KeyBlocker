@@ -10,7 +10,7 @@
     <string name="notify_mes_on">Click Here to Open Physical Keys</string>
     <string name="notify_mes_off">Click Here to Close Physical Keys</string>
     <string name="restart_service">Restart AccessibilityService to apply</string>
-    <string name="start_service_first">Please Run AccessbilityService First!</string>
+    <string name="start_service_first">Please Run AccessibilityService First!</string>
     <string name="author">Made By XFY9326,frowhy\nOpenSource:https://github.com/XFY9326/KeyBlocker</string>
     <string name="test_keycode">Test KeyCode</string>
     <string name="test_keycode_sum">Get the number of the key you use(KeyCode)</string>
@@ -25,7 +25,8 @@
     <string name="root_failed">Root failed</string>
     <string name="root_describe">It is powerful but unstable and reboot may fix problems causing by this</string>
     <string name="show_notification_icon">Show Notification Icon</string>
-    <string name="allow_remove_notification">Allow to remove notification block is off</string>
+    <string name="allow_remove_notification">Allow to remove notification "block is off"</string>
+    <string name="allow_remove_notification_sum">Will also close AccessibilityService(Only work on Android N device or using root functions)</string>
     <string name="button_vibrate_light_control">Block Button vibrate and light</string>
     <string name="button_vibrate_light_control_sum">May cause problems in some devices, reboot may fix these problems.</string>
     <string name="auto_close_statusbar">Auto close Status Bar when using Tile</string>
