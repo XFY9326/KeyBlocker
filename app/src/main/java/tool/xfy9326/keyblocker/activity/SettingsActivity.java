@@ -19,9 +19,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -219,16 +217,12 @@ public class SettingsActivity extends Activity {
                 EditText mEtCustomKeycode;
                 AlertDialog mAdCustomKeycode;
                 AlertDialog.Builder mAdBuilderCustomKeycode;
-                Button mBtnCancel, mBtnSubmit, mBtnHelp;
 
                 @Override
                 public boolean onPreferenceClick(Preference p) {
                     LayoutInflater mLiContent = LayoutInflater.from(getActivity());
-                    mSubView = mLiContent.inflate(R.layout.v_custom_keycode, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
+                    mSubView = mLiContent.inflate(R.layout.dialog_keycode_custom, (ViewGroup) getActivity().findViewById(R.id.layout_custom_keycode));
                     mEtCustomKeycode = (EditText) mSubView.findViewById(R.id.et_custom_keycode);
-                    mBtnCancel = (Button) mSubView.findViewById(R.id.btn_cancel);
-                    mBtnSubmit = (Button) mSubView.findViewById(R.id.btn_submit);
-                    mBtnHelp = (Button) mSubView.findViewById(R.id.btn_help);
 
                     mAdBuilderCustomKeycode = new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.custom_setting)
@@ -236,9 +230,9 @@ public class SettingsActivity extends Activity {
                             .setCancelable(false);
                     mEtCustomKeycode.setText(mSp.getString(Config.CUSTOM_KEYCODE, ""));
                     mEtCustomKeycode.setSelection(mEtCustomKeycode.length());
-                    mBtnHelp.setOnClickListener(new OnClickListener() {
+                    mAdBuilderCustomKeycode.setNeutralButton(R.string.help, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             String url = "https://github.com/XFY9326/KeyBlocker/wiki/DIY-KeyCode-Block";
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             Uri content_url = Uri.parse(url);
@@ -246,15 +240,15 @@ public class SettingsActivity extends Activity {
                             startActivity(intent);
                         }
                     });
-                    mBtnCancel.setOnClickListener(new OnClickListener() {
+                    mAdBuilderCustomKeycode.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             mAdCustomKeycode.cancel();
                         }
                     });
-                    mBtnSubmit.setOnClickListener(new OnClickListener() {
+                    mAdBuilderCustomKeycode.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             if (mEtCustomKeycode.length() == 0) {
                                 mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
                                 mSpEditor.commit();

@@ -13,12 +13,13 @@
     <string name="start_service_first">请先启动辅助服务！</string>
     <string name="author">制作者 XFY9326,frowhy\n开源地址:https://github.com/XFY9326/KeyBlocker</string>
     <string name="test_keycode">测试 KeyCode</string>
+    <string name="test_keycode_sum">获取使用的按键的数字编码（KeyCode）</string>
     <string name="enabled_custom">启用自定义 KeyCode</string>
     <string name="enabled_custom_describe">只屏蔽特殊的自定义按键</string>
     <string name="custom_setting">自定义设置</string>
     <string name="has_enabled">已启用</string>
     <string name="has_disabled">已禁用</string>
-    <string name="spaces_separate">使用空格分隔</string>
+    <string name="spaces_separate">输入数字，使用空格分隔</string>
     <string name="access_entry">接入口</string>
     <string name="root">使用Root功能</string>
     <string name="root_failed">Root权限获取失败！</string>

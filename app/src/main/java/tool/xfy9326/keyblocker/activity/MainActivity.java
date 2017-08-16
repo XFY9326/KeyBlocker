@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
                 if (BaseMethod.isAccessibilitySettingsOn(MainActivity.this)) {
                     //Close Service
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        ((Button) v).setText(R.string.go_start);
                         Intent intent = new Intent(MainActivity.this, KeyBlockService.class);
                         intent.putExtra(Config.CLOSE_SERVICE, true);
                         startService(intent);
@@ -86,7 +87,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         SharedPreferences mSp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (BaseMethod.isAccessibilitySettingsOn(this) && mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (BaseMethod.isAccessibilitySettingsOn(this) && (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
             mBtnStart.setText(R.string.close_service);
         } else {
             mBtnStart.setText(R.string.go_start);

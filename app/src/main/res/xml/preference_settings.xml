@@ -90,6 +90,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="DisplayKeycode"
+            android:summary="@string/test_keycode_sum"
             android:title="@string/test_keycode" />
         <Preference
             android:dependency="EnabledCustomKeycode"
