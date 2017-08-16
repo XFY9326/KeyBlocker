@@ -149,8 +149,13 @@ public class SettingsActivity extends Activity {
                             BaseMethod.getRoot();
                             return true;
                         } else {
-                            Toast.makeText(getActivity(), R.string.root_failed, Toast.LENGTH_SHORT).show();
-                            return false;
+                            if (BaseMethod.isRooted_old()) {
+                                BaseMethod.getRoot();
+                                return true;
+                            } else {
+                                Toast.makeText(getActivity(), R.string.root_failed, Toast.LENGTH_SHORT).show();
+                                return false;
+                            }
                         }
                     }
                     BaseMethod.RestartAccessibilityService(getActivity());

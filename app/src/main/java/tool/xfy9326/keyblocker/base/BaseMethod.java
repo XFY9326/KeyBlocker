@@ -146,6 +146,22 @@ public class BaseMethod {
         }).start();
     }
 
+    public static boolean isRooted_old() {
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            process.getOutputStream().write("exit\n".getBytes());
+            process.getOutputStream().flush();
+            int i = process.waitFor();
+            if (i == 0) {
+                Runtime.getRuntime().exec("su");
+                return false;
+            }
+        } catch (Exception e) {
+            return true;
+        }
+        return true;
+    }
+
     public static boolean isRooted() {
         String binPath = "/system/bin/su";
         String xBinPath = "/system/xbin/su";
