@@ -154,12 +154,12 @@ public class BaseMethod {
             int i = process.waitFor();
             if (i == 0) {
                 Runtime.getRuntime().exec("su");
-                return false;
+                return true;
             }
         } catch (Exception e) {
-            return true;
+            return false;
         }
-        return true;
+        return false;
     }
 
     public static boolean isRooted() {
