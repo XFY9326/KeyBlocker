@@ -16,10 +16,10 @@
     <string name="test_keycode_sum">Get the number of the key you use(KeyCode)</string>
     <string name="enabled_custom">Enabled custom KeyCode</string>
     <string name="enabled_custom_describe">Only block special custom buttons</string>
-    <string name="custom_setting">Setting Custom</string>
+    <string name="custom_setting">Custom KeyCode Block Settings</string>
     <string name="has_enabled">Has Enabled</string>
     <string name="has_disabled">Has Disabled</string>
-    <string name="spaces_separate">Input numbers, use spaces to separate them</string>
+    <string name="spaces_separate">Input and use spaces to separate them</string>
     <string name="access_entry">Access Entry</string>
     <string name="root">Use Root Function</string>
     <string name="root_failed">Root failed</string>
@@ -66,4 +66,8 @@
     <string name="xml_root_scan_activity">Use Root scan the application you are using</string>
     <string name="xml_root_scan_activity_sum">More accurate but use more battery</string>
     <string name="shortcut_disabled">This ShortCut is disabled!</string>
+    <string name="keyblock_activity_settings_sum">Select Applications in a list.</string>
+    <string name="keyblock_activity_settings_text_sum">Set KeyBlock by Activity key words</string>
+    <string name="keyblock_activity_settings_text">KeyBlock Activity key words settings</string>
+    <string name="warn_custom_block">Please input KeyCode Numbers!</string>
 </resources>

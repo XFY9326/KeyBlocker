@@ -31,8 +31,14 @@
             android:title="@string/keyblock_activity_filter" />
         <Preference
             android:dependency="KeyBlockActivity"
-            android:key="KeyBlockActivitySet"
+            android:key="KeyBlockActivityListSet"
+            android:summary="@string/keyblock_activity_settings_sum"
             android:title="@string/keyblock_activity_settings" />
+        <Preference
+            android:dependency="KeyBlockActivity"
+            android:key="KeyBlockActivityTextSet"
+            android:summary="@string/keyblock_activity_settings_text_sum"
+            android:title="@string/keyblock_activity_settings_text" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/xml_tile_settings">
         <CheckBoxPreference

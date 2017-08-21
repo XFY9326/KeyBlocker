@@ -40,6 +40,7 @@ public class SettingsActivity extends Activity {
 
     public static class PrefsFragment extends PreferenceFragment {
         private final String mCustomKeycodeRegEx = "^(\\d+ )*\\d+$";
+        private final String mActivityKeyWordsRegEx = "^(\\S+ )*\\S+$";
         private SharedPreferences mSp;
         private SharedPreferences.Editor mSpEditor;
         private String[] AppNames, PkgNames;
@@ -78,7 +79,7 @@ public class SettingsActivity extends Activity {
                 }
             });
 
-            Preference mKeyBlockActivitySet = findPreference(Config.KEYBLOCK_ACTIVITY_SET);
+            Preference mKeyBlockActivitySet = findPreference(Config.KEYBLOCK_ACTIVITY_LIST_SET);
             mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference p) {
@@ -107,7 +108,7 @@ public class SettingsActivity extends Activity {
                                                     }
                                                 }
                                                 mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY, FilterApplication.toString());
-                                                mSpEditor.commit();
+                                                mSpEditor.apply();
                                                 AppListOpening = false;
                                             }
                                         })
@@ -125,6 +126,43 @@ public class SettingsActivity extends Activity {
                         }).start();
                     }
                     return true;
+                }
+            });
+
+            Preference mKeyBlockKeyWordsSet = findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET);
+            mKeyBlockKeyWordsSet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+                    View view = layoutInflater.inflate(R.layout.dialog_activity_keywords_set, (ViewGroup) getActivity().findViewById(R.id.layout_activity_keywords));
+                    final EditText editText = (EditText) view.findViewById(R.id.et_activity_keywords);
+                    editText.setText(mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, ""));
+                    editText.setSelection(editText.length());
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.keyblock_activity_settings_text);
+                    builder.setCancelable(false);
+                    builder.setView(view);
+                    builder.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String result = editText.getText().toString();
+                            if (editText.length() == 0) {
+                                mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, result);
+                                mSpEditor.apply();
+                            } else {
+                                if (result.matches(mActivityKeyWordsRegEx)) {
+                                    mSpEditor.putString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, result);
+                                    mSpEditor.apply();
+                                } else {
+                                    Toast.makeText(getActivity(), R.string.wrong_format, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, null);
+                    builder.show();
+                    return false;
                 }
             });
         }
@@ -247,29 +285,18 @@ public class SettingsActivity extends Activity {
                             startActivity(intent);
                         }
                     });
-                    mAdBuilderCustomKeycode.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mAdCustomKeycode.cancel();
-                        }
-                    });
+                    mAdBuilderCustomKeycode.setNegativeButton(R.string.cancel, null);
                     mAdBuilderCustomKeycode.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (mEtCustomKeycode.length() == 0) {
                                 mSpEditor.putString(Config.CUSTOM_KEYCODE, "");
-                                mSpEditor.commit();
-                                if (mAdCustomKeycode != null) {
-                                    mAdCustomKeycode.dismiss();
-                                }
+                                mSpEditor.apply();
                             } else {
                                 String mStringCustomKeycode = mEtCustomKeycode.getText().toString();
                                 if (mStringCustomKeycode.matches(mCustomKeycodeRegEx)) {
                                     mSpEditor.putString(Config.CUSTOM_KEYCODE, mStringCustomKeycode);
-                                    mSpEditor.commit();
-                                    if (mAdCustomKeycode != null) {
-                                        mAdCustomKeycode.dismiss();
-                                    }
+                                    mSpEditor.apply();
                                 } else {
                                     Toast.makeText(getActivity(), R.string.wrong_format, Toast.LENGTH_SHORT).show();
                                 }

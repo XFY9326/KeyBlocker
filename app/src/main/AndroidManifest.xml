@@ -35,23 +35,16 @@
         <activity
             android:name=".activity.ShortCutActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:theme="@android:style/Theme.Translucent" />
-
-        <activity-alias
-            android:name="ShortCut"
-            android:excludeFromRecents="true"
             android:icon="@drawable/ic_shortcut"
+            android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:targetActivity=".activity.ShortCutActivity"
             android:taskAffinity=""
-            android:theme="@android:style/Theme.Translucent">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity-alias>
+        </activity>
 
         <service
             android:name=".service.KeyBlockService"

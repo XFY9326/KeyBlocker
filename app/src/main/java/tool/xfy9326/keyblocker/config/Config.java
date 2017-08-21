@@ -33,8 +33,10 @@ public class Config {
     public static final String REMOVE_NOTIFICATION = "RemoveNotification";
     public static final String AUTO_CLOSE_STATUSBAR = "AutoCloseStatusBar";
     public static final String KEYBLOCK_ACTIVITY = "KeyBlockActivity";
-    public static final String KEYBLOCK_ACTIVITY_SET = "KeyBlockActivitySet";
+    public static final String KEYBLOCK_ACTIVITY_LIST_SET = "KeyBlockActivityListSet";
+    public static final String KEYBLOCK_ACTIVITY_TEXT_SET = "KeyBlockActivityTextSet";
     public static final String CUSTOM_KEYBLOCK_ACTIVITY = "CustomKeyBlockActivity";
+    public static final String CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS = "CustomKeyBlockActivityKeyWords";
     public static final String CONTROL_NOTIFICATION = "ControlNotification";
     public static final String KEYBLOCK_ACTIVITY_FILTER = "KeyBlockActivityFilter";
     public static final String DOUBLE_CLICK_EXIT = "DoubleClickExit";

@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_custom_keycode"
+    android:id="@+id/layout_activity_keywords"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:paddingBottom="10dp"
     android:paddingTop="20dp">
 
     <EditText
-        android:id="@+id/et_custom_keycode"
+        android:id="@+id/et_activity_keywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="25dp"
         android:layout_marginStart="25dp"
         android:ems="10"
         android:hint="@string/spaces_separate"
         android:inputType="text"
         android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/et_custom_keycode"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="38dp"
-        android:text="@string/warn_custom_block" />
 
 </RelativeLayout>

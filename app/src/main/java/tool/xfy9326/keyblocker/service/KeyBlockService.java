@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
@@ -88,8 +89,8 @@ public class KeyBlockService extends AccessibilityService {
         if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && !RootScanActivity) {
             int eventType = event.getEventType();
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                if (event.getClassName() != null) {
-                    CurrentActivityFix(event.getClassName().toString());
+                if (event.getPackageName() != null) {
+                    CurrentActivityFix(event.getPackageName().toString());
                 }
             }
         }
@@ -218,9 +219,10 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     private void CurrentActivityFix(String currentactivity) {
+        Log.d("TEST", currentactivity);
         if (currentactivity != null) {
             if (currentactivity.length() >= 7) {
-                if (!currentactivity.substring(0, 7).equalsIgnoreCase("android")) {
+                if (!currentactivity.substring(0, 7).equalsIgnoreCase("android") && !currentactivity.equalsIgnoreCase("com.android.systemui")) {
                     mCurrentActivity = currentactivity;
                     if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
                         currentActivityCheck();
@@ -248,24 +250,47 @@ public class KeyBlockService extends AccessibilityService {
     private void currentActivityCheck() {
         if (!mCurrentActivity.contains(getPackageName())) {
             String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
-            ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
-            if (!ActivityArray.isEmpty() && ActivityArray.size() != 0) {
+            String KeyWordsString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, "");
+            if (!KeyWordsString.equals("")) {
+                String[] keywords;
+                if (KeyWordsString.contains(" ")) {
+                    keywords = KeyWordsString.split(" ");
+                } else {
+                    keywords = new String[]{KeyWordsString};
+                }
                 boolean ActivityFound = false;
-                for (String FilterActivity : ActivityArray) {
-                    if (mCurrentActivity.contains(FilterActivity)) {
+                for (String str : keywords) {
+                    if (!str.equals("") && mCurrentActivity.contains(str)) {
                         ActivityFound = true;
                         break;
                     }
                 }
-                if (ActivityFound) {
-                    if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                        BaseMethod.KeyLockBroadcast(this);
+                findActivity(ActivityFound);
+            }
+            if (!ActivityString.equals(Config.EMPTY_ARRAY)) {
+                ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
+                if (!ActivityArray.isEmpty()) {
+                    boolean ActivityFound = false;
+                    for (String FilterActivity : ActivityArray) {
+                        if (mCurrentActivity.contains(FilterActivity)) {
+                            ActivityFound = true;
+                            break;
+                        }
                     }
-                } else {
-                    if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                        BaseMethod.KeyLockBroadcast(this);
-                    }
+                    findActivity(ActivityFound);
                 }
+            }
+        }
+    }
+
+    private void findActivity(boolean ActivityFound) {
+        if (ActivityFound) {
+            if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+                BaseMethod.KeyLockBroadcast(this);
+            }
+        } else {
+            if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+                BaseMethod.KeyLockBroadcast(this);
             }
         }
     }
