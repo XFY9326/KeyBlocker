@@ -26,7 +26,7 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Config.APPWIDGET_CLICK_ACTION)) {
-            BaseMethod.KeyLockBroadcast(context);
+            BaseMethod.KeyLockBroadcast(context, false);
             updateView(context);
         } else if (intent.getAction().equals(Config.APPWIDGET_UPDATE_ACTION)) {
             reloadView(context, true);
@@ -66,5 +66,4 @@ public class WidgetProvider extends AppWidgetProvider {
             mRv.setImageViewResource(R.id.btn_appwidget, R.drawable.ic_appwidget_on);
         }
     }
-
 }

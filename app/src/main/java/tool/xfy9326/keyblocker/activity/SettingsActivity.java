@@ -260,7 +260,6 @@ public class SettingsActivity extends Activity {
             mBtnSettingCustomKeycode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 View mSubView;
                 EditText mEtCustomKeycode;
-                AlertDialog mAdCustomKeycode;
                 AlertDialog.Builder mAdBuilderCustomKeycode;
 
                 @Override
@@ -303,7 +302,7 @@ public class SettingsActivity extends Activity {
                             }
                         }
                     });
-                    mAdCustomKeycode = mAdBuilderCustomKeycode.show();
+                    mAdBuilderCustomKeycode.show();
                     return true;
                 }
             });

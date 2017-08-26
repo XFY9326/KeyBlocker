@@ -22,7 +22,7 @@ public class QuickSettingService extends TileService {
     public void onClick() {
         super.onClick();
         updateView(true, false);
-        BaseMethod.KeyLockBroadcast(this);
+        BaseMethod.KeyLockBroadcast(this, true);
         BaseMethod.collapseStatusBar(this);
     }
 

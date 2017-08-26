@@ -55,7 +55,10 @@ public class BaseMethod {
             result = result.substring(result.indexOf("{"), result.lastIndexOf("}"));
             String[] data = result.split(" ");
             String act_data = data[2];
-            return act_data.substring(0, act_data.lastIndexOf("/"));
+            if (act_data.contains("/")) {
+                act_data = act_data.replace("/", "");
+            }
+            return act_data;
         }
         return null;
     }
@@ -215,9 +218,10 @@ public class BaseMethod {
         }
     }
 
-    public static void KeyLockBroadcast(Context mContext) {
+    public static void KeyLockBroadcast(Context mContext, boolean updateWidget) {
         Intent intent = new Intent();
         intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
+        intent.putExtra(Config.DISPLAY_APPWIDGET, updateWidget);
         mContext.sendBroadcast(intent);
     }
 

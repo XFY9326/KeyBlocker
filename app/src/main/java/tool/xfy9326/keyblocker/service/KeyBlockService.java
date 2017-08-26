@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
@@ -89,8 +88,8 @@ public class KeyBlockService extends AccessibilityService {
         if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && !RootScanActivity) {
             int eventType = event.getEventType();
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                if (event.getPackageName() != null) {
-                    CurrentActivityFix(event.getPackageName().toString());
+                if (event.getClassName() != null) {
+                    CurrentActivityFix(event.getClassName().toString());
                 }
             }
         }
@@ -219,22 +218,17 @@ public class KeyBlockService extends AccessibilityService {
     }
 
     private void CurrentActivityFix(String currentactivity) {
-        Log.d("TEST", currentactivity);
         if (currentactivity != null) {
+            boolean useful_activity = true;
             if (currentactivity.length() >= 7) {
-                if (!currentactivity.substring(0, 7).equalsIgnoreCase("android") && !currentactivity.equalsIgnoreCase("com.android.systemui")) {
-                    mCurrentActivity = currentactivity;
-                    if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
-                        currentActivityCheck();
-                    }
+                useful_activity = !currentactivity.substring(0, 7).equalsIgnoreCase("android") || !currentactivity.contains("com.android.systemui");
+            }
+            if (useful_activity) {
+                mCurrentActivity = currentactivity;
+                if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
+                    currentActivityCheck();
                     mLastActivity = mCurrentActivity;
                 }
-            } else {
-                mCurrentActivity = currentactivity;
-                if (!mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
-                    currentActivityCheck();
-                }
-                mLastActivity = mCurrentActivity;
             }
         }
     }
@@ -286,11 +280,11 @@ public class KeyBlockService extends AccessibilityService {
     private void findActivity(boolean ActivityFound) {
         if (ActivityFound) {
             if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                BaseMethod.KeyLockBroadcast(this);
+                mBbr.BlockAction(this, true);
             }
         } else {
             if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                BaseMethod.KeyLockBroadcast(this);
+                mBbr.BlockAction(this, true);
             }
         }
     }
@@ -381,7 +375,7 @@ public class KeyBlockService extends AccessibilityService {
         click_intent.putExtra(Config.DISPLAY_APPWIDGET, true);
         PendingIntent click_pendingIntent = PendingIntent.getBroadcast(this, 0, click_intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent delete_intent = new Intent(Config.NOTIFICATION_DELETE_ACTION);
-        PendingIntent delete_pendingintent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent delete_pendingIntent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mNBuilder = new Notification.Builder(this);
         mNBuilder.setOngoing(true);
@@ -406,7 +400,7 @@ public class KeyBlockService extends AccessibilityService {
             }
             mNBuilder.setContentText(getString(R.string.notify_mes_on));
         }
-        mNBuilder.setDeleteIntent(delete_pendingintent);
+        mNBuilder.setDeleteIntent(delete_pendingIntent);
         mNBuilder.setContentIntent(click_pendingIntent);
         if (!mSp.getBoolean(Config.NOTIFICATION_ICON, true)) {
             mNBuilder.setPriority(Notification.PRIORITY_MIN);
@@ -435,9 +429,6 @@ public class KeyBlockService extends AccessibilityService {
                 }
                 mNBuilder.setContentText(getString(R.string.notify_mes_on));
             }
-            if (updateAppWidget) {
-                sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
-            }
             isNotificationClosed = false;
             if (mIsKeyBlocked) {
                 mNBuilder.setSmallIcon(R.drawable.ic_notification_blocked);
@@ -446,6 +437,9 @@ public class KeyBlockService extends AccessibilityService {
             }
             mNM.notify(Config.NOTIFICATION_ID, mNBuilder.build());
             BaseMethod.collapseStatusBar(content);
+        }
+        if (updateAppWidget) {
+            sendBroadcast(new Intent(Config.APPWIDGET_UPDATE_ACTION));
         }
         BaseMethod.BlockNotify(content, mIsKeyBlocked);
     }
@@ -456,12 +450,7 @@ public class KeyBlockService extends AccessibilityService {
         @Override
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
-                mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
-                ButtonLightControl(mIsKeyBlocked);
-                ButtonVibrateControl(mIsKeyBlocked);
-                mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
-                mSpEditor.commit();
-                UiUpdater(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false), mIsKeyBlocked);
+                BlockAction(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false));
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
                 if (allowRemoveNotification) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -472,6 +461,15 @@ public class KeyBlockService extends AccessibilityService {
                 }
                 stopSelf();
             }
+        }
+
+        public void BlockAction(Context context, boolean updateWidget) {
+            mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
+            ButtonLightControl(mIsKeyBlocked);
+            ButtonVibrateControl(mIsKeyBlocked);
+            mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
+            mSpEditor.commit();
+            UiUpdater(context, updateWidget, mIsKeyBlocked);
         }
     }
 }
