@@ -221,7 +221,7 @@ public class KeyBlockService extends AccessibilityService {
         if (currentactivity != null) {
             boolean useful_activity = true;
             if (currentactivity.length() >= 7) {
-                useful_activity = !currentactivity.substring(0, 7).equalsIgnoreCase("android") || !currentactivity.contains("com.android.systemui");
+                useful_activity = !(currentactivity.startsWith("android") || currentactivity.contains("com.android.systemui"));
             }
             if (useful_activity) {
                 mCurrentActivity = currentactivity;
@@ -280,11 +280,11 @@ public class KeyBlockService extends AccessibilityService {
     private void findActivity(boolean ActivityFound) {
         if (ActivityFound) {
             if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                mBbr.BlockAction(this, true);
+                BaseMethod.KeyLockBroadcast(this, true);
             }
         } else {
             if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                mBbr.BlockAction(this, true);
+                BaseMethod.KeyLockBroadcast(this, true);
             }
         }
     }
