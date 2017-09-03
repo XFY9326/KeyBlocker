@@ -1,107 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/xml_general_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="DoubleClickExit"
-            android:summary="@string/double_click_cancel_block_sum"
-            android:title="@string/double_click_cancel_block" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="EnabledVolumeKey"
-            android:summary="@string/disabled_volume_key_more_sum"
-            android:title="@string/disabled_volume_key" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="ControlNotification"
-            android:summary="@string/keyblock_close_control_notification_describe"
-            android:title="@string/keyblock_close_control_notification" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/xml_keyblock_application">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="KeyBlockActivity"
-            android:summary="@string/keyblock_activity_describe"
-            android:title="@string/keyblock_activity" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="KeyBlockActivity"
-            android:key="KeyBlockActivityFilter"
-            android:summary="@string/keyblock_activity_filter_describe"
-            android:title="@string/keyblock_activity_filter" />
-        <Preference
-            android:dependency="KeyBlockActivity"
-            android:key="KeyBlockActivityListSet"
-            android:summary="@string/keyblock_activity_settings_sum"
-            android:title="@string/keyblock_activity_settings" />
-        <Preference
-            android:dependency="KeyBlockActivity"
-            android:key="KeyBlockActivityTextSet"
-            android:summary="@string/keyblock_activity_settings_text_sum"
-            android:title="@string/keyblock_activity_settings_text" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/xml_tile_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="DisplayNotification"
-            android:summary="@string/force_notification_control_describe"
-            android:title="@string/force_notification_control" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="AutoCloseStatusBar"
-            android:title="@string/auto_close_statusbar" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/xml_notify_settings">
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="NotificationIcon"
-            android:title="@string/show_notification_icon" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="RemoveNotification"
-            android:summary="@string/allow_remove_notification_sum"
-            android:title="@string/allow_remove_notification" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/xml_root_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="RootFunction"
-            android:summary="@string/root_describe"
-            android:title="@string/root" />
-        <CheckBoxPreference
-            android:layout_height="wrap_content"
-            android:defaultValue="false"
-            android:dependency="RootFunction"
-            android:key="ButtonVibrate"
-            android:summary="@string/button_vibrate_light_control_sum"
-            android:title="@string/button_vibrate_light_control" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="RootFunction"
-            android:key="RootOpenService"
-            android:summary="@string/xml_root_open_service_sum"
-            android:title="@string/xml_root_open_service" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="RootFunction"
-            android:key="RootScanActivity"
-            android:summary="@string/xml_root_scan_activity_sum"
-            android:title="@string/xml_root_scan_activity" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/xml_custom_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="EnabledCustomKeycode"
-            android:summary="@string/enabled_custom_describe"
-            android:title="@string/enabled_custom" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="DisplayKeycode"
-            android:summary="@string/test_keycode_sum"
-            android:title="@string/test_keycode" />
-        <Preference
-            android:dependency="EnabledCustomKeycode"
-            android:key="CustomSettings"
-            android:title="@string/custom_setting" />
+    <PreferenceCategory android:title="@string/xml_all_settings">
+        <PreferenceScreen
+            android:summary="@string/xml_general_settings_sum"
+            android:title="@string/xml_general_settings">
+            <PreferenceCategory android:title="@string/xml_general_settings">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="DoubleClickExit"
+                    android:summary="@string/double_click_cancel_block_sum"
+                    android:title="@string/double_click_cancel_block" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="EnabledVolumeKey"
+                    android:summary="@string/disabled_volume_key_more_sum"
+                    android:title="@string/disabled_volume_key" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="ControlNotification"
+                    android:summary="@string/keyblock_close_control_notification_describe"
+                    android:title="@string/keyblock_close_control_notification" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="CloseAdvancedFunctions"
+                    android:summary="@string/xml_general_settings_no_advanced_function_sum"
+                    android:title="@string/xml_general_settings_no_advanced_function" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_keyblock_application_sum"
+            android:title="@string/xml_keyblock_application">
+            <PreferenceCategory android:title="@string/xml_keyblock_application">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="KeyBlockActivity"
+                    android:summary="@string/keyblock_activity_describe"
+                    android:title="@string/keyblock_activity" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="KeyBlockActivity"
+                    android:key="RecentBlockRemember"
+                    android:summary="@string/recent_block_remember_sum"
+                    android:title="@string/recent_block_remember" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="KeyBlockActivity"
+                    android:key="KeyBlockActivityAdvancedScanMode"
+                    android:summary="@string/keyblock_activity_advanced_scan_mode_sum"
+                    android:title="@string/keyblock_activity_advanced_scan_mode" />
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:dependency="KeyBlockActivity"
+                    android:key="KeyBlockActivityFilter"
+                    android:summary="@string/keyblock_activity_filter_describe"
+                    android:title="@string/keyblock_activity_filter" />
+                <Preference
+                    android:dependency="KeyBlockActivity"
+                    android:key="KeyBlockActivityListSet"
+                    android:summary="@string/keyblock_activity_settings_sum"
+                    android:title="@string/keyblock_activity_settings" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="KeyBlockActivity"
+                    android:key="KeyBlockActivityTest"
+                    android:summary="@string/keyblock_activity_test_sum"
+                    android:title="@string/keyblock_activity_test" />
+                <Preference
+                    android:dependency="KeyBlockActivity"
+                    android:key="KeyBlockActivityTextSet"
+                    android:summary="@string/keyblock_activity_settings_text_sum"
+                    android:title="@string/keyblock_activity_settings_text" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_tile_settings_sum"
+            android:title="@string/xml_tile_settings">
+            <PreferenceCategory android:title="@string/xml_tile_settings">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="DisplayNotification"
+                    android:summary="@string/force_notification_control_describe"
+                    android:title="@string/force_notification_control" />
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="AutoCloseStatusBar"
+                    android:title="@string/auto_close_statusbar" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_notify_settings_sum"
+            android:title="@string/xml_notify_settings">
+            <PreferenceCategory android:title="@string/xml_notify_settings">
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="NotificationIcon"
+                    android:title="@string/show_notification_icon" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="RemoveNotification"
+                    android:summary="@string/allow_remove_notification_sum"
+                    android:title="@string/allow_remove_notification" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_root_settings_sum"
+            android:title="@string/xml_root_settings">
+            <PreferenceCategory android:title="@string/xml_root_settings">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="RootFunction"
+                    android:summary="@string/root_describe"
+                    android:title="@string/root" />
+                <CheckBoxPreference
+                    android:layout_height="wrap_content"
+                    android:defaultValue="false"
+                    android:dependency="RootFunction"
+                    android:key="ButtonVibrate"
+                    android:summary="@string/button_vibrate_light_control_sum"
+                    android:title="@string/button_vibrate_light_control" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="RootFunction"
+                    android:key="RootOpenService"
+                    android:summary="@string/xml_root_open_service_sum"
+                    android:title="@string/xml_root_open_service" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="RootFunction"
+                    android:key="RootScanActivity"
+                    android:summary="@string/xml_root_scan_activity_sum"
+                    android:title="@string/xml_root_scan_activity" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_custom_settings_sum"
+            android:title="@string/xml_custom_settings">
+            <PreferenceCategory android:title="@string/xml_custom_settings">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="EnabledCustomKeycode"
+                    android:summary="@string/enabled_custom_describe"
+                    android:title="@string/enabled_custom" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="DisplayKeycode"
+                    android:summary="@string/test_keycode_sum"
+                    android:title="@string/test_keycode" />
+                <Preference
+                    android:dependency="EnabledCustomKeycode"
+                    android:key="CustomSettings"
+                    android:title="@string/custom_setting" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

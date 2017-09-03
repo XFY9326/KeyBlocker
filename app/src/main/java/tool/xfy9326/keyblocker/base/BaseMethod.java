@@ -1,11 +1,19 @@
 package tool.xfy9326.keyblocker.base;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.PowerManager;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -25,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import tool.xfy9326.keyblocker.R;
+import tool.xfy9326.keyblocker.activity.SettingsActivity;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class BaseMethod {
@@ -39,14 +48,90 @@ public class BaseMethod {
         }
     }
 
-    public static String getCurrentActivity() throws Exception {
+    public static void showPhoneStatAlert(final Activity activity, final CheckBoxPreference checkBoxPreference, final SettingsActivity.PrefsFragment prefsFragment) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.keyblock_activity_advanced_scan_mode);
+        builder.setMessage(R.string.keyblock_activity_advanced_scan_mode_warn);
+        builder.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    if (hasPhoneStatPermission(activity)) {
+                        prefsFragment.findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET).setEnabled(false);
+                    } else {
+                        getPhoneStatPermission(activity, Config.REQUEST_CODE_READ_PHONE_STAT);
+                    }
+                } else {
+                    prefsFragment.findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET).setEnabled(false);
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkBoxPreference.setChecked(false);
+            }
+        });
+        builder.show();
+    }
+
+    public static String[] getCurrentPackageByManager(Context context) {
+        String pkg_name = null;
+        String act_name = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            if (usageStatsManager != null) {
+                long now = System.currentTimeMillis();
+                List<UsageStats> stats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 6000, now);
+                if (stats != null && !stats.isEmpty()) {
+                    int top = 0;
+                    for (int last = 0; last < stats.size(); last++) {
+                        if (stats.get(last).getLastTimeUsed() > stats.get(top).getLastTimeUsed()) {
+                            top = last;
+                        }
+                    }
+                    pkg_name = stats.get(top).getPackageName();
+                }
+            }
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            @SuppressWarnings("deprecation")
+            List list = activityManager.getRunningTasks(1);
+            pkg_name = ((ActivityManager.RunningTaskInfo) list.get(0)).topActivity.getPackageName();
+            act_name = ((ActivityManager.RunningTaskInfo) list.get(0)).topActivity.getClassName();
+        }
+        if (pkg_name == null) {
+            pkg_name = "";
+        }
+        if (act_name == null) {
+            act_name = pkg_name;
+        }
+        return new String[]{act_name, pkg_name};
+    }
+
+    public static boolean hasPhoneStatPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+            return mode == AppOpsManager.MODE_ALLOWED;
+        }
+        return false;
+    }
+
+    private static void getPhoneStatPermission(Activity activity, int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            activity.startActivityForResult(new Intent().setAction(Settings.ACTION_USAGE_ACCESS_SETTINGS), requestCode);
+        }
+    }
+
+    public static String[] getCurrentActivityByRoot() throws Exception {
         Process process = Runtime.getRuntime().exec("su");
         BufferedWriter mOutputWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         BufferedReader mInputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         mOutputWriter.write(Config.RUNTIME_GET_CURRENT_ACTIVITY + "\n");
         mOutputWriter.flush();
         String result = mInputReader.readLine();
-        //process.waitFor();
         mOutputWriter.close();
         mInputReader.close();
         process.getErrorStream().close();
@@ -55,10 +140,14 @@ public class BaseMethod {
             result = result.substring(result.indexOf("{"), result.lastIndexOf("}"));
             String[] data = result.split(" ");
             String act_data = data[2];
+            String pkg_data;
             if (act_data.contains("/")) {
+                pkg_data = act_data.substring(0, act_data.indexOf("/"));
                 act_data = act_data.replace("/", "");
+            } else {
+                pkg_data = act_data;
             }
-            return act_data;
+            return new String[]{act_data, pkg_data};
         }
         return null;
     }

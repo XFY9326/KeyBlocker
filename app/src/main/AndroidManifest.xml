@@ -4,6 +4,11 @@
     package="tool.xfy9326.keyblocker">
 
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <!--suppress DeprecatedClassUsageInspection -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".base.BaseApplication"

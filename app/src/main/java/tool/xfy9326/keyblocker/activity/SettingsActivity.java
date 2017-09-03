@@ -32,10 +32,26 @@ import tool.xfy9326.keyblocker.base.BaseMethod;
 import tool.xfy9326.keyblocker.config.Config;
 
 public class SettingsActivity extends Activity {
+    private PrefsFragment prefsFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new PrefsFragment()).commit();
+        prefsFragment = new PrefsFragment();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, prefsFragment).commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Config.REQUEST_CODE_READ_PHONE_STAT) {
+            if (BaseMethod.hasPhoneStatPermission(this)) {
+                prefsFragment.findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET).setEnabled(false);
+                BaseMethod.RestartAccessibilityService(this);
+            } else {
+                ((CheckBoxPreference) prefsFragment.findPreference(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE)).setChecked(false);
+                Toast.makeText(this, R.string.warn_no_permission, Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public static class PrefsFragment extends PreferenceFragment {
@@ -129,7 +145,29 @@ public class SettingsActivity extends Activity {
                 }
             });
 
+            CheckBoxPreference mKeyBlockScanMode = (CheckBoxPreference) findPreference(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE);
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                mKeyBlockScanMode.setEnabled(false);
+            }
+            mKeyBlockScanMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if ((boolean) newValue) {
+                        BaseMethod.showPhoneStatAlert(getActivity(), (CheckBoxPreference) preference, PrefsFragment.this);
+                    } else {
+                        findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET).setEnabled(true);
+                        BaseMethod.RestartAccessibilityService(getActivity());
+                    }
+                    return true;
+                }
+            });
+
+            findPreference(Config.CLOSE_ADVANCED_FUNCTIONS).setOnPreferenceChangeListener(launchService);
+
             Preference mKeyBlockKeyWordsSet = findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET);
+            if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE, false)) {
+                mKeyBlockKeyWordsSet.setEnabled(false);
+            }
             mKeyBlockKeyWordsSet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -168,12 +206,8 @@ public class SettingsActivity extends Activity {
         }
 
         private void NotificationSettings() {
-            CheckBoxPreference mCbNotificationIcon = (CheckBoxPreference) findPreference(Config.NOTIFICATION_ICON);
-            mCbNotificationIcon.setOnPreferenceChangeListener(launchService);
-
-            CheckBoxPreference mCbRemoveNotification = (CheckBoxPreference) findPreference(Config.REMOVE_NOTIFICATION);
-            mCbRemoveNotification.setOnPreferenceChangeListener(launchService);
-
+            findPreference(Config.NOTIFICATION_ICON).setOnPreferenceChangeListener(launchService);
+            findPreference(Config.REMOVE_NOTIFICATION).setOnPreferenceChangeListener(launchService);
         }
 
         private void RootSettings() {

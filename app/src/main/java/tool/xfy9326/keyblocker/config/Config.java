@@ -11,10 +11,14 @@ public class Config {
     public static final String EMPTY_ARRAY = "[]";
 
     public static final String CLOSE_SERVICE = "CLOSE_SERVICE";
+    public static final String TEST_APP_NAME = "TEST_APP_NAME";
+
+    public static final int REQUEST_CODE_READ_PHONE_STAT = 1;
 
     public static final String APPWIDGET_CLICK_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_CLICK_ACTION";
     public static final String APPWIDGET_UPDATE_ACTION = "tool.xfy9326.keyblocker.action.APPWIDGET_UPDATE_ACTION";
     public static final String REMOTE_CONTROL_ACTION = "tool.xfy9326.keyblocker.action.REMOTE_CONTROL_ACTION";
+    public static final String ACTIVITY_AND_PACKAGE_TEST_ACTION = "tool.xfy9326.keyblocker.action.ACTIVITY_AND_PACKAGE_TEST";
     public static final String NOTIFICATION_CLICK_ACTION = "tool.xfy9326.keyblocker.Notification.OnClick";
     public static final String NOTIFICATION_DELETE_ACTION = "tool.xfy9326.keyblocker.Notification.OnDelete";
 
@@ -33,14 +37,18 @@ public class Config {
     public static final String REMOVE_NOTIFICATION = "RemoveNotification";
     public static final String AUTO_CLOSE_STATUSBAR = "AutoCloseStatusBar";
     public static final String KEYBLOCK_ACTIVITY = "KeyBlockActivity";
+    public static final String KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE = "KeyBlockActivityAdvancedScanMode";
     public static final String KEYBLOCK_ACTIVITY_LIST_SET = "KeyBlockActivityListSet";
     public static final String KEYBLOCK_ACTIVITY_TEXT_SET = "KeyBlockActivityTextSet";
+    public static final String KEYBLOCK_ACTIVITY_TEST = "KeyBlockActivityTest";
     public static final String CUSTOM_KEYBLOCK_ACTIVITY = "CustomKeyBlockActivity";
     public static final String CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS = "CustomKeyBlockActivityKeyWords";
     public static final String CONTROL_NOTIFICATION = "ControlNotification";
     public static final String KEYBLOCK_ACTIVITY_FILTER = "KeyBlockActivityFilter";
     public static final String DOUBLE_CLICK_EXIT = "DoubleClickExit";
     public static final String ROOT_SCAN_ACTIVITY = "RootScanActivity";
+    public static final String RECENT_BLOCK_REMEMBER = "RecentBlockRemember";
+    public static final String CLOSE_ADVANCED_FUNCTIONS = "CloseAdvancedFunctions";
 
     public static final String RUNTIME_BUTTONLIGHT_ON = "echo 100 > /sys/class/leds/button-backlight/brightness";
     public static final String RUNTIME_BUTTONLIGHT_OFF = "echo 0 > /sys/class/leds/button-backlight/brightness";

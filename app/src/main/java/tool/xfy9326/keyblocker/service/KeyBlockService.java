@@ -25,15 +25,20 @@ import tool.xfy9326.keyblocker.config.Config;
 
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
+import static tool.xfy9326.keyblocker.R.string.app_name;
 
 public class KeyBlockService extends AccessibilityService {
-    private String mCurrentActivity = "";
+    private String lastBlockedApplication = "";
     private String mLastActivity = "";
-    private ButtonBroadcastReceiver mBbr;
+    private String mLastPackage = "";
+    private ServiceBroadcastReceiver serviceBroadcastReceiver;
     private Notification.Builder mNBuilder;
     private SharedPreferences mSp;
     private SharedPreferences.Editor mSpEditor;
-    private Thread ActivityListener = null;
+    private Thread ActivityListener_Root = null;
+    private Thread ActivityListener_Advanced = null;
+    private boolean closeAdvancedFunction = false;
+    private boolean AdvancedActivityListener = false;
     private boolean RootActivityListener = false;
     private boolean mIsQuickSetting = false;
     private NotificationManager mNM;
@@ -41,6 +46,7 @@ public class KeyBlockService extends AccessibilityService {
     private boolean isNotificationClosed = true;
     private boolean inRootMode = false;
     private boolean RootScanActivity = false;
+    private boolean AdvancedScanActivity = false;
     private boolean allowBlockVibrator = false;
     private boolean allowRemoveNotification = false;
     private long backClickTime = 0;
@@ -70,13 +76,23 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
-        RootScanActivity = mSp.getBoolean(Config.ROOT_SCAN_ACTIVITY, false);
-        allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
+        closeAdvancedFunction = mSp.getBoolean(Config.CLOSE_ADVANCED_FUNCTIONS, false);
+        if (!closeAdvancedFunction) {
+            inRootMode = mSp.getBoolean(Config.ROOT_FUNCTION, false);
+            RootScanActivity = mSp.getBoolean(Config.ROOT_SCAN_ACTIVITY, false);
+            AdvancedScanActivity = mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE, false);
+            allowBlockVibrator = mSp.getBoolean(Config.BUTTON_VIBRATE, false);
+        }
         allowRemoveNotification = mSp.getBoolean(Config.REMOVE_NOTIFICATION, false);
         ControlModeSet();
         ReceiverRegister();
-        RootGetActivitySet();
+        if (!closeAdvancedFunction) {
+            if (RootScanActivity) {
+                RootGetActivitySet();
+            } else if (AdvancedScanActivity) {
+                AdvancedGetActivitySet();
+            }
+        }
         BaseMethod.BlockNotify(this, mSp.getBoolean(Config.ENABLED_KEYBLOCK, false));
         if (!mIsQuickSetting) {
             ShowNotification();
@@ -85,11 +101,11 @@ public class KeyBlockService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && !RootScanActivity) {
+        if (!closeAdvancedFunction && mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && !RootScanActivity && !AdvancedScanActivity) {
             int eventType = event.getEventType();
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 if (event.getClassName() != null) {
-                    CurrentActivityFix(event.getClassName().toString());
+                    CurrentActivityFix(event.getClassName().toString(), event.getPackageName().toString());
                 }
             }
         }
@@ -98,14 +114,22 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         ReceiverUnregister();
-        if (ActivityListener != null) {
-            RootActivityListener = false;
-            ActivityListener = null;
+        if (!closeAdvancedFunction) {
+            if (ActivityListener_Root != null) {
+                RootActivityListener = false;
+                ActivityListener_Root = null;
+            }
+            if (ActivityListener_Advanced != null) {
+                AdvancedActivityListener = false;
+                ActivityListener_Advanced = null;
+            }
         }
         boolean mIsKeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
         if (mIsKeyBlocked) {
-            ButtonLightControl(false);
-            ButtonVibrateControl(false);
+            if (!closeAdvancedFunction) {
+                ButtonLightControl(false);
+                ButtonVibrateControl(false);
+            }
             BaseMethod.BlockNotify(this, false);
             mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
             mSpEditor.commit();
@@ -122,13 +146,21 @@ public class KeyBlockService extends AccessibilityService {
     @Override
     public boolean onUnbind(Intent intent) {
         ReceiverUnregister();
-        if (ActivityListener != null) {
-            RootActivityListener = false;
-            ActivityListener = null;
+        if (!closeAdvancedFunction) {
+            if (ActivityListener_Root != null) {
+                RootActivityListener = false;
+                ActivityListener_Root = null;
+            }
+            if (ActivityListener_Advanced != null) {
+                AdvancedActivityListener = false;
+                ActivityListener_Advanced = null;
+            }
+            ButtonLightControl(false);
+            ButtonVibrateControl(false);
+            mLastActivity = "";
+            mLastPackage = "";
+            lastBlockedApplication = "";
         }
-        ButtonLightControl(false);
-        ButtonVibrateControl(false);
-        mLastActivity = null;
         if (!mIsQuickSetting) {
             CloseNotification();
         }
@@ -141,22 +173,28 @@ public class KeyBlockService extends AccessibilityService {
         if (keycode == KeyEvent.KEYCODE_POWER) {
             return false;
         }
-        if (event.getAction() == ACTION_DOWN && keycode == KeyEvent.KEYCODE_BACK) {
-            if (mSp.getBoolean(Config.DOUBLE_CLICK_EXIT, false) && mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                long nowTime = System.currentTimeMillis();
-                if (nowTime - backClickTime <= 700) {
-                    CloseBlock();
-                    backClickTime = 0;
-                    return true;
-                } else {
-                    backClickTime = nowTime;
+        boolean enable_keyblock = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
+        if (closeAdvancedFunction) {
+            return enable_keyblock;
+        }
+        if (event.getAction() == ACTION_DOWN) {
+            if (keycode == KeyEvent.KEYCODE_BACK) {
+                if (mSp.getBoolean(Config.DOUBLE_CLICK_EXIT, false) && enable_keyblock) {
+                    long nowTime = System.currentTimeMillis();
+                    if (nowTime - backClickTime <= 700) {
+                        CloseBlock();
+                        backClickTime = 0;
+                        return true;
+                    } else {
+                        backClickTime = nowTime;
+                    }
                 }
             }
+            if (mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
+                Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
+            }
         }
-        if (event.getAction() == ACTION_UP && mSp.getBoolean(Config.DISPLAY_KEYCODE, false)) {
-            Toast.makeText(this, "Keycode: " + keycode, Toast.LENGTH_SHORT).show();
-        }
-        if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
+        if (enable_keyblock) {
             if (mSp.getBoolean(Config.ENABLED_VOLUME_KEY, false) && (keycode == KeyEvent.KEYCODE_VOLUME_UP || keycode == KeyEvent.KEYCODE_VOLUME_MUTE || keycode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
                 return false;
             }
@@ -180,29 +218,32 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
-    private void RootGetActivitySet() {
-        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && inRootMode && RootScanActivity) {
-            if (ActivityListener != null) {
-                RootActivityListener = false;
+    private void AdvancedGetActivitySet() {
+        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false)) {
+            if (ActivityListener_Advanced != null) {
+                AdvancedActivityListener = false;
                 try {
-                    if (ActivityListener.isAlive()) {
-                        ActivityListener.interrupt();
+                    if (ActivityListener_Advanced.isAlive()) {
+                        ActivityListener_Advanced.interrupt();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ActivityListener = null;
+                ActivityListener_Advanced = null;
             }
-            RootActivityListener = true;
-            ActivityListener = new Thread(new Runnable() {
+            AdvancedActivityListener = true;
+            ActivityListener_Advanced = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         final int default_sleep_time = 1250;
                         final int wait_sleep_time = 3000;
-                        while (RootActivityListener) {
+                        while (AdvancedActivityListener) {
                             if (BaseMethod.isScreenOn(KeyBlockService.this)) {
-                                CurrentActivityFix(BaseMethod.getCurrentActivity());
+                                String[] data = BaseMethod.getCurrentPackageByManager(KeyBlockService.this);
+                                if (data != null && data.length == 2) {
+                                    CurrentActivityFix(data[0], data[1]);
+                                }
                                 Thread.sleep(default_sleep_time);
                             } else {
                                 Thread.sleep(wait_sleep_time);
@@ -213,60 +254,110 @@ public class KeyBlockService extends AccessibilityService {
                     }
                 }
             });
-            ActivityListener.start();
+            ActivityListener_Advanced.start();
         }
     }
 
-    private void CurrentActivityFix(String currentactivity) {
-        if (currentactivity != null) {
+    private void RootGetActivitySet() {
+        if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY, false) && inRootMode) {
+            if (ActivityListener_Root != null) {
+                RootActivityListener = false;
+                try {
+                    if (ActivityListener_Root.isAlive()) {
+                        ActivityListener_Root.interrupt();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ActivityListener_Root = null;
+            }
+            RootActivityListener = true;
+            ActivityListener_Root = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final int default_sleep_time = 1250;
+                        final int wait_sleep_time = 3000;
+                        while (RootActivityListener) {
+                            if (BaseMethod.isScreenOn(KeyBlockService.this)) {
+                                String[] data = BaseMethod.getCurrentActivityByRoot();
+                                if (data != null && data.length == 2) {
+                                    CurrentActivityFix(data[0], data[1]);
+                                }
+                                Thread.sleep(default_sleep_time);
+                            } else {
+                                Thread.sleep(wait_sleep_time);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            ActivityListener_Root.start();
+        }
+    }
+
+    private void CurrentActivityFix(String mCurrentActivity, String mCurrentPackage) {
+        if (mCurrentActivity != null && mCurrentPackage != null && !mCurrentActivity.equals("") && !mCurrentPackage.equals("")) {
             boolean useful_activity = true;
-            if (currentactivity.length() >= 7) {
-                useful_activity = !(currentactivity.startsWith("android") || currentactivity.contains("com.android.systemui"));
+            if (mCurrentPackage.length() >= 7) {
+                useful_activity = !(mCurrentActivity.startsWith("android") || mCurrentPackage.equalsIgnoreCase("com.android.systemui"));
             }
             if (useful_activity) {
-                mCurrentActivity = currentactivity;
-                if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity)) {
-                    currentActivityCheck();
+                if (mLastActivity != null && !mLastActivity.equalsIgnoreCase(mCurrentActivity) && mLastPackage != null && !mLastPackage.equalsIgnoreCase(mCurrentPackage)) {
+                    if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_TEST, false)) {
+                        sendBroadcast(new Intent().setAction(Config.ACTIVITY_AND_PACKAGE_TEST_ACTION).putExtra(Config.TEST_APP_NAME, mCurrentPackage + " / " + mCurrentActivity));
+                    }
+                    currentUseCheck(mCurrentActivity, mCurrentPackage);
                     mLastActivity = mCurrentActivity;
+                    mLastPackage = mCurrentPackage;
                 }
             }
         }
     }
 
     private void CloseBlock() {
-        ButtonLightControl(false);
-        ButtonVibrateControl(false);
+        if (!closeAdvancedFunction) {
+            ButtonLightControl(false);
+            ButtonVibrateControl(false);
+        }
         mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
         mSpEditor.commit();
         UiUpdater(this, true, false);
     }
 
-    private void currentActivityCheck() {
-        if (!mCurrentActivity.contains(getPackageName())) {
-            String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
-            String KeyWordsString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, "");
-            if (!KeyWordsString.equals("")) {
-                String[] keywords;
-                if (KeyWordsString.contains(" ")) {
-                    keywords = KeyWordsString.split(" ");
-                } else {
-                    keywords = new String[]{KeyWordsString};
-                }
-                boolean ActivityFound = false;
-                for (String str : keywords) {
-                    if (!str.equals("") && mCurrentActivity.contains(str)) {
-                        ActivityFound = true;
-                        break;
-                    }
-                }
-                findActivity(ActivityFound);
+    private void currentUseCheck(String using_app_pkg_name, String using_app_class_name) {
+        if (!using_app_pkg_name.contains(getPackageName())) {
+            if (mSp.getBoolean(Config.RECENT_BLOCK_REMEMBER, false) && lastBlockedApplication.equals(using_app_pkg_name)) {
+                findActivity(true);
             }
+            if (!AdvancedScanActivity || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                String KeyWordsString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, "");
+                if (!KeyWordsString.equals("")) {
+                    String[] keywords;
+                    if (KeyWordsString.contains(" ")) {
+                        keywords = KeyWordsString.split(" ");
+                    } else {
+                        keywords = new String[]{KeyWordsString};
+                    }
+                    boolean ActivityFound = false;
+                    for (String str : keywords) {
+                        if (!str.equals("") && using_app_class_name.contains(str)) {
+                            ActivityFound = true;
+                            break;
+                        }
+                    }
+                    findActivity(ActivityFound);
+                }
+            }
+            String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
             if (!ActivityString.equals(Config.EMPTY_ARRAY)) {
                 ArrayList<String> ActivityArray = BaseMethod.StringToStringArrayList(ActivityString);
                 if (!ActivityArray.isEmpty()) {
                     boolean ActivityFound = false;
                     for (String FilterActivity : ActivityArray) {
-                        if (mCurrentActivity.contains(FilterActivity)) {
+                        if (using_app_pkg_name.contains(FilterActivity)) {
                             ActivityFound = true;
                             break;
                         }
@@ -358,15 +449,16 @@ public class KeyBlockService extends AccessibilityService {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.NOTIFICATION_CLICK_ACTION);
         filter.addAction(Config.NOTIFICATION_DELETE_ACTION);
-        mBbr = new ButtonBroadcastReceiver();
+        filter.addAction(Config.ACTIVITY_AND_PACKAGE_TEST_ACTION);
+        serviceBroadcastReceiver = new ServiceBroadcastReceiver();
         isReceiverRegistered = true;
-        registerReceiver(mBbr, filter);
+        registerReceiver(serviceBroadcastReceiver, filter);
     }
 
     private void ReceiverUnregister() {
-        if (mBbr != null && isReceiverRegistered) {
+        if (serviceBroadcastReceiver != null && isReceiverRegistered) {
             isReceiverRegistered = false;
-            unregisterReceiver(mBbr);
+            unregisterReceiver(serviceBroadcastReceiver);
         }
     }
 
@@ -384,7 +476,7 @@ public class KeyBlockService extends AccessibilityService {
         } else {
             mNBuilder.setSmallIcon(R.drawable.ic_notification_not_blocked);
         }
-        mNBuilder.setContentTitle(getString(R.string.app_name));
+        mNBuilder.setContentTitle(getString(app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
             ButtonLightControl(true);
             ButtonVibrateControl(true);
@@ -444,7 +536,7 @@ public class KeyBlockService extends AccessibilityService {
         BaseMethod.BlockNotify(content, mIsKeyBlocked);
     }
 
-    private class ButtonBroadcastReceiver extends BroadcastReceiver {
+    private class ServiceBroadcastReceiver extends BroadcastReceiver {
         private boolean mIsKeyBlocked;
 
         @Override
@@ -460,6 +552,11 @@ public class KeyBlockService extends AccessibilityService {
                     }
                 }
                 stopSelf();
+            } else if (intent.getAction().equals(Config.ACTIVITY_AND_PACKAGE_TEST_ACTION)) {
+                String data = intent.getStringExtra(Config.TEST_APP_NAME);
+                if (data != null) {
+                    Toast.makeText(content, data, Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
@@ -467,6 +564,9 @@ public class KeyBlockService extends AccessibilityService {
             mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
             ButtonLightControl(mIsKeyBlocked);
             ButtonVibrateControl(mIsKeyBlocked);
+            if (mIsKeyBlocked) {
+                lastBlockedApplication = mLastPackage;
+            }
             mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
             mSpEditor.commit();
             UiUpdater(context, updateWidget, mIsKeyBlocked);
