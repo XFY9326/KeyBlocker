@@ -36,7 +36,7 @@ public class ShortCutActivity extends Activity {
 
     private void startAccessibilityService() {
         if (BaseMethod.isAccessibilitySettingsOn(this)) {
-            BaseMethod.KeyLockBroadcast(this, true);
+            BaseMethod.KeyLockBroadcast(this, true, false);
         } else {
             BaseMethod.RunAccessibilityService(this);
         }

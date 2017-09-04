@@ -20,9 +20,7 @@ public class RemoteReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Config.REMOTE_CONTROL_ACTION)) {
             boolean displayToast = intent.getBooleanExtra("RESPOND", true);
             if (BaseMethod.isAccessibilitySettingsOn(context)) {
-                Intent notify_intent = new Intent();
-                notify_intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
-                context.sendBroadcast(notify_intent);
+                BaseMethod.KeyLockBroadcast(context, true, true);
             } else if (mSp.getBoolean(Config.ROOT_OPEN_SERVICE, false) && mSp.getBoolean(Config.ROOT_FUNCTION, false)) {
                 BaseMethod.controlAccessibilityServiceWithRoot(true, false);
             } else {

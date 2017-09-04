@@ -107,7 +107,7 @@ public class BaseMethod {
         if (act_name == null) {
             act_name = pkg_name;
         }
-        return new String[]{act_name, pkg_name};
+        return new String[]{pkg_name, act_name};
     }
 
     public static boolean hasPhoneStatPermission(Context context) {
@@ -147,7 +147,7 @@ public class BaseMethod {
             } else {
                 pkg_data = act_data;
             }
-            return new String[]{act_data, pkg_data};
+            return new String[]{pkg_data, act_data};
         }
         return null;
     }
@@ -307,10 +307,11 @@ public class BaseMethod {
         }
     }
 
-    public static void KeyLockBroadcast(Context mContext, boolean updateWidget) {
+    public static void KeyLockBroadcast(Context mContext, boolean updateWidget, boolean isAuto) {
         Intent intent = new Intent();
         intent.setAction(Config.NOTIFICATION_CLICK_ACTION);
         intent.putExtra(Config.DISPLAY_APPWIDGET, updateWidget);
+        intent.putExtra(Config.AUTO_BLOCK, isAuto);
         mContext.sendBroadcast(intent);
     }
 

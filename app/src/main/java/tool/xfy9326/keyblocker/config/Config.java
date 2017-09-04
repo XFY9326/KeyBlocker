@@ -12,6 +12,7 @@ public class Config {
 
     public static final String CLOSE_SERVICE = "CLOSE_SERVICE";
     public static final String TEST_APP_NAME = "TEST_APP_NAME";
+    public static final String AUTO_BLOCK = "AUTO_BLOCK";
 
     public static final int REQUEST_CODE_READ_PHONE_STAT = 1;
 

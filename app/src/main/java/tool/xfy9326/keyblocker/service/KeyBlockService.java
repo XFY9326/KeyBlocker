@@ -105,7 +105,7 @@ public class KeyBlockService extends AccessibilityService {
             int eventType = event.getEventType();
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 if (event.getClassName() != null) {
-                    CurrentActivityFix(event.getClassName().toString(), event.getPackageName().toString());
+                    CurrentActivityFix(event.getPackageName().toString(), event.getClassName().toString());
                 }
             }
         }
@@ -298,7 +298,7 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
-    private void CurrentActivityFix(String mCurrentActivity, String mCurrentPackage) {
+    private void CurrentActivityFix(String mCurrentPackage, String mCurrentActivity) {
         if (mCurrentActivity != null && mCurrentPackage != null && !mCurrentActivity.equals("") && !mCurrentPackage.equals("")) {
             boolean useful_activity = true;
             if (mCurrentPackage.length() >= 7) {
@@ -309,7 +309,7 @@ public class KeyBlockService extends AccessibilityService {
                     if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_TEST, false)) {
                         sendBroadcast(new Intent().setAction(Config.ACTIVITY_AND_PACKAGE_TEST_ACTION).putExtra(Config.TEST_APP_NAME, mCurrentPackage + " / " + mCurrentActivity));
                     }
-                    currentUseCheck(mCurrentActivity, mCurrentPackage);
+                    currentUseCheck(mCurrentPackage, mCurrentActivity);
                     mLastActivity = mCurrentActivity;
                     mLastPackage = mCurrentPackage;
                 }
@@ -329,8 +329,9 @@ public class KeyBlockService extends AccessibilityService {
 
     private void currentUseCheck(String using_app_pkg_name, String using_app_class_name) {
         if (!using_app_pkg_name.contains(getPackageName())) {
-            if (mSp.getBoolean(Config.RECENT_BLOCK_REMEMBER, false) && lastBlockedApplication.equals(using_app_pkg_name)) {
+            if (mSp.getBoolean(Config.RECENT_BLOCK_REMEMBER, false) && lastBlockedApplication.equalsIgnoreCase(using_app_pkg_name)) {
                 findActivity(true);
+                return;
             }
             if (!AdvancedScanActivity || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 String KeyWordsString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY_KEY_WORDS, "");
@@ -343,12 +344,15 @@ public class KeyBlockService extends AccessibilityService {
                     }
                     boolean ActivityFound = false;
                     for (String str : keywords) {
-                        if (!str.equals("") && using_app_class_name.contains(str)) {
+                        if (!str.equals("") && using_app_class_name.toLowerCase().contains(str.toLowerCase())) {
                             ActivityFound = true;
                             break;
                         }
                     }
                     findActivity(ActivityFound);
+                    if (ActivityFound) {
+                        return;
+                    }
                 }
             }
             String ActivityString = mSp.getString(Config.CUSTOM_KEYBLOCK_ACTIVITY, Config.EMPTY_ARRAY);
@@ -371,11 +375,11 @@ public class KeyBlockService extends AccessibilityService {
     private void findActivity(boolean ActivityFound) {
         if (ActivityFound) {
             if (!mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                BaseMethod.KeyLockBroadcast(this, true);
+                BaseMethod.KeyLockBroadcast(this, true, true);
             }
         } else {
             if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-                BaseMethod.KeyLockBroadcast(this, true);
+                BaseMethod.KeyLockBroadcast(this, true, true);
             }
         }
     }
@@ -542,7 +546,7 @@ public class KeyBlockService extends AccessibilityService {
         @Override
         public void onReceive(Context content, Intent intent) {
             if (intent.getAction().equals(Config.NOTIFICATION_CLICK_ACTION)) {
-                BlockAction(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false));
+                BlockAction(content, intent.getBooleanExtra(Config.DISPLAY_APPWIDGET, false), intent.getBooleanExtra(Config.AUTO_BLOCK, false));
             } else if (intent.getAction().equals(Config.NOTIFICATION_DELETE_ACTION)) {
                 if (allowRemoveNotification) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -560,11 +564,11 @@ public class KeyBlockService extends AccessibilityService {
             }
         }
 
-        public void BlockAction(Context context, boolean updateWidget) {
+        public void BlockAction(Context context, boolean updateWidget, boolean isAuto) {
             mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
             ButtonLightControl(mIsKeyBlocked);
             ButtonVibrateControl(mIsKeyBlocked);
-            if (mIsKeyBlocked) {
+            if (mIsKeyBlocked && !isAuto) {
                 lastBlockedApplication = mLastPackage;
             }
             mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, mIsKeyBlocked);
