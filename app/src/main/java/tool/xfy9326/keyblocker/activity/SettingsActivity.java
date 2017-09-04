@@ -79,6 +79,7 @@ public class SettingsActivity extends Activity {
                 }
             };
             GeneralSettings();
+            ActivityBlockSettings();
             NotificationSettings();
             RootSettings();
             NSettings();
@@ -95,6 +96,10 @@ public class SettingsActivity extends Activity {
                 }
             });
 
+            findPreference(Config.CLOSE_ADVANCED_FUNCTIONS).setOnPreferenceChangeListener(launchService);
+        }
+
+        private void ActivityBlockSettings() {
             Preference mKeyBlockActivitySet = findPreference(Config.KEYBLOCK_ACTIVITY_LIST_SET);
             mKeyBlockActivitySet.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -161,8 +166,6 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
-
-            findPreference(Config.CLOSE_ADVANCED_FUNCTIONS).setOnPreferenceChangeListener(launchService);
 
             Preference mKeyBlockKeyWordsSet = findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET);
             if (mSp.getBoolean(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE, false)) {

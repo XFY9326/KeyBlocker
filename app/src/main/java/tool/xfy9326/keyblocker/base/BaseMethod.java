@@ -36,15 +36,16 @@ import tool.xfy9326.keyblocker.R;
 import tool.xfy9326.keyblocker.activity.SettingsActivity;
 import tool.xfy9326.keyblocker.config.Config;
 
+@SuppressWarnings("SameParameterValue")
 public class BaseMethod {
 
     public static boolean isScreenOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            return powerManager.isInteractive();
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             //noinspection deprecation
             return powerManager.isScreenOn();
+        } else {
+            return powerManager.isInteractive();
         }
     }
 
@@ -180,14 +181,67 @@ public class BaseMethod {
         }).start();
     }
 
+    public static void ButtonLightControl(final boolean NotInControl) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
+                    mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
+                    if (NotInControl) {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
+                        mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
+                    } else {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
+                    }
+                    mRuntimeStream.flush();
+                    process.waitFor();
+                    process.getErrorStream().close();
+                    mRuntimeStream.close();
+                    process.destroy();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public static void ButtonVibrateControl(final boolean NotInControl) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
+                    mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
+                    if (NotInControl) {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
+                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
+                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK + "\n");
+                    } else {
+                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
+                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE + "\n");
+                    }
+                    mRuntimeStream.flush();
+                    process.waitFor();
+                    process.getErrorStream().close();
+                    mRuntimeStream.close();
+                    process.destroy();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public static void orderPackageList(final Context ctx, List<PackageInfo> list) {
         Collections.sort(list, new Comparator<PackageInfo>() {
             @Override
             public int compare(PackageInfo o1, PackageInfo o2) {
                 String str1 = o1.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
                 String str2 = o2.applicationInfo.loadLabel(ctx.getPackageManager()).toString();
-                str1 = HanziToPinyin.getInstance().convert(str1.toLowerCase());
-                str2 = HanziToPinyin.getInstance().convert(str2.toLowerCase());
+                str1 = HanziToPinyin.getInstance().convert(str1);
+                str2 = HanziToPinyin.getInstance().convert(str2);
                 return str1.compareTo(str2);
             }
         });

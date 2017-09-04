@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -115,20 +114,13 @@ public class KeyBlockService extends AccessibilityService {
     public void onInterrupt() {
         ReceiverUnregister();
         if (!closeAdvancedFunction) {
-            if (ActivityListener_Root != null) {
-                RootActivityListener = false;
-                ActivityListener_Root = null;
-            }
-            if (ActivityListener_Advanced != null) {
-                AdvancedActivityListener = false;
-                ActivityListener_Advanced = null;
-            }
+            closeAppListener();
         }
         boolean mIsKeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
         if (mIsKeyBlocked) {
             if (!closeAdvancedFunction) {
-                ButtonLightControl(false);
-                ButtonVibrateControl(false);
+                setButtonLight(false);
+                setVibrateControl(false);
             }
             BaseMethod.BlockNotify(this, false);
             mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
@@ -147,16 +139,9 @@ public class KeyBlockService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         ReceiverUnregister();
         if (!closeAdvancedFunction) {
-            if (ActivityListener_Root != null) {
-                RootActivityListener = false;
-                ActivityListener_Root = null;
-            }
-            if (ActivityListener_Advanced != null) {
-                AdvancedActivityListener = false;
-                ActivityListener_Advanced = null;
-            }
-            ButtonLightControl(false);
-            ButtonVibrateControl(false);
+            closeAppListener();
+            setButtonLight(false);
+            setVibrateControl(false);
             mLastActivity = "";
             mLastPackage = "";
             lastBlockedApplication = "";
@@ -317,16 +302,6 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
-    private void CloseBlock() {
-        if (!closeAdvancedFunction) {
-            ButtonLightControl(false);
-            ButtonVibrateControl(false);
-        }
-        mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
-        mSpEditor.commit();
-        UiUpdater(this, true, false);
-    }
-
     private void currentUseCheck(String using_app_pkg_name, String using_app_class_name) {
         if (!using_app_pkg_name.contains(getPackageName())) {
             if (mSp.getBoolean(Config.RECENT_BLOCK_REMEMBER, false) && lastBlockedApplication.equalsIgnoreCase(using_app_pkg_name)) {
@@ -384,6 +359,27 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
+    private void CloseBlock() {
+        if (!closeAdvancedFunction) {
+            setButtonLight(false);
+            setVibrateControl(false);
+        }
+        mSpEditor.putBoolean(Config.ENABLED_KEYBLOCK, false);
+        mSpEditor.commit();
+        UiUpdater(this, true, false);
+    }
+
+    private void closeAppListener() {
+        if (ActivityListener_Root != null) {
+            RootActivityListener = false;
+            ActivityListener_Root = null;
+        }
+        if (ActivityListener_Advanced != null) {
+            AdvancedActivityListener = false;
+            ActivityListener_Advanced = null;
+        }
+    }
+
     private void ControlModeSet() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (!mSp.getBoolean(Config.DISPLAY_NOTIFICATION, false)) {
@@ -392,60 +388,15 @@ public class KeyBlockService extends AccessibilityService {
         }
     }
 
-    private void ButtonLightControl(final boolean NotInControl) {
+    private void setButtonLight(boolean NotInControl) {
         if (inRootMode && allowBlockVibrator) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Process process = Runtime.getRuntime().exec("su");
-                        DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
-                        mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_CHANGE + "\n");
-                        if (NotInControl) {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_OFF + "\n");
-                            mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_CHMOD_STICK + "\n");
-                        } else {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_BUTTONLIGHT_ON + "\n");
-                        }
-                        mRuntimeStream.flush();
-                        process.waitFor();
-                        process.getErrorStream().close();
-                        mRuntimeStream.close();
-                        process.destroy();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            BaseMethod.ButtonLightControl(NotInControl);
         }
     }
 
-    private void ButtonVibrateControl(final boolean NotInControl) {
+    private void setVibrateControl(boolean NotInControl) {
         if (inRootMode && allowBlockVibrator) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Process process = Runtime.getRuntime().exec("su");
-                        DataOutputStream mRuntimeStream = new DataOutputStream(process.getOutputStream());
-                        mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_CHANGE + "\n");
-                        if (NotInControl) {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_OFF + "\n");
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_STICK + "\n");
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_STICK + "\n");
-                        } else {
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_ON + "\n");
-                            mRuntimeStream.writeBytes(Config.RUNTIME_VIBRATE_CHMOD_AVOIDCHANGE_CHANGE + "\n");
-                        }
-                        mRuntimeStream.flush();
-                        process.waitFor();
-                        process.getErrorStream().close();
-                        mRuntimeStream.close();
-                        process.destroy();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            BaseMethod.ButtonVibrateControl(NotInControl);
         }
     }
 
@@ -482,15 +433,15 @@ public class KeyBlockService extends AccessibilityService {
         }
         mNBuilder.setContentTitle(getString(app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
-            ButtonLightControl(true);
-            ButtonVibrateControl(true);
+            setButtonLight(true);
+            setVibrateControl(true);
             if (allowRemoveNotification) {
                 mNBuilder.setOngoing(true);
             }
             mNBuilder.setContentText(getString(R.string.notify_mes_off));
         } else {
-            ButtonLightControl(false);
-            ButtonVibrateControl(false);
+            setButtonLight(false);
+            setVibrateControl(false);
             if (allowRemoveNotification) {
                 mNBuilder.setOngoing(false);
             }
@@ -566,8 +517,8 @@ public class KeyBlockService extends AccessibilityService {
 
         public void BlockAction(Context context, boolean updateWidget, boolean isAuto) {
             mIsKeyBlocked = !mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
-            ButtonLightControl(mIsKeyBlocked);
-            ButtonVibrateControl(mIsKeyBlocked);
+            setButtonLight(mIsKeyBlocked);
+            setVibrateControl(mIsKeyBlocked);
             if (mIsKeyBlocked && !isAuto) {
                 lastBlockedApplication = mLastPackage;
             }
