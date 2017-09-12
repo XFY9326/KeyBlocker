@@ -116,8 +116,7 @@ public class KeyBlockService extends AccessibilityService {
         if (!closeAdvancedFunction) {
             closeAppListener();
         }
-        boolean mIsKeyBlocked = mSp.getBoolean(Config.ENABLED_KEYBLOCK, false);
-        if (mIsKeyBlocked) {
+        if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
             if (!closeAdvancedFunction) {
                 setButtonLight(false);
                 setVibrateControl(false);
@@ -130,6 +129,11 @@ public class KeyBlockService extends AccessibilityService {
 
     @Override
     public void onDestroy() {
+        if (!closeAdvancedFunction) {
+            closeAppListener();
+            setButtonLight(false);
+            setVibrateControl(false);
+        }
         ReceiverUnregister();
         System.gc();
         super.onDestroy();

@@ -8,8 +8,8 @@ android {
         minSdkVersion 18
         //noinspection OldTargetApi
         targetSdkVersion 25
-        versionCode 40
-        versionName '3.7'
+        versionCode 41
+        versionName '3.8'
     }
     
     buildTypes {

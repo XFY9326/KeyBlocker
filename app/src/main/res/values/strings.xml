@@ -65,7 +65,7 @@
     <string name="double_click_cancel_block_sum">Double click back button to unblock key</string>
     <string name="disabled_volume_key_more_sum">You can also manually set more in custom settings</string>
     <string name="xml_root_scan_activity">Use Root scan the application you are using</string>
-    <string name="xml_root_scan_activity_sum">More accurate but use more battery</string>
+    <string name="xml_root_scan_activity_sum">More accurate but use more battery\nCan solve the application block is not timely.</string>
     <string name="shortcut_disabled">This ShortCut is disabled!</string>
     <string name="keyblock_activity_settings_sum">Select Applications in a list. (Check package name)</string>
     <string name="keyblock_activity_settings_text_sum">Set KeyBlock by Activity key words. (Check activity name)</string>
@@ -74,8 +74,8 @@
     <string name="keyblock_activity_test">Test Activity Name</string>
     <string name="keyblock_activity_test_sum">Show the name of the activity you are using.</string>
     <string name="keyblock_activity_advanced_scan_mode">Package name advanced scan mode</string>
-    <string name="keyblock_activity_advanced_scan_mode_sum">Using initiative scan mode but also using more power.\nNot support Android 5.0 devices!</string>
-    <string name="keyblock_activity_advanced_scan_mode_warn">May cause problems , not work and only can get package name.\n\nAndroid 5.1 and above must give read phone state permission!\n\nWill use root function first!</string>
+    <string name="keyblock_activity_advanced_scan_mode_sum">Using initiative scan mode but also using more power.\nCan solve the application block is not timely.\nNot support Android 5.0 devices!</string>
+    <string name="keyblock_activity_advanced_scan_mode_warn">May cause problems, not work and only can get package name.\n\nAndroid 5.1 and above must give read phone state permission!\n\nWill use root function first!</string>
     <string name="warn_no_permission">No Permission!</string>
     <string name="xml_all_settings">All Settings</string>
     <string name="xml_custom_settings_sum">Block the key you want.</string>
