@@ -152,9 +152,6 @@ public class SettingsActivity extends Activity {
             });
 
             CheckBoxPreference mKeyBlockScanMode = (CheckBoxPreference) findPreference(Config.KEYBLOCK_ACTIVITY_ADVANCED_SCAN_MODE);
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                mKeyBlockScanMode.setEnabled(false);
-            }
             mKeyBlockScanMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {

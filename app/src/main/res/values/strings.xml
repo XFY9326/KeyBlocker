@@ -74,8 +74,8 @@
     <string name="keyblock_activity_test">Test Activity Name</string>
     <string name="keyblock_activity_test_sum">Show the name of the activity you are using.</string>
     <string name="keyblock_activity_advanced_scan_mode">Package name advanced scan mode</string>
-    <string name="keyblock_activity_advanced_scan_mode_sum">Using initiative scan mode but also using more power.\nCan solve the application block is not timely.\nNot support Android 5.0 devices!</string>
-    <string name="keyblock_activity_advanced_scan_mode_warn">May cause problems, not work and only can get package name.\n\nAndroid 5.1 and above must give read phone state permission!\n\nWill use root function first!</string>
+    <string name="keyblock_activity_advanced_scan_mode_sum">Using initiative scan mode but also using more power.\nCan solve the application block is not timely.</string>
+    <string name="keyblock_activity_advanced_scan_mode_warn">May cause problems, not work and only can get package name in Android 5.1 and above.\n\nAndroid 5.1 and above will disable "KeyBlock Activity key words settings" function and must give read phone state permission!\n\nWill use root function first!</string>
     <string name="warn_no_permission">No Permission!</string>
     <string name="xml_base_settings">Basic Settings</string>
     <string name="xml_advanced_settings">Advanced Settings</string>

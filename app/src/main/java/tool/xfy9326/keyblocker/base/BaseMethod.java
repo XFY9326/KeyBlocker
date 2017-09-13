@@ -63,8 +63,6 @@ public class BaseMethod {
                     } else {
                         getPhoneStatPermission(activity, Config.REQUEST_CODE_READ_PHONE_STAT);
                     }
-                } else {
-                    prefsFragment.findPreference(Config.KEYBLOCK_ACTIVITY_TEXT_SET).setEnabled(false);
                 }
             }
         });
@@ -95,7 +93,7 @@ public class BaseMethod {
                     pkg_name = stats.get(top).getPackageName();
                 }
             }
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             @SuppressWarnings("deprecation")
             List list = activityManager.getRunningTasks(1);
@@ -107,6 +105,9 @@ public class BaseMethod {
         }
         if (act_name == null) {
             act_name = pkg_name;
+        }
+        if (act_name.contains("$")) {
+            act_name = act_name.replace("$", ".");
         }
         return new String[]{pkg_name, act_name};
     }
