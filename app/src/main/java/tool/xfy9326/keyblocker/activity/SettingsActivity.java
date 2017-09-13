@@ -33,6 +33,7 @@ import tool.xfy9326.keyblocker.config.Config;
 
 public class SettingsActivity extends Activity {
     private PrefsFragment prefsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

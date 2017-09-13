@@ -77,7 +77,8 @@
     <string name="keyblock_activity_advanced_scan_mode_sum">Using initiative scan mode but also using more power.\nCan solve the application block is not timely.\nNot support Android 5.0 devices!</string>
     <string name="keyblock_activity_advanced_scan_mode_warn">May cause problems, not work and only can get package name.\n\nAndroid 5.1 and above must give read phone state permission!\n\nWill use root function first!</string>
     <string name="warn_no_permission">No Permission!</string>
-    <string name="xml_all_settings">All Settings</string>
+    <string name="xml_base_settings">Basic Settings</string>
+    <string name="xml_advanced_settings">Advanced Settings</string>
     <string name="xml_custom_settings_sum">Block the key you want.</string>
     <string name="xml_general_settings_sum">Base settings and control.</string>
     <string name="xml_keyblock_application_sum">Block keys automatically in different applications.</string>

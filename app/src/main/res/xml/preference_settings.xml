@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/xml_all_settings">
+    <PreferenceCategory android:title="@string/xml_base_settings">
         <PreferenceScreen
             android:summary="@string/xml_general_settings_sum"
             android:title="@string/xml_general_settings">
@@ -22,12 +22,46 @@
                     android:title="@string/keyblock_close_control_notification" />
                 <CheckBoxPreference
                     android:defaultValue="false"
+                    android:disableDependentsState="true"
                     android:key="CloseAdvancedFunctions"
                     android:summary="@string/xml_general_settings_no_advanced_function_sum"
                     android:title="@string/xml_general_settings_no_advanced_function" />
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
+            android:summary="@string/xml_notify_settings_sum"
+            android:title="@string/xml_notify_settings">
+            <PreferenceCategory android:title="@string/xml_notify_settings">
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="NotificationIcon"
+                    android:title="@string/show_notification_icon" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="RemoveNotification"
+                    android:summary="@string/allow_remove_notification_sum"
+                    android:title="@string/allow_remove_notification" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/xml_tile_settings_sum"
+            android:title="@string/xml_tile_settings">
+            <PreferenceCategory android:title="@string/xml_tile_settings">
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="DisplayNotification"
+                    android:summary="@string/force_notification_control_describe"
+                    android:title="@string/force_notification_control" />
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="AutoCloseStatusBar"
+                    android:title="@string/auto_close_statusbar" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/xml_advanced_settings">
+        <PreferenceScreen
+            android:dependency="CloseAdvancedFunctions"
             android:summary="@string/xml_keyblock_application_sum"
             android:title="@string/xml_keyblock_application">
             <PreferenceCategory android:title="@string/xml_keyblock_application">
@@ -73,36 +107,7 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
-            android:summary="@string/xml_tile_settings_sum"
-            android:title="@string/xml_tile_settings">
-            <PreferenceCategory android:title="@string/xml_tile_settings">
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="DisplayNotification"
-                    android:summary="@string/force_notification_control_describe"
-                    android:title="@string/force_notification_control" />
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="AutoCloseStatusBar"
-                    android:title="@string/auto_close_statusbar" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/xml_notify_settings_sum"
-            android:title="@string/xml_notify_settings">
-            <PreferenceCategory android:title="@string/xml_notify_settings">
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="NotificationIcon"
-                    android:title="@string/show_notification_icon" />
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="RemoveNotification"
-                    android:summary="@string/allow_remove_notification_sum"
-                    android:title="@string/allow_remove_notification" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-        <PreferenceScreen
+            android:dependency="CloseAdvancedFunctions"
             android:summary="@string/xml_root_settings_sum"
             android:title="@string/xml_root_settings">
             <PreferenceCategory android:title="@string/xml_root_settings">
@@ -133,6 +138,7 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
+            android:dependency="CloseAdvancedFunctions"
             android:summary="@string/xml_custom_settings_sum"
             android:title="@string/xml_custom_settings">
             <PreferenceCategory android:title="@string/xml_custom_settings">
