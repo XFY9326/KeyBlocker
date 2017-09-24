@@ -88,4 +88,5 @@
     <string name="recent_block_remember_sum">记住手动屏蔽的一个应用，下次进入时自动屏蔽</string>
     <string name="xml_general_settings_no_advanced_function">关闭所有高级功能</string>
     <string name="xml_general_settings_no_advanced_function_sum">只使用简单的屏蔽功能并且省电\n不包括有关控制的功能</string>
+    <string name="notification_control_board">按键屏蔽控制面板</string>
 </resources>

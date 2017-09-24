@@ -24,7 +24,6 @@ import tool.xfy9326.keyblocker.config.Config;
 
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
-import static tool.xfy9326.keyblocker.R.string.app_name;
 
 public class KeyBlockService extends AccessibilityService {
     private String lastBlockedApplication = "";
@@ -429,13 +428,13 @@ public class KeyBlockService extends AccessibilityService {
         PendingIntent delete_pendingIntent = PendingIntent.getBroadcast(this, 0, delete_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mNBuilder = new Notification.Builder(this);
+        mNBuilder.setContentTitle(getString(R.string.notification_control_board));
         mNBuilder.setOngoing(true);
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
             mNBuilder.setSmallIcon(R.drawable.ic_notification_blocked);
         } else {
             mNBuilder.setSmallIcon(R.drawable.ic_notification_not_blocked);
         }
-        mNBuilder.setContentTitle(getString(app_name));
         if (mSp.getBoolean(Config.ENABLED_KEYBLOCK, false)) {
             setButtonLight(true);
             setVibrateControl(true);
